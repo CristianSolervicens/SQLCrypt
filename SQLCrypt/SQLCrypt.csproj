@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FA679A5D-8604-4D2D-B1A4-CFE675C06E3A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SQLCrypt</RootNamespace>
+    <AssemblyName>SQLCrypt</AssemblyName>
+    <ApplicationIcon>_Frog Full.ico</ApplicationIcon>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>http://localhost/SQLCrypt/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EPPlus">
+      <HintPath>..\packages\EPPlus.4.0.5\lib\net20\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutBox1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutBox1.Designer.cs">
+      <DependentUpon>AboutBox1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Conexiones.cs" />
+    <Compile Include="CSDataGrid.cs" />
+    <Compile Include="frmBuscaPagina.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmBuscaPagina.Designer.cs">
+      <DependentUpon>frmBuscaPagina.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmCommonTasks.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCommonTasks.Designer.cs">
+      <DependentUpon>frmCommonTasks.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmDataEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDataEdit.Designer.cs">
+      <DependentUpon>frmDataEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmDespliegueTxt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDespliegueTxt.Designer.cs">
+      <DependentUpon>frmDespliegueTxt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmIndexes.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmIndexes.Designer.cs">
+      <DependentUpon>frmIndexes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmPassWord.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPassWord.Designer.cs">
+      <DependentUpon>frmPassWord.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FunctionalClasses\Crypto.cs" />
+    <Compile Include="frmObjects.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmObjects.Designer.cs">
+      <DependentUpon>frmObjects.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmConexion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmConexion.Designer.cs">
+      <DependentUpon>frmConexion.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmCnxFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmCnxFile.designer.cs">
+      <DependentUpon>frmCnxFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmDespliegue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmDespliegue.Designer.cs">
+      <DependentUpon>frmDespliegue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmParam.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmParam.Designer.cs">
+      <DependentUpon>frmParam.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmSqlCrypt.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSqlCrypt.Designer.cs">
+      <DependentUpon>frmSqlCrypt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FunctionalClasses\MySql.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StructureClasses\DBObject.cs" />
+    <Compile Include="StructureClasses\ObjectTypes.cs" />
+    <Compile Include="TextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <EmbeddedResource Include="AboutBox1.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>AboutBox1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmBuscaPagina.resx">
+      <DependentUpon>frmBuscaPagina.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCommonTasks.resx">
+      <DependentUpon>frmCommonTasks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDataEdit.resx">
+      <DependentUpon>frmDataEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDespliegueTxt.resx">
+      <DependentUpon>frmDespliegueTxt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmIndexes.resx">
+      <DependentUpon>frmIndexes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmObjects.resx">
+      <DependentUpon>frmObjects.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmConexion.resx">
+      <DependentUpon>frmConexion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmCnxFile.resx">
+      <DependentUpon>frmCnxFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmDespliegue.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmDespliegue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmParam.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmParam.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPassWord.resx">
+      <DependentUpon>frmPassWord.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSqlCrypt.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>frmSqlCrypt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Binoculr-x16.ico" />
+    <None Include="Resources\0RecycleRed.ico" />
+    <Content Include="_Frog Full.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_StartDate="2009/1/1" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
