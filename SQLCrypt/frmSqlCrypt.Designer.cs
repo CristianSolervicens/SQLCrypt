@@ -41,6 +41,7 @@
             this.seleccionarTodoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.IndexacionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.verPanelDeObjetosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buscaPaginaSQLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.analizarDeadlocksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.crearArchivoDeConexiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,7 +79,6 @@
             this.txtSql = new System.Windows.Forms.RichTextBox();
             this.txTextLimit = new System.Windows.Forms.MyTextBox();
             this.label3 = new System.Windows.Forms.MyLabel();
-            this.buscaPaginaSQLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).BeginInit();
@@ -212,6 +212,13 @@
             this.verPanelDeObjetosToolStripMenuItem.Text = "Ver Panel de Tablas";
             this.verPanelDeObjetosToolStripMenuItem.Click += new System.EventHandler(this.verPanelDeObjetosToolStripMenuItem_Click);
             // 
+            // buscaPaginaSQLToolStripMenuItem
+            // 
+            this.buscaPaginaSQLToolStripMenuItem.Name = "buscaPaginaSQLToolStripMenuItem";
+            this.buscaPaginaSQLToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
+            this.buscaPaginaSQLToolStripMenuItem.Text = "Busca Pagina SQL";
+            this.buscaPaginaSQLToolStripMenuItem.Click += new System.EventHandler(this.buscaPaginaSQLToolStripMenuItem_Click);
+            // 
             // analizarDeadlocksToolStripMenuItem
             // 
             this.analizarDeadlocksToolStripMenuItem.Name = "analizarDeadlocksToolStripMenuItem";
@@ -312,6 +319,7 @@
             // 
             // toolStripTextBox1
             // 
+            this.toolStripTextBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(120, 23);
             this.toolStripTextBox1.ToolTipText = "Cadena a Buscar";
@@ -328,6 +336,7 @@
             // 
             // replaceToolStripMenuItem
             // 
+            this.replaceToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.replaceToolStripMenuItem.Name = "replaceToolStripMenuItem";
             this.replaceToolStripMenuItem.Size = new System.Drawing.Size(120, 23);
             this.replaceToolStripMenuItem.ToolTipText = "Cadena de Reemplazo";
@@ -353,8 +362,6 @@
             // 
             this.chkToText.AutoSize = true;
             this.chkToText.BackColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.chkToText.Checked = true;
-            this.chkToText.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkToText.FlatAppearance.BorderSize = 2;
             this.chkToText.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.chkToText.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -569,13 +576,6 @@
             this.label3.Size = new System.Drawing.Size(52, 13);
             this.label3.TabIndex = 9;
             this.label3.Text = "Text Limit";
-            // 
-            // buscaPaginaSQLToolStripMenuItem
-            // 
-            this.buscaPaginaSQLToolStripMenuItem.Name = "buscaPaginaSQLToolStripMenuItem";
-            this.buscaPaginaSQLToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
-            this.buscaPaginaSQLToolStripMenuItem.Text = "Busca Pagina SQL";
-            this.buscaPaginaSQLToolStripMenuItem.Click += new System.EventHandler(this.buscaPaginaSQLToolStripMenuItem_Click);
             // 
             // frmSqlCrypt
             // 

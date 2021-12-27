@@ -66,7 +66,7 @@ namespace SQLCrypt
             DataTable dt = new DataTable();
             dt.Load(Program.hSql.Data);
             dataGridView.DataSource = dt;
-
+            
             //dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
             //dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             //for (int i = 0; i < dataGridView.ColumnCount; ++i)
@@ -189,6 +189,11 @@ namespace SQLCrypt
                 Clipboard.Clear();
                 Clipboard.SetText( Program.hSql.Messages, TextDataFormat.Text);
             }
+        }
+
+        private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            e.ThrowException = false;
         }
     }
 
