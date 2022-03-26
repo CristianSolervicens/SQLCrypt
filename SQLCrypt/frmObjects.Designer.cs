@@ -48,8 +48,8 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripProgressBar1 = new System.Windows.Forms.ToolStripProgressBar();
-            this.toolStripStatusLabelSel = new System.Windows.Forms.ToolStripStatusLabel();
             this.btLimpiaFiltro = new System.Windows.Forms.Button();
+            this.toolStripStatusLabelSel = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -236,12 +236,6 @@
             this.toolStripProgressBar1.Name = "toolStripProgressBar1";
             this.toolStripProgressBar1.Size = new System.Drawing.Size(100, 16);
             // 
-            // toolStripStatusLabelSel
-            // 
-            this.toolStripStatusLabelSel.Name = "toolStripStatusLabelSel";
-            this.toolStripStatusLabelSel.Size = new System.Drawing.Size(118, 17);
-            this.toolStripStatusLabelSel.Text = "toolStripStatusLabel1";
-            // 
             // btLimpiaFiltro
             // 
             this.btLimpiaFiltro.Location = new System.Drawing.Point(12, 82);
@@ -251,6 +245,12 @@
             this.btLimpiaFiltro.Text = "Limpia Filtro";
             this.btLimpiaFiltro.UseVisualStyleBackColor = true;
             this.btLimpiaFiltro.Click += new System.EventHandler(this.btLimpiaFiltro_Click);
+            // 
+            // toolStripStatusLabelSel
+            // 
+            this.toolStripStatusLabelSel.Name = "toolStripStatusLabelSel";
+            this.toolStripStatusLabelSel.Size = new System.Drawing.Size(118, 17);
+            this.toolStripStatusLabelSel.Text = "toolStripStatusLabel1";
             // 
             // frmObjects
             // 
@@ -308,8 +308,8 @@
         private System.Windows.Forms.Button btSaveSQL;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelSel;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar1;
         private System.Windows.Forms.Button btLimpiaFiltro;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelSel;
     }
 }

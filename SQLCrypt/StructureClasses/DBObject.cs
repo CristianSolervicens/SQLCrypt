@@ -89,19 +89,21 @@ namespace SQLCrypt.StructureClasses
 
             this.ErrorString = string.Empty;
 
-            string sCommand = @"select [name],
-                                       [object_id],
-	                                   SCHEMA_NAME(schema_id) as SchemaName,
-                                       [schema_id],
-	                                   [parent_object_id],
-                                       [type],
-                                       [type_desc],
-                                       [create_date],
-                                       [modify_date]
+            string sCommand = @"select obj.[name],
+                                       obj.[object_id],
+	                                   SCHEMA_NAME(obj.schema_id) as SchemaName,
+                                       obj.[schema_id],
+	                                   obj.[parent_object_id],
+                                       obj.[type],
+                                       obj.[type_desc],
+                                       obj.[create_date],
+                                       obj.[modify_date],
+                                       tipo = (select ty.name +' (' + cast(col.max_length as varchar) + ')' from sys.types ty where ty.user_type_id = col.user_type_id)
                               from sys.objects obj
+                              join sys.columns col on col.object_id = obj.object_id
                               WHERE type = " + hSql.fValorASP(this._type) + @"
-                                 And exists( select 1 from sys.columns where name = '" + Column + @"' And object_id = obj.[object_id] )
-                              ORDER BY SCHEMA_NAME(schema_id), [name]";
+                                 And col.name = '" + Column + @"'
+                              ORDER BY SCHEMA_NAME(schema_id), obj.[name]";
 
             hSql.ExecuteSqlData(sCommand);
 
@@ -123,6 +125,7 @@ namespace SQLCrypt.StructureClasses
                 obj.type_desc = hSql.Data.GetString(6);
                 obj.create_date = hSql.Data.GetDateTime(7);
                 obj.modify_date = hSql.Data.GetDateTime(8);
+                obj.description = hSql.Data.GetString(9);
 
                 this.Add(obj);
             }
@@ -220,6 +223,11 @@ namespace SQLCrypt.StructureClasses
             internal set;
         }
 
+        public string description
+        {
+            get;
+            internal set;
+        }
 
         public virtual string GetText()
         {

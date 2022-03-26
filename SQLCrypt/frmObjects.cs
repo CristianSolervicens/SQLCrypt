@@ -17,6 +17,7 @@ namespace SQLCrypt
     public partial class frmObjects:Form
     {
         ToolTip MytoolTip = new ToolTip();
+        ToolTip MytoolTipDataType = new ToolTip();
         DbObjects Objetos;
         HSql hSql;
 
@@ -70,6 +71,7 @@ namespace SQLCrypt
             this.rchTxt.RightMargin = 300 * this.rchTxt.Font.Height;
 
             MytoolTip.SetToolTip(txBuscaEnLista, "Presiona [Enter] para buscar");
+            MytoolTipDataType.SetToolTip(lstObjetos, "");
         }
 
 
@@ -553,6 +555,18 @@ namespace SQLCrypt
         private void lstObjetos_SelectedIndexChanged(object sender, EventArgs e)
         {
             toolStripStatusLabelSel.Text = string.Format("{0} Elem. Seleccionados", lstObjetos.SelectedItems.Count);
+
+            if (lstObjetos.SelectedIndex == -1)
+            {
+                MytoolTipDataType.SetToolTip(lstObjetos, "");
+                return;
+            }
+
+            var DBObj = (DBObject)lstObjetos.SelectedItem;
+
+            if (DBObj.type.Trim() == "U")
+                MytoolTipDataType.SetToolTip(lstObjetos, DBObj.description);
+            
         }
 
 
@@ -588,8 +602,6 @@ namespace SQLCrypt
                     lstObjetos.TopIndex = 0;
             }
         }
-
-
 
     }
 
