@@ -43,19 +43,23 @@ namespace SQLCrypt
     [Serializable]
     public class Conexiones:List<Conexion>
     {
-        public void Add(string Server, string Database, string User, string Password)
+        public int Add(string Server, string Database, string User, string Password)
         {
-            var obj = this.FirstOrDefault(a => a.Server == Server && a.Database == Database && a.User == User);
+            var obj = this.FirstOrDefault(a => a.Server == Server);
             if (obj == null)
             {
                 Conexion Obj = new Conexion(Server, Database, User, Password);
                 this.Add(Obj);
+                return this.Count - 1;
             }
-            else
-            {
-                obj.Password = Password;
-            }
+            
+            return -1;
+            
+        }
 
+        public int findObjectInList( Conexion obj)
+        {
+            return this.FindIndex(a => a.Server == obj.Server);
         }
 
 
@@ -138,23 +142,25 @@ namespace SQLCrypt
     {
         public int Add(string Descripcion, string Server, string Database, string User, string Password)
         {
-            int indice;
 
-            var obj = this.FirstOrDefault(a => a.Server == Server && a.User == User);
-            if (obj == null)
+            var obj = this.FirstOrDefault(a => a.Descripcion == Descripcion);
+            if (obj != null)
             {
-                Conexion2 Obj = new Conexion2(Descripcion, Server, Database, User, Password);
-                this.Add(Obj);
-                indice = this.Count - 1;
+                return -1;
             }
-            else
-            {
-                obj.Password = Password;
-                indice = -1;
-            }
+            Conexion2 Obj = new Conexion2(Descripcion, Server, Database, User, Password);
+            this.Add(Obj);
+            return this.Count - 1;
+        }
 
-            return indice;
-            
+        public int findObjectInList(Conexion2 obj)
+        {
+            return this.FindIndex(a => a.Descripcion == obj.Descripcion);
+        }
+
+        public int findObjectIndexByName(string Description)
+        {
+            return this.FindIndex(a => a.Descripcion == Description);
         }
 
 

@@ -14,17 +14,18 @@ namespace SQLCrypt
 {
     public partial class frmConexion:Form
     {
-
+        
         private Conexiones2 conx;
         private int ConxIdx;
         public string ArchivoConexiones;
+        private bool NewEntry = false;
 
         private ToolTip ttip;
 
 
         public string Descripcion
         {
-          get { return txDescripcion.Text; }
+          get { return cbDescripcion.Text; }
         }
 
         public string Servidor
@@ -49,12 +50,13 @@ namespace SQLCrypt
             InitializeComponent();
 
             ttip = new ToolTip();
-            ttip.SetToolTip(btAceptar, "Conectarse a Servicor de Base de Datos, Si la conexión no existe la agrega a la Lista de Conexiones");
-            ttip.SetToolTip(btUpdate, "Actualiza la entrada en la lista de Conexiones recordadas");
-            ttip.SetToolTip(pbTest, "Prueba la Conexión y se Desconecta (no la graba)");
-            ttip.SetToolTip(btDelConexion, "Elimina la Entrada actual de Conexiones recordadas.");
-            ttip.SetToolTip(btCancelar, "Sale de la ventana de Conexión, no se conecta a Base de Datos.");
-
+            ttip.SetToolTip(btAceptar, "Connect With current settings");
+            ttip.SetToolTip(btUpdate, "Save current connection");
+            ttip.SetToolTip(pbTest, "Just test current connection");
+            ttip.SetToolTip(btDelConexion, "Delete current connection.");
+            ttip.SetToolTip(btCancelar, "Exit, Do not connect to a Database.");
+            ttip.SetToolTip(btNew, "New Connection (Wipes current info.)");
+            ttip.SetToolTip(this, "Use Up & Dn arrows to select connections");
 
             ArchivoConexiones = Path.GetDirectoryName(Application.ExecutablePath) + "\\Conexiones.xml";
             this.conx = new Conexiones2();
@@ -63,22 +65,22 @@ namespace SQLCrypt
             if (File.Exists(ArchivoConexiones))
                 this.conx.LoadElementsFromFile(ArchivoConexiones);
 
-            if (this.conx.Count > 0)
+            chkSavePasswd.Checked = true;
+            this.LoadConnections();
+            if (cbDescripcion.Items.Count > 0)
+                cbDescripcion.SelectedIndex = 0;
+        }
+
+
+        private void LoadConnections()
+        {
+            cbDescripcion.Items.Clear();
+            foreach (var obj in this.conx)
             {
-                ConxIdx = 0;
-                SetConx(ConxIdx);
+                cbDescripcion.Items.Add(obj.Descripcion);
             }
         }
 
-
-        private void SetConx(int index)
-        {
-            txDescripcion.Text = conx[index].Descripcion;
-            txServer.Text = conx[index].Server;
-            cbBases.Text = conx[index].Database;
-            txUser.Text = conx[index].User;
-            txPass.Text = conx[index].Password;
-        }
 
         private void btCancelar_Click(object sender, EventArgs e)
         {
@@ -89,12 +91,6 @@ namespace SQLCrypt
         private void btAceptar_Click(object sender, EventArgs e)
         {
             CreateConnectionString();
-
-            int indice = this.conx.Add(txDescripcion.Text, txServer.Text, cbBases.Text, txUser.Text, txPass.Text);
-
-            if ( indice != -1)
-                ConxIdx = indice;
-
             this.Close();
         }
 
@@ -159,93 +155,118 @@ namespace SQLCrypt
 
             MessageBox.Show(this, "Se ha conectado a la Base de Datos!!\nCadena de conexión probada exitosamente", "Prueba exitosa", MessageBoxButtons.OK);
 
-            txDescripcion.Focus();
+            cbDescripcion.Focus();
         }
 
-
-        private void frmConexion_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            this.conx.SaveElementstoFile(ArchivoConexiones);
-        }
-
-        private void txServer_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (this.conx.Count == 0)
-                return;
-
-            if (e.KeyCode == Keys.Up)
-            {
-                --this.ConxIdx;
-                if (this.ConxIdx < 0)
-                    ConxIdx = 0;
-
-                SetConx(ConxIdx);
-                return;
-            }
-
-            if (e.KeyCode == Keys.Down)
-            {
-                ++this.ConxIdx;
-                if (this.ConxIdx >= this.conx.Count)
-                    ConxIdx = this.conx.Count - 1;
-
-                SetConx(ConxIdx);
-                return;
-
-            }
-        }
 
         private void btDelConexion_Click(object sender, EventArgs e)
         {
-            if (ConxIdx != -1 && this.conx.Count > 0)
-                this.conx.RemoveAt(ConxIdx);
+            if (cbDescripcion.SelectedIndex != -1)
+                this.conx.RemoveAt(cbDescripcion.SelectedIndex);
+            
+            this.conx.SaveElementstoFile(ArchivoConexiones);
 
-            if (ConxIdx != 0)
-                --ConxIdx;
-
-            SetConx(ConxIdx);
-
-            txDescripcion.Focus();
+            this.LoadConnections();
+            if (cbDescripcion.Items.Count != 0)
+                cbDescripcion.SelectedIndex = 0;
+            else
+                cbDescripcion.SelectedIndex = -1;
+            
+            cbDescripcion.Focus();
         }
 
-        private void txDescripcion_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (this.conx.Count == 0)
-                return;
-
-            if (e.KeyCode == Keys.Up)
-            {
-                --this.ConxIdx;
-                if (this.ConxIdx < 0)
-                    ConxIdx = 0;
-
-                SetConx(ConxIdx);
-                return;
-            }
-
-            if (e.KeyCode == Keys.Down)
-            {
-                ++this.ConxIdx;
-                if (this.ConxIdx >= this.conx.Count)
-                    ConxIdx = this.conx.Count - 1;
-
-                SetConx(ConxIdx);
-                return;
-
-            }
-        }
 
         private void btUpdate_Click(object sender, EventArgs e)
         {
-            conx[ConxIdx].Descripcion = txDescripcion.Text;
+            if (cbDescripcion.Text == "")
+            {
+                MessageBox.Show("Connection Name can't be empty");
+                return;
+            }
+
+            if (this.NewEntry)
+            {
+                string myPasswd = "";
+                if (chkSavePasswd.Checked)
+                    myPasswd = txPass.Text;
+                
+                int idx = this.conx.Add(cbDescripcion.Text, txServer.Text, cbBases.Text, txUser.Text, myPasswd);
+
+                if (idx != -1)
+                {
+                    ConxIdx = idx;
+                    this.conx.SaveElementstoFile(ArchivoConexiones);
+                    this.LoadConnections();
+                    cbDescripcion.SelectedIndex = ConxIdx;
+                }
+                else
+                {
+                    MessageBox.Show("Can't create current entry. Description Name already exists");
+                    idx = this.conx.findObjectIndexByName(cbDescripcion.Text);
+                    if (idx != -1)
+                    {
+                        ConxIdx = idx;
+                        cbDescripcion.SelectedIndex = ConxIdx;
+                    }
+                }
+
+                this.NewEntry = false;
+                return;
+            }
+
+            int Idx = cbDescripcion.SelectedIndex;
+            if ( Idx == -1)
+            {
+                if (MessageBox.Show("Desea Actualizar el Nombre la Conexión ?", "Atención", MessageBoxButtons.YesNo) == DialogResult.No)
+                    return;
+            }
+
+            conx[ConxIdx].Descripcion = cbDescripcion.Text;
             conx[ConxIdx].Server = txServer.Text;
             conx[ConxIdx].Database = cbBases.Text;
             conx[ConxIdx].User = txUser.Text;
-            conx[ConxIdx].Password = txPass.Text;
+            if (chkSavePasswd.Checked)
+                conx[ConxIdx].Password = txPass.Text;
+            else
+                conx[ConxIdx].Password = "";
 
-            txDescripcion.Focus();
+            this.conx.SaveElementstoFile(ArchivoConexiones);
+            ConxIdx = cbDescripcion.SelectedIndex;
+            this.LoadConnections();
+            cbDescripcion.SelectedIndex = ConxIdx;
+
+            cbDescripcion.Focus();
+        }
+
+        private void btNew_Click(object sender, EventArgs e)
+        {
+            cbDescripcion.Text = "";
+            txServer.Text = "";
+            cbBases.Text = "";
+            txUser.Text = "";
+            txPass.Text = "";
+
+            this.NewEntry = true;
+            cbDescripcion.Focus();
         }
 
 
+        private void cbDescripcion_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ConxIdx = cbDescripcion.SelectedIndex;
+            if (ConxIdx == -1)
+            {
+                txServer.Text = "";
+                cbBases.Text = "";
+                txUser.Text = "";
+                txPass.Text = "";
+                this.NewEntry = true;
+            }
+
+            txServer.Text = conx[ConxIdx].Server;
+            cbBases.Text = conx[ConxIdx].Database;
+            txUser.Text = conx[ConxIdx].User;
+            txPass.Text = conx[ConxIdx].Password;
+        }
     }
 }

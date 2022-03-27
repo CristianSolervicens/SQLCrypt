@@ -319,7 +319,6 @@
             // 
             // toolStripTextBox1
             // 
-            this.toolStripTextBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(120, 23);
             this.toolStripTextBox1.ToolTipText = "Cadena a Buscar";
@@ -336,7 +335,6 @@
             // 
             // replaceToolStripMenuItem
             // 
-            this.replaceToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.replaceToolStripMenuItem.Name = "replaceToolStripMenuItem";
             this.replaceToolStripMenuItem.Size = new System.Drawing.Size(120, 23);
             this.replaceToolStripMenuItem.ToolTipText = "Cadena de Reemplazo";
@@ -464,9 +462,9 @@
             // 
             // btProcs
             // 
-            this.btProcs.Location = new System.Drawing.Point(55, 253);
+            this.btProcs.Location = new System.Drawing.Point(48, 253);
             this.btProcs.Name = "btProcs";
-            this.btProcs.Size = new System.Drawing.Size(47, 23);
+            this.btProcs.Size = new System.Drawing.Size(45, 23);
             this.btProcs.TabIndex = 18;
             this.btProcs.Text = "Procs.";
             this.btProcs.UseVisualStyleBackColor = true;
@@ -493,7 +491,7 @@
             // laTablas
             // 
             this.laTablas.AutoSize = true;
-            this.laTablas.Location = new System.Drawing.Point(108, 258);
+            this.laTablas.Location = new System.Drawing.Point(96, 259);
             this.laTablas.Name = "laTablas";
             this.laTablas.Size = new System.Drawing.Size(35, 13);
             this.laTablas.TabIndex = 15;
@@ -518,11 +516,10 @@
             this.lsColumnas.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lsColumnas.Size = new System.Drawing.Size(203, 242);
             this.lsColumnas.TabIndex = 13;
-            this.lsColumnas.SelectedIndexChanged += new System.EventHandler(this.lsColumnas_SelectedIndexChanged);
             // 
             // btRefresh
             // 
-            this.btRefresh.Location = new System.Drawing.Point(4, 253);
+            this.btRefresh.Location = new System.Drawing.Point(2, 253);
             this.btRefresh.Name = "btRefresh";
             this.btRefresh.Size = new System.Drawing.Size(47, 23);
             this.btRefresh.TabIndex = 12;

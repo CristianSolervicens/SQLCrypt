@@ -24,6 +24,8 @@ namespace SQLCrypt
         private string Server = "";
         private int TextLimit = 0;
 
+        private string PanelTipoObjetos = "";
+
         //Valores para Resize....
         private int WinMinHeight = 0;
         private int WinMinWidth = 0;
@@ -58,21 +60,6 @@ namespace SQLCrypt
 
             splitC.Panel1Collapsed = true;
             sTabla = string.Empty;
-
-            ContextMenu cm = new ContextMenu();
-
-            cm.MenuItems.Add("Get More Info", new EventHandler(ObjGetMoreInfo));
-            cm.MenuItems.Add("Get CREATE TABLE", new EventHandler(ObjGetCreateTable));
-            cm.MenuItems.Add("Get Text", new EventHandler(ObjGetText));
-            cm.MenuItems.Add("Selected To Clipboard", new EventHandler(ObjSelectedToClipboard));
-            cm.MenuItems.Add("-");
-            cm.MenuItems.Add("Select COUNT(*) FROM ", new EventHandler(ObjectSelectCount));
-            cm.MenuItems.Add("Select TOP(10) * FROM ", new EventHandler(ObjectSelectStar));
-            cm.MenuItems.Add("Select * FROM ", new EventHandler(ObjectSelectStarAll));
-            cm.MenuItems.Add("Editar Datos", new EventHandler(EditarDatos));
-
-            lstObjetos.ContextMenu = cm;
-
 
             ContextMenu colm = new ContextMenu();
             colm.MenuItems.Add("Selección al Clipboard", new EventHandler(colmSelectionToClipBoard));
@@ -409,8 +396,6 @@ namespace SQLCrypt
 
         private void cerrarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //CryptFile = "";
-            //TextFile = "";
             CurrentFile = "";
             IsEncrypted = false;
             txtSql.Text = "";
@@ -551,13 +536,30 @@ namespace SQLCrypt
                 return;
 
             int pos = txtSql.SelectionStart + txtSql.SelectionLength;
+            if (pos >= txtSql.TextLength)
+                pos = 0;
 
-            pos = txtSql.Find(toolStripTextBox1.Text, pos, txtSql.TextLength, RichTextBoxFinds.None);
+            try
+            {
+                pos = txtSql.Text.IndexOf(toolStripTextBox1.Text, pos, txtSql.TextLength - pos, StringComparison.InvariantCultureIgnoreCase);
+            }
+            catch
+            {
+                return;
+            }
+
+            //pos = txtSql.Find(toolStripTextBox1.Text, pos, txtSql.TextLength, RichTextBoxFinds.None);
             if (pos == -1)
             {
                 txtSql.SelectionStart = 0;
                 txtSql.SelectionLength = 0;
             }
+            else
+            {
+                txtSql.SelectionStart = pos;
+                txtSql.SelectionLength = toolStripTextBox1.Text.Length;
+            }
+
             txtSql.Refresh();
             Application.DoEvents();
 
@@ -960,7 +962,7 @@ namespace SQLCrypt
 
         public void Load_lstObjetos(string type)
         {
-
+            MytoolTip.SetToolTip(lstObjetos, "");
             lsColumnas.Items.Clear();
 
             Objetos.Load(type);
@@ -1004,7 +1006,9 @@ namespace SQLCrypt
                 return;
             }
             laBuscarTablas.Text = "Buscar Tablas";
-            Load_lstObjetos("U");
+            PanelTipoObjetos = "U";
+            this.SetMenuTablas();
+            Load_lstObjetos(PanelTipoObjetos);
         }
 
 
@@ -1036,6 +1040,41 @@ namespace SQLCrypt
         }
 
 
+        private void SetMenuTablas()
+        {
+            lstObjetos.ContextMenu = null;
+            ContextMenu cm = new ContextMenu();
+
+            cm.MenuItems.Add("Get More Info", new EventHandler(ObjGetMoreInfo));
+            cm.MenuItems.Add("Get CREATE TABLE", new EventHandler(ObjGetCreateTable));
+            cm.MenuItems.Add("Get Text", new EventHandler(ObjGetText));
+            cm.MenuItems.Add("Selected To Clipboard", new EventHandler(ObjSelectedToClipboard));
+            cm.MenuItems.Add("-");
+            cm.MenuItems.Add("Select COUNT(*) FROM ", new EventHandler(ObjectSelectCount));
+            cm.MenuItems.Add("Select TOP(10) * FROM ", new EventHandler(ObjectSelectStar));
+            cm.MenuItems.Add("Select * FROM ", new EventHandler(ObjectSelectStarAll));
+            cm.MenuItems.Add("Editar Datos", new EventHandler(EditarDatos));
+            cm.MenuItems.Add("-");
+            cm.MenuItems.Add("Buscar Tablas por Columna", new EventHandler(FindTableByColumnName));
+
+            lstObjetos.ContextMenu = cm;
+        }
+
+        private void FindTableByColumnName(object sender, EventArgs e)
+        {
+            if (txBuscaEnLista.Text == "")
+            {
+                MessageBox.Show("Indique el Texto a buscar en 'Buscar Procs.'");
+            }
+            Objetos.FindByColumn("U", txBuscaEnLista.Text);
+            if (Objetos.Count == 0)
+            {
+                MessageBox.Show("No se encontraron coincidencias");
+            }
+
+            Load_lstObjetos_ProcFiltered();
+        }
+
 
         private void verPanelDeObjetosToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1050,12 +1089,15 @@ namespace SQLCrypt
             {
                 splitC.Panel1Collapsed = false;
                 laBuscarTablas.Text = "Buscar Tablas";
-                Load_lstObjetos("U");   
+                PanelTipoObjetos = "U";
+                this.SetMenuTablas();
+                Load_lstObjetos(PanelTipoObjetos);
             }
             else
             {
+                PanelTipoObjetos = "";
                 splitC.Panel1Collapsed = true;
-
+                lstObjetos.ContextMenu = null;
             }
         }
 
@@ -1206,6 +1248,8 @@ namespace SQLCrypt
         {
             //Formatear el Nombre de Tabla a Nombre "Seguro" usando las partes entre paréntesis []
 
+            MytoolTip.SetToolTip(lstObjetos, "");
+
             if (lstObjetos.SelectedIndex == -1)
                 return;
 
@@ -1214,6 +1258,9 @@ namespace SQLCrypt
 
             if (DBObj.type != "U")
                 return;
+
+            if (DBObj.description != "")
+                MytoolTip.SetToolTip(lstObjetos, DBObj.description);
 
             sTabla = "[" +  DBObj.schema_name + "].[" + DBObj.name + "]" ;
             
@@ -1311,14 +1358,60 @@ namespace SQLCrypt
 
 
 
-        private void lsColumnas_SelectedIndexChanged(object sender, EventArgs e)
+        private void SetMenuProcedimientos()
         {
-            if (lsColumnas.SelectedIndex == -1)
-                return;
-            
-            MytoolTip.SetToolTip(lsColumnas, lsColumnas.SelectedItem.ToString());
+            lstObjetos.ContextMenu = null;
+            ContextMenu cm = new ContextMenu();
+
+            cm.MenuItems.Add("Get More Info", new EventHandler(ObjGetMoreInfo));
+            cm.MenuItems.Add("Get CREATE TABLE", new EventHandler(ObjGetCreateTable));
+            cm.MenuItems.Add("Get Text", new EventHandler(ObjGetText));
+            cm.MenuItems.Add("Selected To Clipboard", new EventHandler(ObjSelectedToClipboard));
+            cm.MenuItems.Add("-");
+            cm.MenuItems.Add("Find Proedure by Text", new EventHandler(FindProcedureByText));            
+
+            lstObjetos.ContextMenu = cm;
         }
 
+
+        private void FindProcedureByText(object sender, EventArgs e)
+        {
+            if (txBuscaEnLista.Text == "")
+            {
+                MessageBox.Show("Indique el Texto a buscar en 'Buscar Procs.'");
+            }
+            Objetos.FindByText("P", txBuscaEnLista.Text);
+            if (Objetos.Count == 0)
+            {
+                MessageBox.Show("No se encontraron coincidencias");
+            }
+            Load_lstObjetos_ProcFiltered();
+        }
+
+
+        private void Load_lstObjetos_ProcFiltered()
+        {
+            lstObjetos.Items.Clear();
+            MytoolTip.SetToolTip(lstObjetos, "");
+
+            string TipoObjeto = "Objetos";
+
+            if (Objetos.Count > 0)
+            {
+                if (Objetos[0].type == "U")
+                    TipoObjeto = "Tablas Filtradas";
+                else if (Objetos[0].type == "P")
+                    TipoObjeto = "Procs. Filtrados";
+            }
+
+            foreach (var n in Objetos)
+            {
+                lstObjetos.Items.Add(n);
+            }
+
+            laTablas.Text = string.Format("{0} {1}", lstObjetos.Items.Count, TipoObjeto);
+
+        }
 
 
         private void btProcs_Click(object sender, EventArgs e)
@@ -1329,7 +1422,9 @@ namespace SQLCrypt
                 return;
             }
             laBuscarTablas.Text = "Buscar Procs.";
-            Load_lstObjetos("P");
+            PanelTipoObjetos = "P";
+            this.SetMenuProcedimientos();
+            Load_lstObjetos(PanelTipoObjetos);
         }
 
 
@@ -1351,6 +1446,8 @@ namespace SQLCrypt
                 SqlObtenido += ob.GetText();
             }
 
+            txtSql.SelectionStart = 0;
+            txtSql.SelectionLength = 0;
             txtSql.SelectionLength = 0;
             txtSql.SelectedText = SqlObtenido;
 
