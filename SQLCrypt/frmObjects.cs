@@ -406,25 +406,37 @@ namespace SQLCrypt
         private void btFind_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txFind.Text))
-            {
-                txFind.Select();
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(txFind.Text))
                 return;
 
             int pos = rchTxt.SelectionStart + rchTxt.SelectionLength;
+            if (pos >= rchTxt.TextLength)
+                pos = 0;
 
-            pos = rchTxt.Find(txFind.Text, pos, rchTxt.TextLength, RichTextBoxFinds.None);
+            try
+            {
+                pos = rchTxt.Text.IndexOf(txFind.Text, pos, rchTxt.TextLength - pos, StringComparison.InvariantCultureIgnoreCase);
+            }
+            catch
+            {
+                return;
+            }
+
+            //pos = txtSql.Find(toolStripTextBox1.Text, pos, txtSql.TextLength, RichTextBoxFinds.None);
             if (pos == -1)
             {
                 rchTxt.SelectionStart = 0;
                 rchTxt.SelectionLength = 0;
             }
+            else
+            {
+                rchTxt.SelectionStart = pos;
+                rchTxt.SelectionLength = txFind.Text.Length;
+            }
+
             rchTxt.Refresh();
             Application.DoEvents();
             rchTxt.Select();
+
         }
 
 

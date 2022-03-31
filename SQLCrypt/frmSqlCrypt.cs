@@ -1016,6 +1016,9 @@ namespace SQLCrypt
 
         private void txBuscaEnLista_KeyDown(object sender, KeyEventArgs e)
         {
+            if (txBuscaEnLista.Text.Trim() == "")
+                return;
+
             if (e.KeyData == Keys.Enter)
             {
                 e.Handled = false;
@@ -1023,7 +1026,7 @@ namespace SQLCrypt
                 //Busco en la lista
                 for (int x = 0; x < lstObjetos.Items.Count; ++x)
                 {
-                    if (txBuscaEnLista.Text.Trim() != "" && lstObjetos.Items[x].ToString().ToUpper().Contains(txBuscaEnLista.Text.ToUpper()))
+                    if (lstObjetos.Items[x].ToString().ToUpper().Contains(txBuscaEnLista.Text.ToUpper()))
                         lstObjetos.SelectedIndices.Add(x);
                     else
                     {
