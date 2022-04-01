@@ -54,15 +54,12 @@
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ayudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.acercaDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.buscarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
-            this.reemplazarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripTextBox();
             this.buscarEnBaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databasesToolStripMenuItem = new System.Windows.Forms.ToolStripComboBox();
             this.chkToText = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
             this.tssLaFile = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssLaPath = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssLaPos = new System.Windows.Forms.ToolStripStatusLabel();
@@ -77,6 +74,10 @@
             this.btRefresh = new System.Windows.Forms.Button();
             this.lstObjetos = new System.Windows.Forms.ListBox();
             this.txtSql = new System.Windows.Forms.RichTextBox();
+            this.ejecutarArchivosEnBatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
+            this.buscarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reemplazarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.txTextLimit = new System.Windows.Forms.MyTextBox();
             this.label3 = new System.Windows.Forms.MyLabel();
             this.menuStrip1.SuspendLayout();
@@ -119,6 +120,7 @@
             this.verPanelDeObjetosToolStripMenuItem,
             this.buscaPaginaSQLToolStripMenuItem,
             this.analizarDeadlocksToolStripMenuItem,
+            this.ejecutarArchivosEnBatchToolStripMenuItem,
             this.toolStripSeparator1,
             this.crearArchivoDeConexiónToolStripMenuItem,
             this.abrirToolStripMenuItem,
@@ -307,31 +309,11 @@
             this.acercaDeToolStripMenuItem.Text = "Acerca de...";
             this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.acercaDeToolStripMenuItem_Click);
             // 
-            // buscarToolStripMenuItem
-            // 
-            this.buscarToolStripMenuItem.Image = global::SQLCrypt.Properties.Resources.Binoculr_x16;
-            this.buscarToolStripMenuItem.Name = "buscarToolStripMenuItem";
-            this.buscarToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.buscarToolStripMenuItem.Size = new System.Drawing.Size(70, 23);
-            this.buscarToolStripMenuItem.Text = "Buscar";
-            this.buscarToolStripMenuItem.ToolTipText = "F3";
-            this.buscarToolStripMenuItem.Click += new System.EventHandler(this.buscarToolStripMenuItem_Click);
-            // 
             // toolStripTextBox1
             // 
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(120, 23);
             this.toolStripTextBox1.ToolTipText = "Cadena a Buscar";
-            // 
-            // reemplazarToolStripMenuItem
-            // 
-            this.reemplazarToolStripMenuItem.Image = global::SQLCrypt.Properties.Resources._0RecycleRed;
-            this.reemplazarToolStripMenuItem.Name = "reemplazarToolStripMenuItem";
-            this.reemplazarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F3)));
-            this.reemplazarToolStripMenuItem.Size = new System.Drawing.Size(96, 23);
-            this.reemplazarToolStripMenuItem.Text = "Reemplazar";
-            this.reemplazarToolStripMenuItem.ToolTipText = "Ctrl + F3";
-            this.reemplazarToolStripMenuItem.Click += new System.EventHandler(this.reemplazarToolStripMenuItem_Click);
             // 
             // replaceToolStripMenuItem
             // 
@@ -384,16 +366,6 @@
             this.statusStrip1.Size = new System.Drawing.Size(1139, 22);
             this.statusStrip1.TabIndex = 14;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripSplitButton1
-            // 
-            this.toolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton1.Image")));
-            this.toolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripSplitButton1.Name = "toolStripSplitButton1";
-            this.toolStripSplitButton1.Size = new System.Drawing.Size(32, 20);
-            this.toolStripSplitButton1.Text = "toolStripSplitButton1";
-            this.toolStripSplitButton1.ButtonClick += new System.EventHandler(this.toolStripSplitButton1_ButtonClick);
             // 
             // tssLaFile
             // 
@@ -552,6 +524,43 @@
             this.txtSql.TextChanged += new System.EventHandler(this.txtSql_TextChanged);
             this.txtSql.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSql_KeyDown);
             // 
+            // ejecutarArchivosEnBatchToolStripMenuItem
+            // 
+            this.ejecutarArchivosEnBatchToolStripMenuItem.Name = "ejecutarArchivosEnBatchToolStripMenuItem";
+            this.ejecutarArchivosEnBatchToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
+            this.ejecutarArchivosEnBatchToolStripMenuItem.Text = "Ejecutar Archivos en Batch";
+            this.ejecutarArchivosEnBatchToolStripMenuItem.Click += new System.EventHandler(this.ejecutarArchivosEnBatchToolStripMenuItem_Click);
+            // 
+            // toolStripSplitButton1
+            // 
+            this.toolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton1.Image")));
+            this.toolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripSplitButton1.Name = "toolStripSplitButton1";
+            this.toolStripSplitButton1.Size = new System.Drawing.Size(32, 20);
+            this.toolStripSplitButton1.Text = "toolStripSplitButton1";
+            this.toolStripSplitButton1.ButtonClick += new System.EventHandler(this.toolStripSplitButton1_ButtonClick);
+            // 
+            // buscarToolStripMenuItem
+            // 
+            this.buscarToolStripMenuItem.Image = global::SQLCrypt.Properties.Resources.Binoculr_x16;
+            this.buscarToolStripMenuItem.Name = "buscarToolStripMenuItem";
+            this.buscarToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.buscarToolStripMenuItem.Size = new System.Drawing.Size(70, 23);
+            this.buscarToolStripMenuItem.Text = "Buscar";
+            this.buscarToolStripMenuItem.ToolTipText = "F3";
+            this.buscarToolStripMenuItem.Click += new System.EventHandler(this.buscarToolStripMenuItem_Click);
+            // 
+            // reemplazarToolStripMenuItem
+            // 
+            this.reemplazarToolStripMenuItem.Image = global::SQLCrypt.Properties.Resources._0RecycleRed;
+            this.reemplazarToolStripMenuItem.Name = "reemplazarToolStripMenuItem";
+            this.reemplazarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F3)));
+            this.reemplazarToolStripMenuItem.Size = new System.Drawing.Size(96, 23);
+            this.reemplazarToolStripMenuItem.Text = "Reemplazar";
+            this.reemplazarToolStripMenuItem.ToolTipText = "Ctrl + F3";
+            this.reemplazarToolStripMenuItem.Click += new System.EventHandler(this.reemplazarToolStripMenuItem_Click);
+            // 
             // txTextLimit
             // 
             this.txTextLimit.ini_Left = 0;
@@ -646,7 +655,6 @@
         private System.Windows.Forms.ToolStripMenuItem IndexacionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem salidaATextoGrillaToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitC;
-        private System.Windows.Forms.RichTextBox txtSql;
         private System.Windows.Forms.ListBox lstObjetos;
         private System.Windows.Forms.ListBox lsColumnas;
         private System.Windows.Forms.Button btRefresh;
@@ -658,6 +666,8 @@
         private System.Windows.Forms.Button btProcs;
         private System.Windows.Forms.ToolStripMenuItem analizarDeadlocksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem buscaPaginaSQLToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ejecutarArchivosEnBatchToolStripMenuItem;
+        public System.Windows.Forms.RichTextBox txtSql;
     }
 }
 

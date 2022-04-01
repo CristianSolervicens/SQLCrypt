@@ -99,6 +99,12 @@
     <Compile Include="frmDespliegueTxt.Designer.cs">
       <DependentUpon>frmDespliegueTxt.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmExecFiles.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmExecFiles.Designer.cs">
+      <DependentUpon>frmExecFiles.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmIndexes.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -149,6 +155,7 @@
       <DependentUpon>frmSqlCrypt.cs</DependentUpon>
     </Compile>
     <Compile Include="FunctionalClasses\MySql.cs" />
+    <Compile Include="myFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StructureClasses\DBObject.cs" />
@@ -171,6 +178,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmDespliegueTxt.resx">
       <DependentUpon>frmDespliegueTxt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmExecFiles.resx">
+      <DependentUpon>frmExecFiles.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmIndexes.resx">
       <DependentUpon>frmIndexes.cs</DependentUpon>

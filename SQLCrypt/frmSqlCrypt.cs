@@ -235,11 +235,9 @@ namespace SQLCrypt
         private void ejecutarComandoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             int nParam = 0;
-            //string[] sParam = null;
-
             hSql.ErrorClear();
-
             string sSqlCommand = "";
+
             if (txtSql.Text.Trim().ToString() == "")
             {
                 MessageBox.Show(this, "No hay sentencia SQL para ejecutar", "Atención", MessageBoxButtons.OK);
@@ -248,7 +246,7 @@ namespace SQLCrypt
 
             if (hSql.ConnectionStatus == false)
             {
-                MessageBox.Show(this, "Debe conectarse a una Base de Datos usando un 'String de Conección'", "Atención", MessageBoxButtons.OK);
+                MessageBox.Show(this, "Debe estar conectado(a) a una Base de Datos.", "Atención", MessageBoxButtons.OK);
                 return;
             }
 
@@ -1564,5 +1562,21 @@ namespace SQLCrypt
             txtSql.SelectedText = sAux;
 
         }
+
+        private void ejecutarArchivosEnBatchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            hSql.ErrorClear();
+            if (hSql.ConnectionStatus == false)
+            {
+                MessageBox.Show(this, "Debe estar conectado(a) a una Base de Datos.", "Atención", MessageBoxButtons.OK);
+                return;
+            }
+
+            frmExecFiles myForm = new frmExecFiles();
+            myForm.RTEXT_Salida = txtSql;
+            myForm.hSql = hSql;
+            myForm.Show();
+        }
+
     }
 }
