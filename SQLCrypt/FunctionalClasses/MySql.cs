@@ -356,15 +356,12 @@ namespace SQLCrypt.FunctionalClasses
                 Cmd.CommandTimeout = 0;
 
                 try
-                {
+                 {
                     Data = Cmd.ExecuteReader();
                 }
                 catch (System.Data.Odbc.OdbcException e)
                 {
                     sError = "Error: " + e.Message;
-                    //this.CloseDBConn();
-                    //this.bConnected = false;
-                    //Cmd.Dispose();
                     return false;
                 }
                 catch (Exception exw)

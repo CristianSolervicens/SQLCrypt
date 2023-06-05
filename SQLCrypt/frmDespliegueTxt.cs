@@ -99,15 +99,16 @@ namespace SQLCrypt
 
                 if (!hSql.ExecuteSqlData(ComandoSQL))
                 {
-                    this.rtchSalida.Text += hSql.ErrorString;
+                    if (! string.IsNullOrWhiteSpace(hSql.ErrorString) && string.IsNullOrWhiteSpace( hSql.Messages) )
                     this.rtchSalida.Text += "\n\n*** MENSAJES ***\n\n";
+                    this.rtchSalida.Text += hSql.ErrorString;
                     this.rtchSalida.Text += hSql.Messages;
                     return;
                 }
 
                 //this.rtchSalida.Text += string.Format("\n( Q u e r y   {0} )\n\n", query);
-                Salida += string.Format("\n( Q u e r y   {0} )\n\n", query);
-                ++LinSalida;
+                //Salida += string.Format("\n( Q u e r y   {0} )\n\n", query);
+                //++LinSalida;
 
                 if (hSql.ErrorExiste)
                 {
@@ -141,6 +142,7 @@ namespace SQLCrypt
                             //Encabezados Primera Fila
                             if (row == 0)
                             {
+                                Salida += "\n";
                                 string guiones = "";
 
                                 for (int x = 0; x < hSql.Data.FieldCount; ++x)
@@ -200,7 +202,7 @@ namespace SQLCrypt
                         }
 
                         //this.rtchSalida.Text += string.Format("\n( {0} Filas afectadas)\n", row);
-                        Salida += string.Format("\n( {0} Filas afectadas)\n", row);
+                        //Salida += string.Format("\n( {0} Filas afectadas)\n", row);
                         ++LinSalida;
 
                         DisplayMensaje();
@@ -227,7 +229,10 @@ namespace SQLCrypt
 
             this.btCancelar.Enabled = false;
 
-            this.rtchSalida.Text += Salida + "\n\n *** Mensajes *** \n\n" + hSql.Messages;
+            if (!string.IsNullOrEmpty( hSql.Messages) )
+            {
+                this.rtchSalida.Text += Salida + "\n\n *** Mensajes *** \n\n" + hSql.Messages;
+            }
             Salida = "";
             LinSalida = 0;
 
@@ -236,14 +241,12 @@ namespace SQLCrypt
 
         private void DisplayMensaje()
         {
-            if (hSql.Messages != "" && hSql.Messages != null)
+            if (!string.IsNullOrWhiteSpace(hSql.Messages) )
             {
                 this.rtchSalida.Text += "\n\n*** Mensajes ***\n\n";
                 this.rtchSalida.Text += hSql.Messages;
                 hSql.ClearMessages();
             }
-            else
-                this.rtchSalida.Text += "\n\n*** SIN MENSAJES ***\n\n";
         }
 
         private void btFind_Click(object sender, EventArgs e)

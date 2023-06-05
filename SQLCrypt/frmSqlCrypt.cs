@@ -26,13 +26,9 @@ namespace SQLCrypt
 
         private string PanelTipoObjetos = "";
 
-        //Valores para Resize....
-        private int WinMinHeight = 0;
-        private int WinMinWidth = 0;
-        private int txtSqlHeightOrig = 0;
-        private int txtSqlWidthhtOrig = 0;
         private string sTabla;
         private TableDef Table;
+        private int lsColumnasTop = 585;
 
         private MySql hSql;
 
@@ -51,12 +47,6 @@ namespace SQLCrypt
             this.txtSql.DragDrop += new DragEventHandler(this.txtSql_DragDrop);
 
             this.hSql = hSql;
-
-            WinMinHeight = this.Height;
-            WinMinWidth = this.Width;
-
-            txtSqlHeightOrig = txtSql.Height;
-            txtSqlWidthhtOrig = txtSql.Width;
 
             splitC.Panel1Collapsed = true;
             sTabla = string.Empty;
@@ -148,6 +138,7 @@ namespace SQLCrypt
         private void txtSql_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            bool encriptado = false;
 
             if (files.Length > 1)
             {
@@ -155,7 +146,10 @@ namespace SQLCrypt
                 return;
             }
 
-            if (string.Compare(System.IO.Path.GetExtension(files[0]), ".sqc", true) == 0)
+            if (MessageBox.Show("Open as Encrypted File (yes/no)?", "Seleccione", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification) == DialogResult.Yes )
+                encriptado = true;
+
+            if (string.Compare(System.IO.Path.GetExtension(files[0]), ".sqc", true) == 0 || encriptado)
                 OpenCryptoFile(files[0]);
             else
             {
@@ -170,6 +164,10 @@ namespace SQLCrypt
                 cerrarToolStripMenuItem.Enabled = true;
             }
 
+            this.TopMost = true;
+            System.Threading.Thread.Sleep(500);
+            this.TopMost = false;
+            this.BringToFront();
         }
 
 
@@ -502,31 +500,6 @@ namespace SQLCrypt
 
         }
 
-        private void frmSqlCrypt_Resize(object sender, EventArgs e)
-        {
-            if (this.WindowState == FormWindowState.Minimized)
-                return;
-
-            if (this.Height < WinMinHeight)
-            {
-                this.Height = WinMinHeight;
-
-                txtSql.Height = txtSqlHeightOrig;
-                txtSql.Width = txtSqlWidthhtOrig;
-            }
-
-            if (this.Width < WinMinWidth)
-            {
-                this.Width = WinMinWidth;
-                txtSql.Width = txtSqlWidthhtOrig;
-            }
-
-            int diffH = this.Height - WinMinHeight;
-            int diffW = this.Width - WinMinWidth;
-
-            txtSql.Height = txtSqlHeightOrig + diffH;
-            txtSql.Width = txtSqlWidthhtOrig + diffW;
-        }
 
         private void buscarToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -606,7 +579,6 @@ namespace SQLCrypt
         }
 
         
-
 
         private void ConectTSM_Click(object sender, EventArgs e)
         {

@@ -49,10 +49,22 @@ namespace SQLCrypt
             {
                 if (!Program.hSql.Data.HasRows)
                 {
-                    MessageBox.Show("No hay resultados para su consulta\n\n", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    Program.hSql.ErrorClear();
-                    this.Close();
-                    return;
+                    if (Program.hSql.Messages != "")
+                    {
+                        MessageBox.Show(String.Format("No hay resultdos para su consulta\n\n{0}", Program.hSql.Messages),
+                            "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        Program.hSql.ErrorClear();
+                        Program.hSql.ClearMessages();
+                        this.Close();
+                        return;
+                    }
+                    else 
+                    {
+                        MessageBox.Show("No hay resultados para su consulta\n\n", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.hSql.ErrorClear();
+                        this.Close();
+                        return;
+                    }
                 }
             }
             catch
@@ -65,14 +77,7 @@ namespace SQLCrypt
             //Carga de Filas en la Grilla.
             DataTable dt = new DataTable();
             dt.Load(Program.hSql.Data);
-            dataGridView.DataSource = dt;
-            
-            //dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
-            //dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
-            //for (int i = 0; i < dataGridView.ColumnCount; ++i)
-            //{
-            //   dataGridView.Columns[i].Width = dataGridView.Columns[i].Width + 3 + (int)(dataGridView.Columns[i].Width * 0.15);
-            //}
+            dataGridView.DataSource = dt;            
 
             toolStripTextBox1.Text = string.Format("Filas: {0}",  dataGridView.Rows.Count);
 

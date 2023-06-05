@@ -79,6 +79,29 @@ namespace SQLCrypt
             {
                 cbDescripcion.Items.Add(obj.Descripcion);
             }
+
+            if (cbDescripcion.Items.Count == 0)
+            {
+                DisableEntry();
+            }
+        }
+
+        private void DisableEntry()
+        {
+            cbDescripcion.Enabled= false;
+            txServer.Enabled = false;
+            cbBases.Enabled= false;
+            txUser.Enabled= false;
+            txPass.Enabled= false;
+        }
+
+        private void EnableEntry()
+        {
+            cbDescripcion.Enabled = true;
+            txServer.Enabled = true;
+            cbBases.Enabled = true;
+            txUser.Enabled = true;
+            txPass.Enabled = true;
         }
 
 
@@ -240,6 +263,11 @@ namespace SQLCrypt
 
         private void btNew_Click(object sender, EventArgs e)
         {
+            if (cbDescripcion.Enabled == false)
+            {
+                EnableEntry();
+            }
+            
             cbDescripcion.Text = "";
             txServer.Text = "";
             cbBases.Text = "";
