@@ -107,7 +107,7 @@
             this.databasesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1791, 37);
+            this.menuStrip1.Size = new System.Drawing.Size(1797, 37);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -401,7 +401,7 @@
             this.statusStrip1.Location = new System.Drawing.Point(0, 913);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1791, 31);
+            this.statusStrip1.Size = new System.Drawing.Size(1797, 31);
             this.statusStrip1.TabIndex = 14;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -481,8 +481,8 @@
             this.splitC.Panel2.Controls.Add(this.txtSql);
             this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(4);
             this.splitC.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.splitC.Size = new System.Drawing.Size(1791, 876);
-            this.splitC.SplitterDistance = 317;
+            this.splitC.Size = new System.Drawing.Size(1797, 876);
+            this.splitC.SplitterDistance = 318;
             this.splitC.SplitterWidth = 6;
             this.splitC.TabIndex = 15;
             // 
@@ -526,7 +526,7 @@
             this.txBuscaEnLista.Location = new System.Drawing.Point(8, 459);
             this.txBuscaEnLista.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txBuscaEnLista.Name = "txBuscaEnLista";
-            this.txBuscaEnLista.Size = new System.Drawing.Size(305, 26);
+            this.txBuscaEnLista.Size = new System.Drawing.Size(306, 26);
             this.txBuscaEnLista.TabIndex = 26;
             this.txBuscaEnLista.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txBuscaEnLista_KeyDown);
             // 
@@ -548,7 +548,7 @@
             this.panObjetos.Dock = System.Windows.Forms.DockStyle.Top;
             this.panObjetos.Location = new System.Drawing.Point(0, 0);
             this.panObjetos.Name = "panObjetos";
-            this.panObjetos.Size = new System.Drawing.Size(317, 495);
+            this.panObjetos.Size = new System.Drawing.Size(318, 495);
             this.panObjetos.TabIndex = 21;
             // 
             // lstObjetos
@@ -563,9 +563,10 @@
             this.lstObjetos.Name = "lstObjetos";
             this.lstObjetos.ScrollAlwaysVisible = true;
             this.lstObjetos.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstObjetos.Size = new System.Drawing.Size(317, 382);
+            this.lstObjetos.Size = new System.Drawing.Size(318, 382);
             this.lstObjetos.TabIndex = 12;
             this.lstObjetos.SelectedIndexChanged += new System.EventHandler(this.lstObjetos_SelectedIndexChanged);
+            this.lstObjetos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstObjetos_MouseDown);
             // 
             // panColumnas
             // 
@@ -577,7 +578,7 @@
             this.panColumnas.Controls.Add(this.lsColumnas);
             this.panColumnas.Location = new System.Drawing.Point(0, 501);
             this.panColumnas.Name = "panColumnas";
-            this.panColumnas.Size = new System.Drawing.Size(317, 370);
+            this.panColumnas.Size = new System.Drawing.Size(318, 370);
             this.panColumnas.TabIndex = 0;
             // 
             // label1
@@ -604,8 +605,9 @@
             this.lsColumnas.Margin = new System.Windows.Forms.Padding(4);
             this.lsColumnas.Name = "lsColumnas";
             this.lsColumnas.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lsColumnas.Size = new System.Drawing.Size(317, 339);
+            this.lsColumnas.Size = new System.Drawing.Size(318, 339);
             this.lsColumnas.TabIndex = 20;
+            this.lsColumnas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lsColumnas_MouseDown);
             // 
             // txtSql
             // 
@@ -615,7 +617,7 @@
             this.txtSql.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtSql.Name = "txtSql";
             this.txtSql.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtSql.Size = new System.Drawing.Size(1460, 868);
+            this.txtSql.Size = new System.Drawing.Size(1465, 868);
             this.txtSql.TabIndex = 2;
             this.txtSql.Text = "";
             this.txtSql.WordWrap = false;
@@ -651,7 +653,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1791, 944);
+            this.ClientSize = new System.Drawing.Size(1797, 944);
             this.Controls.Add(this.splitC);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.txTextLimit);

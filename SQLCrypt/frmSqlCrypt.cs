@@ -23,7 +23,7 @@ namespace SQLCrypt
         public string WorkPath = "";
         private string Server = "";
         private int TextLimit = 0;
-
+        
         private string PanelTipoObjetos = "";
 
         private string sTabla;
@@ -132,11 +132,21 @@ namespace SQLCrypt
         private void txtSql_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Move;
+            if (e.Data.GetDataPresent(DataFormats.Text)) e.Effect = DragDropEffects.Copy;
         }
 
 
         private void txtSql_DragDrop(object sender, DragEventArgs e)
         {
+
+            if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+                txtSql.SelectionLength = 0;
+                txtSql.SelectedText = (string)e.Data.GetData(DataFormats.Text);
+                txtSql.Focus();
+                return;
+            }
+
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             bool encriptado = false;
 
@@ -146,7 +156,7 @@ namespace SQLCrypt
                 return;
             }
 
-            if (MessageBox.Show("Open as Encrypted File (yes/no)?", "Seleccione", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification) == DialogResult.Yes )
+            if (MessageBox.Show("Open as Encrypted File (yes/no)?", "Seleccione", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification) == DialogResult.Yes)
                 encriptado = true;
 
             if (string.Compare(System.IO.Path.GetExtension(files[0]), ".sqc", true) == 0 || encriptado)
@@ -168,6 +178,7 @@ namespace SQLCrypt
             System.Threading.Thread.Sleep(500);
             this.TopMost = false;
             this.BringToFront();
+            
         }
 
 
@@ -1548,6 +1559,39 @@ namespace SQLCrypt
             myForm.RTEXT_Salida = txtSql;
             myForm.hSql = hSql;
             myForm.Show();
+        }
+
+
+        private void lstObjetos_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                lstObjetos.ContextMenu.Show(this, new Point(e.X, e.Y));
+                return;
+            }
+            
+            if (lstObjetos.SelectedItems.Count > 0)
+            {
+                txtSql.DoDragDrop(lstObjetos.SelectedItem.ToString(), DragDropEffects.Move);
+                lstObjetos_SelectedIndexChanged(sender, e);
+            }
+        }
+
+
+        private void lsColumnas_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                lsColumnas.ContextMenu.Show(this, new Point( panColumnas.Left + e.X, panColumnas.Left + lstObjetos.Height + 80 + e.Y));
+                return;
+            }
+
+            if (lsColumnas.SelectedItems.Count > 0)
+            { 
+                string[] elem = lsColumnas.SelectedItem.ToString().Split(' ');
+                txtSql.DoDragDrop(elem[0], DragDropEffects.Move);
+            }
+            
         }
 
     }
