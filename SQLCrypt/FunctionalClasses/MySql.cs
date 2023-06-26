@@ -883,6 +883,38 @@ namespace SQLCrypt.FunctionalClasses
             }
 
 
+            public List<string> GetDatabases()
+            {
+                List<string> databases = new List<string>();
+                string Comando = "select name from sys.databases order by name";
+                ExecuteSqlData(Comando);
+                if (Data != null)
+                {
+                    while (Data.Read())
+                    {
+                        databases.Add(Data.GetString(0));
+                    }
+                }
+
+                return databases;
+            }
+
+
+            public string GetCurrentDatabase()
+            {
+                string Comando = "SELECT db_name = DB_NAME()";
+                string db_name = "";
+                ExecuteSqlData(Comando);
+                if (Data != null)
+                {
+                    Data.Read();
+                    db_name = Data.GetString(0);
+                }
+                DataClose();
+                return db_name;
+            }
+
+
             /// <summary>
             /// Lee campo String de Base de Datos a String (Reemplaza # por ')
             /// </summary>

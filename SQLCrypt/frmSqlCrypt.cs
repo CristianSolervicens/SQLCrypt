@@ -17,13 +17,13 @@ namespace SQLCrypt
         ToolTip MytoolTip = new ToolTip();
         public string ConnectionFile = "";
 
-        string   CurrentFile = "";
-        bool     IsEncrypted = false;
+        string CurrentFile = "";
+        bool IsEncrypted = false;
 
         public string WorkPath = "";
         private string Server = "";
         private int TextLimit = 0;
-        
+
         private string PanelTipoObjetos = "";
 
         private string sTabla;
@@ -107,7 +107,7 @@ namespace SQLCrypt
             if (string.IsNullOrEmpty(txtSql.SelectedText))
                 return;
 
-            Clipboard.SetText( txtSql.SelectedText);
+            Clipboard.SetText(txtSql.SelectedText);
         }
 
         private void txmPaste(object sender, EventArgs e)
@@ -178,7 +178,7 @@ namespace SQLCrypt
             System.Threading.Thread.Sleep(500);
             this.TopMost = false;
             this.BringToFront();
-            
+
         }
 
 
@@ -218,9 +218,9 @@ namespace SQLCrypt
         //WorkingDir
         private void directorioDeTrabajoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-          FolderBrowserDialog fbd = new FolderBrowserDialog();
-          fbd.SelectedPath = Application.StartupPath;
-          if (fbd.ShowDialog() == DialogResult.OK)
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            fbd.SelectedPath = Application.StartupPath;
+            if (fbd.ShowDialog() == DialogResult.OK)
             {
                 WorkPath = fbd.SelectedPath;
                 tssLaPath.Text = WorkPath;
@@ -262,7 +262,7 @@ namespace SQLCrypt
             if (chkToText.Checked)
             {
                 frmDespliegueTxt frm = new frmDespliegueTxt(hSql);
-                frm.Text = "Resultados : " + databasesToolStripMenuItem.Text;
+                frm.Text = $"Resultados : {databasesToolStripMenuItem.Text}";
                 frm.Show();
 
                 frm.Top = this.Top;
@@ -272,6 +272,8 @@ namespace SQLCrypt
                     frm.ExecuteSQLStatement(txtSql.SelectedText.ToString(), TextLimit);
                 else
                     frm.ExecuteSQLStatement(txtSql.Text.ToString(), TextLimit);
+
+                LoadDatabaseList();
 
                 return;
             }
@@ -324,21 +326,36 @@ namespace SQLCrypt
             {
                 if (hSql.ErrorExiste)
                 {
-                    MessageBox.Show(this, "Error SQL " + hSql.ErrorString, "Atención", MessageBoxButtons.OK);
+                    MessageBox.Show(this, $"Error SQL {hSql.ErrorString}", "Atención", MessageBoxButtons.OK);
                     hSql.ErrorClear();
                     return;
                 }
+
+                //Current DB
+                LoadDatabaseList();
+
                 MessageBox.Show("No hay resultados para su consulta\n\n *** Mensajes ***\n\n" + hSql.Messages);
                 Clipboard.Clear();
                 Clipboard.SetText(hSql.Messages, TextDataFormat.Text);
+
                 return;
             }
+
             frmDespliegue Despliegue = new frmDespliegue();
-            Despliegue.Text = "Resultados : " + databasesToolStripMenuItem.Text;
+            Despliegue.Text = $"Resultados : {databasesToolStripMenuItem.Text}";
             Despliegue.Show();
             Despliegue.Top = this.Top;
             Despliegue.Left = this.Left;
 
+            LoadDatabaseList();
+
+        }
+
+
+        private void SetCurrentDB()
+        {
+            string current_db = hSql.GetCurrentDatabase();
+            databasesToolStripMenuItem.Text = current_db;
         }
 
         //archivoDeConexiónToolStripMenuItem_Click
@@ -370,7 +387,7 @@ namespace SQLCrypt
                 catch
                 {
                     tssLaFile.Text = "";
-                    MessageBox.Show(this, "Error conectándose a Base de Datos \n" + hSql.ErrorString, "No conectado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, $"Error conectándose a Base de Datos \n{hSql.ErrorString}", "No conectado", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     ConnectionFile = "";
                 }
 
@@ -378,7 +395,7 @@ namespace SQLCrypt
                 if (hSql.ConnectionStatus == false)
                 {
                     tssLaFile.Text = "";
-                    MessageBox.Show(this, "Error conectándose a Base de Datos \n" + hSql.ErrorString, "No conectado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, $"Error conectándose a Base de Datos \n{hSql.ErrorString}", "No conectado", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     ConnectionFile = "";
                 }
             }
@@ -470,7 +487,7 @@ namespace SQLCrypt
 
             for (i = 1; ; ++i)
             {
-                fn = txtSql.Find("#" + i.ToString() + "#");
+                fn = txtSql.Find($"#{i.ToString()}#");
                 if (fn <= 0)
                     break;
                 else
@@ -502,7 +519,7 @@ namespace SQLCrypt
             if (hSql.ConnectionStatus == false)
             {
                 tssLaFile.Text = "";
-                MessageBox.Show(this, "Error conectándose a Base de Datos \n" + hSql.ErrorString, "No conectado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, $"Error conectándose a Base de Datos \n{hSql.ErrorString}", "No conectado", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 ConnectionFile = "";
             }
 
@@ -616,42 +633,28 @@ namespace SQLCrypt
                 return;
             }
 
-            hSql.ExecuteSqlData("select name from sys.databases order by name");
-
-            if (hSql.ErrorExiste)
-            {
-                MessageBox.Show(hSql.ErrorString, "Error Obteniendo Bases");
-                hSql.ErrorClear();
-                return;
-            }
-
-            databasesToolStripMenuItem.Items.Clear();
-
-            while (hSql.Data.Read())
-            {
-                databasesToolStripMenuItem.Items.Add(hSql.Data.GetString(0));
-            }
-
-            hSql.ExecuteSqlData("select db_name()");
-            if (hSql.ErrorExiste)
-            {
-                MessageBox.Show(hSql.ErrorString, "Error Obteniendo Bases");
-                hSql.ErrorClear();
-                return;
-            }
-
-            string DBName = string.Empty;
-
-            if (hSql.Data.Read())
-                DBName = hSql.Data.GetString(0);
-
-            databasesToolStripMenuItem.Text = DBName;
+            LoadDatabaseList();
 
             this.Server = frmC.Servidor;
-            tssLaFile.Text = frmC.Servidor + " / " + DBName;
+            tssLaFile.Text = $"{frmC.Servidor}/{databasesToolStripMenuItem.Text}";
 
             Objetos = new DbObjects(hSql);
             Table = new TableDef(hSql);
+        }
+
+
+        private void LoadDatabaseList()
+        {
+            List<string> databases = hSql.GetDatabases();
+            databasesToolStripMenuItem.Items.Clear();
+
+            foreach (string db_name in databases)
+            {
+                databasesToolStripMenuItem.Items.Add(db_name);
+            }
+
+            string DBName = hSql.GetCurrentDatabase();
+            databasesToolStripMenuItem.Text = DBName;
         }
 
 
@@ -813,7 +816,7 @@ namespace SQLCrypt
                 if (hSql.Data == null)
                     if (hSql.ErrorExiste)
                     {
-                        MessageBox.Show(this, "Error SQL " + hSql.ErrorString, "Atención", MessageBoxButtons.OK);
+                        MessageBox.Show(this, $"Error SQL\n{hSql.ErrorString}", "Atención", MessageBoxButtons.OK);
                         hSql.ErrorClear();
                         return;
                     }
