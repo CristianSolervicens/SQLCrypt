@@ -257,7 +257,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_StartDate="2009/1/1" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_StartDate="2009/1/1" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -88,7 +88,7 @@ namespace SQLCrypt
 
             int Count = DBObj.GetCountRows();
 
-            MessageBox.Show(string.Format("La Tabla [{0}].[{1}] tiene {2} Filas.", DBObj.schema_name, DBObj.name, Count), "Filas", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"La Tabla [{DBObj.schema_name}].[{DBObj.name}] tiene {Count} Filas.", "Filas", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -168,7 +168,7 @@ namespace SQLCrypt
                 WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
                 tssLaPath.Text = WorkPath;
 
-                this.Text = "SQLCrypt - " + CurrentFile;
+                this.Text = $"SQLCrypt - {CurrentFile}";
                 txtSql.Text = System.IO.File.ReadAllText(files[0]);
                 grabarToolStripMenuItem.Enabled = true;
                 cerrarToolStripMenuItem.Enabled = true;
@@ -191,7 +191,7 @@ namespace SQLCrypt
 
             txtSql.Text = hSql.DecryptFiletoString(CurrentFile);
 
-            this.Text = "SQLCrypt - " + CurrentFile;
+            this.Text = $"SQLCrypt - {CurrentFile}";
             grabarToolStripMenuItem.Enabled = true;
             cerrarToolStripMenuItem.Enabled = true;
         }
@@ -453,7 +453,7 @@ namespace SQLCrypt
                     CurrentFile = ofd.FileName;
                     IsEncrypted = true;
                     OpenCryptoFile(CurrentFile);
-                    this.Text = "SQLCrypt - " + CurrentFile;
+                    this.Text = $"SQLCrypt - {CurrentFile}";
                     grabarToolStripMenuItem.Enabled = true;  //Grabar Encriptado
                     grabarComoToolStripMenuItem.Enabled = true;
                     WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
@@ -464,7 +464,7 @@ namespace SQLCrypt
                     IsEncrypted = false;
                     txtSql.Text = System.IO.File.ReadAllText(CurrentFile);
                     this.Text = CurrentFile;
-                    this.Text = "SQLCrypt - " + CurrentFile;
+                    this.Text = $"SQLCrypt - {CurrentFile}";
                     grabarToolStripMenuItem.Enabled = true;   //Grabar Encriptado
                     grabarComoToolStripMenuItem.Enabled = true;
                     WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
@@ -597,7 +597,7 @@ namespace SQLCrypt
                 int line = txtSql.GetLineFromCharIndex(txtSql.SelectionStart);
                 int column = txtSql.SelectionStart - txtSql.GetFirstCharIndexFromLine(line);
 
-                tssLaPos.Text = StringComplete(string.Format("Fila: {0}", line), 13) + " " + StringComplete(string.Format("Col: {0}", column), 13);
+                tssLaPos.Text = $"{StringComplete(string.Format("Fila: {0}", line), 13)} {StringComplete(string.Format("Col: {0}", column), 13)}";
 
             }
             catch
@@ -620,6 +620,7 @@ namespace SQLCrypt
                 return;
 
             hSql.ConnectionString = frmC.ConnectionString;
+
 
             hSql.ErrorClear();
             hSql.CloseDBConn();
@@ -681,15 +682,13 @@ namespace SQLCrypt
             if (databasesToolStripMenuItem.SelectedIndex == -1)
                 return;
 
-            hSql.ExecuteSqlData("USE " + databasesToolStripMenuItem.Text);
-
-            if (hSql.ErrorExiste)
+            if (!hSql.SetDatabase(databasesToolStripMenuItem.Text))
             {
                 MessageBox.Show(hSql.ErrorString, "Error Abriendo Base de Datos");
                 return;
             }
 
-            tssLaFile.Text = this.Server + " / " + databasesToolStripMenuItem.Text;
+            tssLaFile.Text = $"{this.Server} / {databasesToolStripMenuItem.Text}";
 
             if (splitC.Panel1Collapsed == false)
                 Load_lstObjetos("U");
@@ -1040,9 +1039,9 @@ namespace SQLCrypt
             cm.MenuItems.Add("Select COUNT(*) FROM ", new EventHandler(ObjectSelectCount));
             cm.MenuItems.Add("Select TOP(10) * FROM ", new EventHandler(ObjectSelectStar));
             cm.MenuItems.Add("Select * FROM ", new EventHandler(ObjectSelectStarAll));
-            cm.MenuItems.Add("Editar Datos", new EventHandler(EditarDatos));
+            cm.MenuItems.Add("Edit Data", new EventHandler(EditarDatos));
             cm.MenuItems.Add("-");
-            cm.MenuItems.Add("Buscar Tablas por Columna", new EventHandler(FindTableByColumnName));
+            cm.MenuItems.Add("Find Table by Column Name", new EventHandler(FindTableByColumnName));
 
             lstObjetos.ContextMenu = cm;
         }
@@ -1213,15 +1212,15 @@ namespace SQLCrypt
 
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
-            sSalida += string.Format("\nSchema    : {0}\n", DBObj.schema_name);
-            sSalida += string.Format("Nombre    : {0}\n", DBObj.name);
-            sSalida += string.Format("Id        : {0}\n", DBObj.object_id);
-            sSalida += string.Format("Type      : {0}\n", DBObj.type);
-            sSalida += string.Format("Type Desc : {0}\n", DBObj.type_desc);
-            sSalida += string.Format("Creado    : {0}\n", DBObj.create_date);
-            sSalida += string.Format("Modificado: {0}\n", DBObj.modify_date);
-            sSalida += string.Format("Schema Id : {0}\n", DBObj.schema_id);
-            sSalida += string.Format("Parrent Id: {0}\n", DBObj.parent_object_id);
+            sSalida += $"\nSchema    : {DBObj.schema_name}\n";
+            sSalida += $"Nombre    : {DBObj.name}\n";
+            sSalida += $"Id        : {DBObj.object_id}\n";
+            sSalida += $"Type      : {DBObj.type}\n";
+            sSalida += $"Type Desc : {DBObj.type_desc}\n";
+            sSalida += $"Creado    : {DBObj.create_date}\n";
+            sSalida += $"Modificado: {DBObj.modify_date}\n";
+            sSalida += $"Schema Id : {DBObj.schema_id}\n";
+            sSalida += $"Parrent Id: {DBObj.parent_object_id}\n";
 
             Clipboard.Clear();
             Clipboard.SetText(sSalida);
@@ -1249,7 +1248,7 @@ namespace SQLCrypt
             if (DBObj.description != "")
                 MytoolTip.SetToolTip(lstObjetos, DBObj.description);
 
-            sTabla = "[" +  DBObj.schema_name + "].[" + DBObj.name + "]" ;
+            sTabla = $"[{DBObj.schema_name}].[{DBObj.name}]";
             
             lsColumnas.Items.Clear();
             Table.Name = sTabla;
@@ -1271,7 +1270,7 @@ namespace SQLCrypt
                     case "TIME":
                     case "FLOAT":
                     case "DATETIME2":
-                        sColumna = string.Format("{0} {1} {2}", t.Name, t.Type, t.Nullable ? "    NULL" : "NOT NULL");
+                        sColumna = $"{t.Name} {t.Type} {(t.Nullable ? "    NULL" : "NOT NULL")}";
                         break;
 
                     case "XML":
@@ -1280,7 +1279,7 @@ namespace SQLCrypt
                     case "NTEXT":
                     case "UNIQUEIDENTIFIER":
                     case "SQL_VARIANT":
-                        sColumna = string.Format("{0} {1} {2}", t.Name, t.Type, t.Nullable ? "    NULL" : "NOT NULL");
+                        sColumna = $"{t.Name} {t.Type} {(t.Nullable ? "    NULL" : "NOT NULL")}";
                         break;
 
                     case "CHAR":
@@ -1288,20 +1287,20 @@ namespace SQLCrypt
                     case "NVARCHAR":
                     case "BINARY":
                     case "VARBINARY":
-                        DataType = string.Format("{0}({1})", t.Type, t.Length == -1 ? "MAX" : Convert.ToString( t.Length) );
-                        sColumna = string.Format("{0} {1} {2}", t.Name, DataType, t.Nullable ? "    NULL" : "NOT NULL");
+                        DataType = $"{t.Type}({(t.Length == -1 ? "MAX" : Convert.ToString(t.Length))})";
+                        sColumna = $"{t.Name} {DataType} {(t.Nullable ? "    NULL" : "NOT NULL")}";
                         break;
 
                     case "NUMERIC":
                     case "DECIMAL":
-                        DataType = string.Format("{0}({1},{2})", t.Type, t.Prec, t.Scale);
-                        sColumna = string.Format("{0} {1} {2}", t.Name, DataType, t.Nullable ? "    NULL" : "NOT NULL");
+                        DataType = $"{t.Type}({t.Prec},{t.Scale})";
+                        sColumna = $"{t.Name} {DataType} {(t.Nullable ? "    NULL" : "NOT NULL")}";
                         break;
 
                     default:
                         try
                         {
-                            DataType = string.Format("{0}({1},{2},{3})", t.Type, t.Length == -1 ? "MAX" : Convert.ToString(t.Length), t.Prec, t.Scale);
+                            DataType = $"{t.Type}({(t.Length == -1 ? "MAX" : Convert.ToString(t.Length))},{t.Prec},{t.Scale})";
                         }
                         catch
                         {
@@ -1471,7 +1470,7 @@ namespace SQLCrypt
                 if (line.Contains(toBeSearched) )
                 {
                     deadlockCount++;
-                    txtSql.SelectedText = string.Format("\nLínea {0} : {1} : Deadlock encontrado\n", lineCount, deadlockCount);
+                    txtSql.SelectedText = $"\nLínea {lineCount} : {deadlockCount} : Deadlock encontrado\n";
                     refresh = true;
                 }
 
@@ -1486,7 +1485,7 @@ namespace SQLCrypt
                     string Page = StrSplit[2].Trim();
 
                     string sAux = hSql.BuscaPagina(Database, File, Page);
-                    txtSql.SelectedText = string.Format("   Línea {0} PAGE:{1}:{2}:{3} = {4}\n", lineCount, Database, File, Page, sAux);
+                    txtSql.SelectedText = $"   Línea {lineCount} PAGE:{Database}:{File}:{Page} = {sAux}\n";
                     refresh = true;
                 }
 
@@ -1507,7 +1506,7 @@ namespace SQLCrypt
 
                     string sAux = hSql.BuscaObjeto(Database, Object_id);
                     string db_name = hSql.GetDBNameById(Database);
-                    txtSql.SelectedText = string.Format("      Linea {0} Base = {1}  Objeto: {2}\n", lineCount, db_name, sAux);
+                    txtSql.SelectedText = $"      Linea {lineCount} Base = {db_name}  Objeto: {sAux}\n";
                     refresh = true;
                 }
 
@@ -1520,8 +1519,8 @@ namespace SQLCrypt
 
             } //While lectura del archivo
 
-            txtSql.SelectedText = string.Format("\n\nLectura del Archivo finalizada, contiene {0} líneas\n", lineCount);
-            txtSql.SelectedText = string.Format("Deadlocks encontrados {0}\n", deadlockCount);
+            txtSql.SelectedText = $"\n\nLectura del Archivo finalizada, contiene {lineCount} líneas\n";
+            txtSql.SelectedText = $"Deadlocks encontrados {deadlockCount}\n";
 
             file.Close();
             

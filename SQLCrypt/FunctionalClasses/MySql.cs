@@ -232,7 +232,7 @@ namespace SQLCrypt.FunctionalClasses
                             sConnectionStr = DecryptFiletoString(sConnectionFile);
                         else
                         {
-                            sError = "El Archivo ce conexión indicado no existe\n  [" + sConnectionFile + "]";
+                            sError = $"El Archivo de conexión indicado no existe\n  [{sConnectionFile}]";
                             return 0;
                         }
 
@@ -249,7 +249,7 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (System.Data.Odbc.OdbcException e)
                 {
-                    sError = "Error: " + e.Message;
+                    sError = $"Error: {e.Message}";
                     bConnected = false;
                     return 0;
                 }
@@ -268,7 +268,7 @@ namespace SQLCrypt.FunctionalClasses
                 catch (SqlException e)
                 {
                     bConnected = false;
-                    sError = "Error: " + e.Message;
+                    sError = $"Error: {e.Message}";
                     return 0;
                 }
                 catch
@@ -311,6 +311,7 @@ namespace SQLCrypt.FunctionalClasses
             {
                 int raf;
 
+                DataClose();
                 ErrorClear();
                 ClearMessages();
 
@@ -325,12 +326,12 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (SqlException e)
                 {
-                    sError = "Error: " + e.Message;
+                    sError = $"Error: {e.Message}";
                     return -1;
                 }
                 catch (Exception e)
                 {
-                    sError = "Error: " + e.Message;
+                    sError = $"Error: {e.Message}";
                     return -1;
                 }
 
@@ -361,12 +362,12 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (System.Data.Odbc.OdbcException e)
                 {
-                    sError = "Error: " + e.Message;
+                    sError = $"Error: {e.Message}";
                     return false;
                 }
                 catch (Exception exw)
                 {
-                    sError = "Error: " + exw.Message;
+                    sError = $"Error: {exw.Message}";
                     this.CloseDBConn();
                     this.bConnected = false;
                     Cmd.Dispose();
@@ -379,7 +380,7 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (System.Data.Odbc.OdbcException e)
                 {
-                    sError = "Error: " + e.Message;
+                    sError = $"Error: {e.Message}";
                     Cmd.Dispose();
                     return false;
                 }
@@ -400,7 +401,7 @@ namespace SQLCrypt.FunctionalClasses
             {
                 string salida = "";
                 string sComando = "DBCC TRACEON (3604);\n";
-                sComando += "DBCC PAGE (" + DataBaseId + "," + FileId + "," + PageId + ", 0);\n";
+                sComando += $"DBCC PAGE ({DataBaseId}, {FileId}, {PageId}, 0);\n";
                 sComando += "DBCC TRACEOFF (3604);";
 
                 int IndexId = -1;
@@ -437,8 +438,7 @@ namespace SQLCrypt.FunctionalClasses
                 if (Object_id != -1)
                 {
                     string DB_Name = GetDBNameById(DataBaseId);
-
-                    sComando = "USE " + DB_Name + "; SELECT '" + DB_Name + ".' + ISNULL(OBJECT_SCHEMA_NAME(" + Object_id.ToString() + "), '') + '.'+ ISNULL(OBJECT_NAME(" + Object_id.ToString() + "), '')";
+                    sComando = $"USE {DB_Name}; SELECT '{DB_Name}.' + ISNULL(OBJECT_SCHEMA_NAME({Object_id}), '') + '.'+ ISNULL(OBJECT_NAME({Object_id}), '')";
                     ExecuteSqlData(sComando);
 
                     if (ErrorExiste)
@@ -459,7 +459,7 @@ namespace SQLCrypt.FunctionalClasses
 
                 if (IndexId != -1)
                 {
-                    sComando = "SELECT name FROM sys.indexes WHERE Object_id = " + Object_id.ToString() + " And Index_id = " + IndexId.ToString();
+                    sComando = $"SELECT name FROM sys.indexes WHERE Object_id = {Object_id} And Index_id = {IndexId}";
                     ExecuteSqlData(sComando);
 
                     if (ErrorExiste)
@@ -468,7 +468,7 @@ namespace SQLCrypt.FunctionalClasses
                     if (Data != null)
                     {
                         Data.Read();
-                        salida += " Indice: " + Data.GetString(0);
+                        salida += $" Indice: {Data.GetString(0)}";
                     }
                     else
                         return "Objeto no encontrado";
@@ -486,7 +486,7 @@ namespace SQLCrypt.FunctionalClasses
             /// <returns></returns>
             public string GetDBNameById( string DB_Id)
             {
-                string sComando = "SELECT db_name( " + DB_Id + ")";
+                string sComando = $"SELECT db_name({DB_Id})";
                 ExecuteSqlData(sComando);
                 if (ErrorExiste)
                     return "";
@@ -511,7 +511,8 @@ namespace SQLCrypt.FunctionalClasses
             {
 
                 string DB_Name = GetDBNameById(DataBaseId);
-                string sComando = "USE " + DB_Name + "; SELECT '" + DB_Name + ".' + ISNULL(OBJECT_SCHEMA_NAME(" + Object_id.ToString() + "), '') + '.'+ ISNULL(OBJECT_NAME(" + Object_id.ToString() + "), '')";
+                string sComando = $"USE {DB_Name};";
+                sComando +=  $"SELECT '{DB_Name}.' + ISNULL(OBJECT_SCHEMA_NAME({Object_id}), '') + '.'+ ISNULL(OBJECT_NAME({Object_id}), '')";
                 ExecuteSqlData(sComando);
 
                 if (ErrorExiste)
@@ -558,7 +559,7 @@ namespace SQLCrypt.FunctionalClasses
                     for (int x = 0; x < Params.Length; ++x)
                     {
                         y = x + 1;
-                        sOldPar = "#" + y.ToString() + "#";
+                        sOldPar = $"#{y.ToString()}#";
                         sComando = sComando.Replace(sOldPar, Params[x]);
                     }
                 }
@@ -574,7 +575,7 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (SqlException e)
                 {
-                    sError = "Error: " + e.Message;
+                    sError = $"Error: {e.Message}";
                     return -1;
                 }
 
@@ -623,7 +624,7 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (SqlException e)
                 {
-                    sError = "Error: " + e.Message;
+                    sError = $"Error: {e.Message}";
                     return false;
                 }
 
@@ -738,33 +739,33 @@ namespace SQLCrypt.FunctionalClasses
 
                 sAux = dtValor.Year.ToString();
 
-                sAux2 = "0" + dtValor.Month.ToString();
+                sAux2 = $"0{dtValor.Month}";
                 sAux += sAux2.Substring(sAux2.Length - 2);
 
-                sAux2 = "0" + dtValor.Day.ToString();
+                sAux2 = $"0{dtValor.Day}";
                 sAux += sAux2.Substring(sAux2.Length - 2);
 
                 if (Formato == SP_DateFormat.yyyyMMddHHmmss || Formato == SP_DateFormat.yyyyMMddHHmmssms)
                 {
 
-                    sAux2 = "0" + dtValor.Hour.ToString();
-                    sAux += " " + sAux2.Substring(sAux2.Length - 2);
+                    sAux2 = $"0{dtValor.Hour}";
+                    sAux += $" {sAux2.Substring(sAux2.Length - 2)}";
 
-                    sAux2 = "0" + dtValor.Minute.ToString();
-                    sAux += ":" + sAux2.Substring(sAux2.Length - 2);
+                    sAux2 = $"0{dtValor.Minute}";
+                    sAux += $":{sAux2.Substring(sAux2.Length - 2)}";
 
-                    sAux2 = "0" + dtValor.Second.ToString();
-                    sAux += ":" + sAux2.Substring(sAux2.Length - 2);
+                    sAux2 = $"0{dtValor.Second}";
+                    sAux += $":{sAux2.Substring(sAux2.Length - 2)}";
 
                     if (Formato == SP_DateFormat.yyyyMMddHHmmssms)
                     {
-                        sAux2 = "00" + dtValor.Millisecond.ToString();
-                        sAux += ":" + sAux2.Substring(sAux2.Length - 2);
+                        sAux2 = $"00{dtValor.Millisecond}";
+                        sAux += $":{sAux2.Substring(sAux2.Length - 2)}";
                     }
 
                 }
 
-                sAux = "'" + sAux + "'";
+                sAux = $"'{sAux}'";
                 return sAux;
             }
 
@@ -782,7 +783,7 @@ namespace SQLCrypt.FunctionalClasses
                     return "NULL";
 
                 sAux = sValor.TrimEnd();
-                sAux = "'" + sAux.Replace("'", "#") + "'";
+                sAux = $"'{sAux.Replace("'", "#")}'";
 
                 return sAux;
             }
@@ -882,6 +883,15 @@ namespace SQLCrypt.FunctionalClasses
 
             }
 
+            public bool SetDatabase(string Database)
+            {
+                string sComando = $"USE [{Database}]";
+                ExecuteSql(sComando);
+                if (this.ErrorExiste)
+                    return false;
+                return true;
+            }
+
 
             public List<string> GetDatabases()
             {
@@ -944,9 +954,7 @@ namespace SQLCrypt.FunctionalClasses
 
                 try
                 {
-                    string ComandoSQL = "UPDATE " + Tabla +
-                                      "   SET " + FieldName + " = ? " +
-                                      "WHERE " + WhereConditions;
+                    string ComandoSQL = $"UPDATE {Tabla} SET {FieldName} = ? WHERE {WhereConditions}";
                     SqlCommand command = new SqlCommand(ComandoSQL);
                     SqlParameterCollection parameters = command.Parameters;
                     parameters.Add(FieldName, SqlDbType.Image);
@@ -956,7 +964,7 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (SqlException e)
                 {
-                    this.sError = "Error grabando BLOB\n" + e.ErrorCode + "-" + e.Message;
+                    this.sError = $"Error grabando BLOB\n{e.ErrorCode}-{e.Message}";
                     return false;
                 }
 
@@ -976,9 +984,7 @@ namespace SQLCrypt.FunctionalClasses
             {
                 try
                 {
-                    string ComandoSQL = "UPDATE " + Tabla +
-                                      "   SET " + FieldName + " = ? " +
-                                      "WHERE " + WhereConditions;
+                    string ComandoSQL = $"UPDATE {Tabla} SET {FieldName} = ? WHERE {WhereConditions}";
                     SqlCommand command = new SqlCommand(ComandoSQL);
                     SqlParameterCollection parameters = command.Parameters;
                     parameters.Add(FieldName, SqlDbType.Image);
@@ -988,7 +994,7 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (SqlException e)
                 {
-                    this.sError = "Error grabando BLOB\n" + e.ErrorCode + "-" + e.Message;
+                    this.sError = $"Error grabando BLOB\n{e.ErrorCode}-{e.Message}";
                     return false;
                 }
 
@@ -1007,9 +1013,7 @@ namespace SQLCrypt.FunctionalClasses
             {
                 try
                 {
-                    string ComandoSQL = "UPDATE " + Tabla +
-                                      "   SET " + FieldName + " = NULL " +
-                                      "WHERE " + WhereConditions;
+                    string ComandoSQL = $"UPDATE {Tabla} SET {FieldName} = NULL WHERE {WhereConditions}";
                     SqlCommand command = new SqlCommand(ComandoSQL);
                     SqlParameterCollection parameters = command.Parameters;
                     command.Connection = Conn;
@@ -1017,7 +1021,7 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (SqlException e)
                 {
-                    this.sError = "Error grabando BLOB\n" + e.ErrorCode + "-" + e.Message;
+                    this.sError = $"Error grabando BLOB\n{e.ErrorCode}-{e.Message}";
                     return false;
                 }
 
@@ -1035,9 +1039,7 @@ namespace SQLCrypt.FunctionalClasses
             /// <returns></returns>
             public bool ReadBlob(string File, string Tabla, string FieldName, string WhereConditions)
             {
-                string query = "SELECT " + FieldName +
-                               " FROM " + Tabla +
-                               " WHERE " + WhereConditions;
+                string query = $"SELECT {FieldName} FROM {Tabla} WHERE {WhereConditions}";
 
                 // create ODBC command, execute the query and get the reader for it
                 SqlCommand command = new SqlCommand(query);
@@ -1068,12 +1070,12 @@ namespace SQLCrypt.FunctionalClasses
                     }
 
                     reader.Close();
-                    this.sError = "Error grabando Archivo: \n" + File;
+                    this.sError = $"Error grabando Archivo: \n{File}";
                     return false;
                 }
                 catch (SqlException e)
                 {
-                    this.sError = "Error Leyendo BLOB\n" + e.ErrorCode + "-" + e.Message;
+                    this.sError = $"Error Leyendo BLOB\n{e.ErrorCode}-{e.Message}";
                     return false;
                 }
             }
@@ -1088,9 +1090,7 @@ namespace SQLCrypt.FunctionalClasses
             /// <returns></returns>
             public byte[] ReadBlob(string Tabla, string FieldName, string WhereConditions)
             {
-                string query = "SELECT " + FieldName +
-                               " FROM " + Tabla +
-                               " WHERE " + WhereConditions;
+                string query = $"SELECT {FieldName} FROM {Tabla} WHERE {WhereConditions}";
 
                 // create ODBC command, execute the query and get the reader for it
                 SqlCommand command = new SqlCommand(query);
@@ -1113,7 +1113,7 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (SqlException e)
                 {
-                    this.sError = "Error Leyendo BLOB\n" + e.ErrorCode + "-" + e.Message;
+                    this.sError = $"Error Leyendo BLOB\n{e.ErrorCode}-{e.Message}";
                     return null;
                 }
             }

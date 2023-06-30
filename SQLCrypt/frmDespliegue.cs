@@ -76,11 +76,19 @@ namespace SQLCrypt
 
             //Carga de Filas en la Grilla.
             DataTable dt = new DataTable();
-            dt.Load(Program.hSql.Data);
-            dataGridView.DataSource = dt;            
-
-            toolStripTextBox1.Text = string.Format("Filas: {0}",  dataGridView.Rows.Count);
-
+            try
+            {
+                dt.Load(Program.hSql.Data);
+            }
+            catch
+            {
+                MessageBox.Show("La tabla tiene tipos de datos No soportados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                dataGridView.DataSource = dt;
+                toolStripTextBox1.Text = string.Format("Filas: {0}", dataGridView.Rows.Count);
+            }
         }
 
 

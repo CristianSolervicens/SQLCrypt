@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using SQLCrypt.FunctionalClasses.MySql;
 
+
 namespace SQLCrypt
 {
    static class Program
