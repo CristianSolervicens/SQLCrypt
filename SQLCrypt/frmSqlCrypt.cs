@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using SQLCrypt.StructureClasses;
 using SQLCrypt.FunctionalClasses.MySql;
 
+
 namespace SQLCrypt
 {
     public partial class frmSqlCrypt : Form
@@ -1242,7 +1243,7 @@ namespace SQLCrypt
             DBObject DBObj = new DBObject(hSql);
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
-            if (DBObj.type != "U")
+            if (DBObj.type != "U" && DBObj.type != "V")
                 return;
 
             if (DBObj.description != "")
@@ -1255,6 +1256,10 @@ namespace SQLCrypt
             
             foreach(ColumnDef t in Table.Columns)
             {
+                string sColName = string.Empty;
+                string sColDataType = string.Empty;
+                string sColNullable = string.Empty;
+
                 string sColumna = string.Empty;
                 string DataType = string.Empty;
 
@@ -1270,9 +1275,6 @@ namespace SQLCrypt
                     case "TIME":
                     case "FLOAT":
                     case "DATETIME2":
-                        sColumna = $"{t.Name} {t.Type} {(t.Nullable ? "    NULL" : "NOT NULL")}";
-                        break;
-
                     case "XML":
                     case "MONEY":
                     case "TEXT":
@@ -1280,6 +1282,10 @@ namespace SQLCrypt
                     case "UNIQUEIDENTIFIER":
                     case "SQL_VARIANT":
                         sColumna = $"{t.Name} {t.Type} {(t.Nullable ? "    NULL" : "NOT NULL")}";
+
+                        sColName = t.Name;
+                        sColDataType = $"{t.Type}";
+                        sColNullable = $"{(t.Nullable ? "NULL" : "NOT NULL")}";
                         break;
 
                     case "CHAR":
@@ -1289,33 +1295,53 @@ namespace SQLCrypt
                     case "VARBINARY":
                         DataType = $"{t.Type}({(t.Length == -1 ? "MAX" : Convert.ToString(t.Length))})";
                         sColumna = $"{t.Name} {DataType} {(t.Nullable ? "    NULL" : "NOT NULL")}";
+
+                        sColName = t.Name;
+                        sColDataType = $"{t.Type}({(t.Length == -1 ? "MAX" : Convert.ToString(t.Length))})";
+                        sColNullable = $"{(t.Nullable ? "NULL" : "NOT NULL")}";
                         break;
 
                     case "NUMERIC":
                     case "DECIMAL":
                         DataType = $"{t.Type}({t.Prec},{t.Scale})";
                         sColumna = $"{t.Name} {DataType} {(t.Nullable ? "    NULL" : "NOT NULL")}";
+
+                        sColName = t.Name;
+                        sColDataType = $"{t.Type}({t.Prec},{t.Scale})";
+                        sColNullable = $"{(t.Nullable ? "NULL" : "NOT NULL")}";
                         break;
 
                     default:
                         try
                         {
-                            DataType = $"{t.Type}({(t.Length == -1 ? "MAX" : Convert.ToString(t.Length))},{t.Prec},{t.Scale})";
+                            if (t.Collation != "")
+                                sColDataType = $"{t.Type} * {(t.Length == -1 ? "MAX" : Convert.ToString(t.Length))}";
+                            else
+                                sColDataType = $"{t.Type}({(t.Length == -1 ? "MAX" : Convert.ToString(t.Length))},{t.Prec},{t.Scale})";
                         }
                         catch
                         {
-                            DataType = string.Format("{0}", t.Type);
+                            sColDataType = string.Format("{0}", t.Type);
                         }
 
                         sColumna = string.Format("{0} {1} {2}\n", t.Name, DataType, t.Nullable ? "    NULL" : "NOT NULL", "");
+
+                        sColName = t.Name;
+                        sColNullable = $"{(t.Nullable ? "NULL" : "NOT NULL")}";
+
                         break;
                 }
                 
-                lsColumnas.Items.Add(sColumna);
+                ListViewItem Item = new ListViewItem(sColName);
+                Item.SubItems.Add(sColDataType);
+                Item.SubItems.Add(sColNullable);
+                lsColumnas.Items.Add(Item);
+                lsColumnas.Columns[0].Width = -1;
+                lsColumnas.Columns[1].Width = -1;
+                lsColumnas.Columns[2].Width = -1;
             }
+
         }
-
-
 
 
         private void ObjGetCreateTable(object sender, EventArgs e)
@@ -1590,8 +1616,8 @@ namespace SQLCrypt
 
             if (lsColumnas.SelectedItems.Count > 0)
             { 
-                string[] elem = lsColumnas.SelectedItem.ToString().Split(' ');
-                txtSql.DoDragDrop(elem[0], DragDropEffects.Move);
+                string elem = lsColumnas.SelectedItems[0].Text;
+                txtSql.DoDragDrop(elem, DragDropEffects.Move);
             }
             
         }
