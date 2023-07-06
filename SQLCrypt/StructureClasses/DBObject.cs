@@ -229,6 +229,12 @@ namespace SQLCrypt.StructureClasses
             internal set;
         }
 
+        public string collation_name
+        {
+            get;
+            internal set;
+        }
+
         public virtual string GetText()
         {
             if (this.type == "P" || this.type.Trim() == "V" || this.type == "TR" || this.type == "TF" || this.type == "FN")
@@ -265,6 +271,7 @@ namespace SQLCrypt.StructureClasses
        sc.max_length,
        sc.precision,
        sc.scale
+       collation_name = ISNULL(st.collation_name, '')
 from  sys.columns  sc
  JOIN sys.types    st
    On st.user_type_id = sc.user_type_id
@@ -333,7 +340,10 @@ Order by column_id";
                     default:
                         try
                         {
-                            DataType = string.Format("   {0}({1},{2},{3})", hSql.Data[1], hSql.Data.GetInt32(5) == -1 ? "MAX" : Convert.ToString(hSql.Data.GetInt32(5)), hSql.Data.GetInt32(6), hSql.Data.GetInt32(7));
+                            if (hSql.Data["collation_name"] != "")
+                                DataType = string.Format("   {0}({1})", hSql.Data[1], hSql.Data.GetInt32(5) == -1 ? "MAX" : Convert.ToString(hSql.Data.GetInt32(5)));
+                            else
+                                DataType = string.Format("   {0}({1},{2},{3})", hSql.Data[1], hSql.Data.GetInt32(5) == -1 ? "MAX" : Convert.ToString(hSql.Data.GetInt32(5)), hSql.Data.GetInt32(6), hSql.Data.GetInt32(7));
                         }
                         catch
                         {

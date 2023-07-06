@@ -150,7 +150,10 @@ namespace SQLCrypt
                                 break;
 
                             default:
-                                col.IsString = false;
+                                if (col.Collation != "")
+                                    col.IsString|= true;
+                                else
+                                    col.IsString = false;
                                 break;
                         }
 

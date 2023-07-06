@@ -77,11 +77,13 @@
             this.panObjetos = new System.Windows.Forms.Panel();
             this.lstObjetos = new System.Windows.Forms.ListBox();
             this.panColumnas = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.lsColumnas = new System.Windows.Forms.ListBox();
             this.txtSql = new System.Windows.Forms.RichTextBox();
             this.txTextLimit = new System.Windows.Forms.MyTextBox();
             this.label3 = new System.Windows.Forms.MyLabel();
+            this.lsColumnas = new System.Windows.Forms.ListView();
+            this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colNullable = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).BeginInit();
@@ -107,7 +109,7 @@
             this.databasesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1797, 37);
+            this.menuStrip1.Size = new System.Drawing.Size(1797, 39);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -458,7 +460,7 @@
             // splitC
             // 
             this.splitC.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitC.Location = new System.Drawing.Point(0, 37);
+            this.splitC.Location = new System.Drawing.Point(0, 39);
             this.splitC.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitC.Name = "splitC";
             // 
@@ -481,8 +483,8 @@
             this.splitC.Panel2.Controls.Add(this.txtSql);
             this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(4);
             this.splitC.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.splitC.Size = new System.Drawing.Size(1797, 876);
-            this.splitC.SplitterDistance = 318;
+            this.splitC.Size = new System.Drawing.Size(1797, 874);
+            this.splitC.SplitterDistance = 369;
             this.splitC.SplitterWidth = 6;
             this.splitC.TabIndex = 15;
             // 
@@ -526,7 +528,7 @@
             this.txBuscaEnLista.Location = new System.Drawing.Point(8, 459);
             this.txBuscaEnLista.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txBuscaEnLista.Name = "txBuscaEnLista";
-            this.txBuscaEnLista.Size = new System.Drawing.Size(306, 26);
+            this.txBuscaEnLista.Size = new System.Drawing.Size(357, 26);
             this.txBuscaEnLista.TabIndex = 26;
             this.txBuscaEnLista.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txBuscaEnLista_KeyDown);
             // 
@@ -548,7 +550,7 @@
             this.panObjetos.Dock = System.Windows.Forms.DockStyle.Top;
             this.panObjetos.Location = new System.Drawing.Point(0, 0);
             this.panObjetos.Name = "panObjetos";
-            this.panObjetos.Size = new System.Drawing.Size(318, 495);
+            this.panObjetos.Size = new System.Drawing.Size(369, 495);
             this.panObjetos.TabIndex = 21;
             // 
             // lstObjetos
@@ -563,7 +565,7 @@
             this.lstObjetos.Name = "lstObjetos";
             this.lstObjetos.ScrollAlwaysVisible = true;
             this.lstObjetos.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstObjetos.Size = new System.Drawing.Size(318, 382);
+            this.lstObjetos.Size = new System.Drawing.Size(369, 382);
             this.lstObjetos.TabIndex = 12;
             this.lstObjetos.SelectedIndexChanged += new System.EventHandler(this.lstObjetos_SelectedIndexChanged);
             this.lstObjetos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstObjetos_MouseDown);
@@ -574,40 +576,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panColumnas.BackColor = System.Drawing.SystemColors.Control;
-            this.panColumnas.Controls.Add(this.label1);
             this.panColumnas.Controls.Add(this.lsColumnas);
             this.panColumnas.Location = new System.Drawing.Point(0, 501);
             this.panColumnas.Name = "panColumnas";
-            this.panColumnas.Size = new System.Drawing.Size(318, 370);
+            this.panColumnas.Size = new System.Drawing.Size(369, 368);
             this.panColumnas.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(4, 7);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 20);
-            this.label1.TabIndex = 32;
-            this.label1.Text = "Columnas";
-            // 
-            // lsColumnas
-            // 
-            this.lsColumnas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lsColumnas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lsColumnas.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lsColumnas.FormattingEnabled = true;
-            this.lsColumnas.HorizontalScrollbar = true;
-            this.lsColumnas.IntegralHeight = false;
-            this.lsColumnas.ItemHeight = 20;
-            this.lsColumnas.Location = new System.Drawing.Point(0, 31);
-            this.lsColumnas.Margin = new System.Windows.Forms.Padding(4);
-            this.lsColumnas.Name = "lsColumnas";
-            this.lsColumnas.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lsColumnas.Size = new System.Drawing.Size(318, 339);
-            this.lsColumnas.TabIndex = 20;
-            this.lsColumnas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lsColumnas_MouseDown);
             // 
             // txtSql
             // 
@@ -617,7 +590,7 @@
             this.txtSql.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtSql.Name = "txtSql";
             this.txtSql.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtSql.Size = new System.Drawing.Size(1465, 868);
+            this.txtSql.Size = new System.Drawing.Size(1414, 866);
             this.txtSql.TabIndex = 2;
             this.txtSql.Text = "";
             this.txtSql.WordWrap = false;
@@ -648,6 +621,39 @@
             this.label3.Size = new System.Drawing.Size(76, 20);
             this.label3.TabIndex = 9;
             this.label3.Text = "Text Limit";
+            // 
+            // lsColumnas
+            // 
+            this.lsColumnas.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colName,
+            this.colType,
+            this.colNullable});
+            this.lsColumnas.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lsColumnas.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.lsColumnas.HideSelection = false;
+            this.lsColumnas.Location = new System.Drawing.Point(0, 0);
+            this.lsColumnas.Name = "lsColumnas";
+            this.lsColumnas.ShowGroups = false;
+            this.lsColumnas.Size = new System.Drawing.Size(369, 368);
+            this.lsColumnas.TabIndex = 33;
+            this.lsColumnas.UseCompatibleStateImageBehavior = false;
+            this.lsColumnas.View = System.Windows.Forms.View.Details;
+            this.lsColumnas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lsColumnas_MouseDown);
+            // 
+            // colName
+            // 
+            this.colName.Text = "Columna";
+            this.colName.Width = 150;
+            // 
+            // colType
+            // 
+            this.colType.Text = "Tipo";
+            this.colType.Width = 100;
+            // 
+            // colNullable
+            // 
+            this.colNullable.Text = "Nullable";
+            this.colNullable.Width = 80;
             // 
             // frmSqlCrypt
             // 
@@ -680,7 +686,6 @@
             this.splitC.ResumeLayout(false);
             this.panObjetos.ResumeLayout(false);
             this.panColumnas.ResumeLayout(false);
-            this.panColumnas.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -731,7 +736,6 @@
         private System.Windows.Forms.ToolStripMenuItem ejecutarArchivosEnBatchToolStripMenuItem;
         public System.Windows.Forms.RichTextBox txtSql;
         private System.Windows.Forms.Panel panColumnas;
-        private System.Windows.Forms.ListBox lsColumnas;
         private System.Windows.Forms.Button btProcs;
         private System.Windows.Forms.Label laBuscarTablas;
         private System.Windows.Forms.Label laTablas;
@@ -739,7 +743,10 @@
         private System.Windows.Forms.Button btRefresh;
         private System.Windows.Forms.Panel panObjetos;
         private System.Windows.Forms.ListBox lstObjetos;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ListView lsColumnas;
+        private System.Windows.Forms.ColumnHeader colName;
+        private System.Windows.Forms.ColumnHeader colType;
+        private System.Windows.Forms.ColumnHeader colNullable;
     }
 }
 
