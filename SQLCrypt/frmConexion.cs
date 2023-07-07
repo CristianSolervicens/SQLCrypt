@@ -142,7 +142,7 @@ namespace SQLCrypt
                 this.ConnectionString += ";password=" + txPass.Text;
 
 
-            this.ConnectionString +=   ";Application Name=" + Application.ProductName + post;
+            this.ConnectionString +=   $";Application Name={Application.ProductName}{post};Connection Timeout=10";
         }
 
         private void pbTest_Click(object sender, EventArgs e)

@@ -29,7 +29,11 @@ namespace SQLCrypt
 
         private string sTabla;
         private TableDef Table;
-        private int lsColumnasTop = 585;
+
+        //Cuando se buscan Objetos, para que, en el caso
+        //De estar en modo Tablas no retorne todas sus
+        //ccolumnas cada vez
+        private bool EnBusqueda = false;
 
         private MySql hSql;
 
@@ -1008,6 +1012,7 @@ namespace SQLCrypt
                 e.Handled = false;
 
                 //Busco en la lista
+                EnBusqueda = true;
                 for (int x = 0; x < lstObjetos.Items.Count; ++x)
                 {
                     if (lstObjetos.Items[x].ToString().ToUpper().Contains(txBuscaEnLista.Text.ToUpper()))
@@ -1018,6 +1023,7 @@ namespace SQLCrypt
                             lstObjetos.SelectedIndices.Remove(x);
                     }
                 }
+                EnBusqueda= false;
 
                 if (lstObjetos.SelectedIndices.Count > 0)
                     lstObjetos.TopIndex = lstObjetos.SelectedIndices[0];
@@ -1108,10 +1114,13 @@ namespace SQLCrypt
         {
             Clipboard.Clear();
             string Elementos = "";
-            foreach (var a in lsColumnas.SelectedItems)
+            
+            for(int x = 0; x < lsColumnas.Items.Count; ++x)
             {
-                Elementos += a.ToString() + "\n";
+                if (lsColumnas.Items[x].Selected)
+                    Elementos += $"{lsColumnas.Items[x].Text} {lsColumnas.Items[x].SubItems[1].Text} {lsColumnas.Items[x].SubItems[2].Text}\n";
             }
+
             Clipboard.SetText(Elementos);
         }
 
@@ -1122,12 +1131,13 @@ namespace SQLCrypt
         {
             Clipboard.Clear();
             string Elementos = "";
-            foreach (var a in lsColumnas.SelectedItems)
-            {
-                string[] elem = a.ToString().Split(' ');
 
-                Elementos += elem[0] + "\n";
+            for (int x = 0; x < lsColumnas.Items.Count; ++x)
+            {
+                if (lsColumnas.Items[x].Selected)
+                    Elementos += $"{lsColumnas.Items[x].Text}\n";
             }
+
             Clipboard.SetText(Elementos);
         }
 
@@ -1235,6 +1245,9 @@ namespace SQLCrypt
         {
             //Formatear el Nombre de Tabla a Nombre "Seguro" usando las partes entre paréntesis []
 
+            if (EnBusqueda)
+                return;
+
             MytoolTip.SetToolTip(lstObjetos, "");
 
             if (lstObjetos.SelectedIndex == -1)
@@ -1336,10 +1349,10 @@ namespace SQLCrypt
                 Item.SubItems.Add(sColDataType);
                 Item.SubItems.Add(sColNullable);
                 lsColumnas.Items.Add(Item);
-                lsColumnas.Columns[0].Width = -1;
-                lsColumnas.Columns[1].Width = -1;
-                lsColumnas.Columns[2].Width = -1;
             }
+            lsColumnas.Columns[0].Width = -1;
+            lsColumnas.Columns[1].Width = -1;
+            lsColumnas.Columns[2].Width = -1;
 
         }
 
