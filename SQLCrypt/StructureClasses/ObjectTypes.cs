@@ -32,6 +32,7 @@ namespace SQLCrypt.StructureClasses
             this.Add("S", "SYSTEM_TABLE");
             this.Add( "IT", "INTERNAL_TABLE");
             this.Add( "SQ", "SERVICE_QUEUE");
+            this.Add("SO", "SEQUENCE_OBJECT");
             
         }
 

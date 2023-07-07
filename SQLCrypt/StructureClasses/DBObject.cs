@@ -340,7 +340,7 @@ Order by column_id";
                     default:
                         try
                         {
-                            if (hSql.Data["collation_name"] != "")
+                            if (hSql.Data["collation_name"].ToString() != "")
                                 DataType = string.Format("   {0}({1})", hSql.Data[1], hSql.Data.GetInt32(5) == -1 ? "MAX" : Convert.ToString(hSql.Data.GetInt32(5)));
                             else
                                 DataType = string.Format("   {0}({1},{2},{3})", hSql.Data[1], hSql.Data.GetInt32(5) == -1 ? "MAX" : Convert.ToString(hSql.Data.GetInt32(5)), hSql.Data.GetInt32(6), hSql.Data.GetInt32(7));
@@ -658,37 +658,39 @@ ORDER  BY CAST(OBJECT_SCHEMA_NAME(c.[TableId]) + '.' + c.[TableName] as Varchar(
             string Texto = string.Empty;
             string TipoObjecto = string.Empty;
 
+            string SetOptions = "SET ANSI_NULLS ON;\r\nGO\r\nSET QUOTED_IDENTIFIER ON;\r\nGO\r\n\r\n";
+
             switch (this.type.Trim())
             {
                 case "P":  //Procedimiento
                     TipoObjecto = "Proc";
-                    Drop = string.Format("\nIf OBJECT_ID('{0}.{1}') IS NOT NULL\n   DROP PROC [{0}].[{1}]\nGo\n\n", this.schema_name, this.name);
+                    Drop = string.Format("\r\nIf OBJECT_ID('{0}.{1}') IS NOT NULL\n   DROP PROC [{0}].[{1}]\r\nGo\r\n\r\n", this.schema_name, this.name);
                     break;
 
                 case "V":  //Vista
                     TipoObjecto = "Vista";
-                    Drop += string.Format("\nIf OBJECT_ID('{0}.{1}') IS NOT NULL\n   DROP VIEW [{0}].[{1}]\nGo\n\n", this.schema_name, this.name);
+                    Drop += string.Format("\r\nIf OBJECT_ID('{0}.{1}') IS NOT NULL\n   DROP VIEW [{0}].[{1}]\r\nGo\r\n\r\n", this.schema_name, this.name);
                     break;
 
                 case "TF":  //Funcion Tabular
                 case "FN":  //Funcion Escalar
                     TipoObjecto = "Function";
-                    Drop += string.Format("\nIf OBJECT_ID('{0}.{1}') IS NOT NULL\n   DROP FUNCTION [{0}].[{1}]\nGo\n\n", this.schema_name, this.name);
+                    Drop += string.Format("\r\nIf OBJECT_ID('{0}.{1}') IS NOT NULL\n   DROP FUNCTION [{0}].[{1}]\r\nGo\r\n\r\n", this.schema_name, this.name);
                     break;
 
                 case "TR":  //Trigger
                     TipoObjecto = "Trigger";
-                    Drop = string.Format("\nIf OBJECT_ID('{0}.{1}') IS NOT NULL\n   DROP TRIGGER [{0}].[{1}]\nGo\n\n", this.schema_name, this.name);
+                    Drop = string.Format("\r\nIf OBJECT_ID('{0}.{1}') IS NOT NULL\r\n   DROP TRIGGER [{0}].[{1}]\r\nGo\r\n\r\n", this.schema_name, this.name);
                     break;
 
                 default:
                     break;
             }
 
-            Prefijo += "/*===============================================================================\n";
-            Prefijo += string.Format("  {0}: {1}.{2}\n", TipoObjecto, this.schema_name, this.name);
-            Prefijo += string.Format("  Fecha : {0:dd/MM/yyyy H:mm:ss}\n", DateTime.Now);
-            Prefijo += "  ===============================================================================*/\n";
+            Prefijo += "/*===============================================================================\r\n";
+            Prefijo += string.Format("  {0}: {1}.{2}\r\n", TipoObjecto, this.schema_name, this.name);
+            Prefijo += string.Format("  Fecha : {0:dd/MM/yyyy H:mm:ss}\r\n", DateTime.Now);
+            Prefijo += "  ===============================================================================*/\r\n";
             Prefijo += Drop;
 
             string sCommmand = @"select text
@@ -712,8 +714,9 @@ ORDER  BY CAST(OBJECT_SCHEMA_NAME(c.[TableId]) + '.' + c.[TableName] as Varchar(
                 }
 
                 //Texto = Prefijo + System.Text.RegularExpressions.Regex.Replace(Texto, @"( |\r?\n)\1+", "$1");
-                Texto = System.Text.RegularExpressions.Regex.Replace(Texto, @"[ \t]+\r\n", "\n");
-                Texto = Prefijo + System.Text.RegularExpressions.Regex.Replace(Texto, @"(\r?\n){3,}", "\n\n");
+                Texto = System.Text.RegularExpressions.Regex.Replace(Texto, @"[ \t]+\r\n", "\r\n");
+                Texto = Prefijo + System.Text.RegularExpressions.Regex.Replace(Texto, @"(\r?\n){3,}", "\r\n\r\n");
+                Texto = SetOptions + Texto;
             }
             catch
             {
@@ -721,7 +724,7 @@ ORDER  BY CAST(OBJECT_SCHEMA_NAME(c.[TableId]) + '.' + c.[TableName] as Varchar(
                     return "No hay Texto disponible para este Objeto";
             }
 
-            Texto += "\nGo\n\n\n";
+            Texto += "\r\nGo\r\n\r\n\r\n";
             return Texto;
         }
 

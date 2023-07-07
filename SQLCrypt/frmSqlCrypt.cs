@@ -85,15 +85,15 @@ namespace SQLCrypt
             DBObject DBObj = new DBObject(hSql);
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
-            if (DBObj.type.Trim() != "U")
+            if (DBObj.type != "U" && DBObj.type != "V" && DBObj.type != "S")
             {
-                MessageBox.Show("Esta opción es sólo para Tablas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Esta opción es sólo para Tablas y Vistas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             int Count = DBObj.GetCountRows();
-
-            MessageBox.Show($"La Tabla [{DBObj.schema_name}].[{DBObj.name}] tiene {Count} Filas.", "Filas", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string TipoObjeto = (DBObj.type.Trim() == "U" ? "Tabla": "Vista");
+            MessageBox.Show($"La {TipoObjeto} [{DBObj.schema_name}].[{DBObj.name}] tiene {Count} Filas.", "Filas", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -646,12 +646,24 @@ namespace SQLCrypt
 
             Objetos = new DbObjects(hSql);
             Table = new TableDef(hSql);
+            Load_cbObjetos();
         }
 
 
         private void LoadDatabaseList()
         {
+            string OriginalDB = databasesToolStripMenuItem.Text;
+            string DBName = hSql.GetCurrentDatabase();
+
             List<string> databases = hSql.GetDatabases();
+
+            if (databases.Count == databasesToolStripMenuItem.Items.Count)
+            {
+                if (OriginalDB != DBName)
+                    databasesToolStripMenuItem.Text = DBName;
+                return;
+            }
+
             databasesToolStripMenuItem.Items.Clear();
 
             foreach (string db_name in databases)
@@ -659,8 +671,10 @@ namespace SQLCrypt
                 databasesToolStripMenuItem.Items.Add(db_name);
             }
 
-            string DBName = hSql.GetCurrentDatabase();
             databasesToolStripMenuItem.Text = DBName;
+            if (OriginalDB != DBName && OriginalDB != "")
+                if (cbObjetos.SelectedIndex != -1)
+                    Load_lstObjetos(((ObjectType)cbObjetos.SelectedItem).type);
         }
 
 
@@ -696,7 +710,7 @@ namespace SQLCrypt
             tssLaFile.Text = $"{this.Server} / {databasesToolStripMenuItem.Text}";
 
             if (splitC.Panel1Collapsed == false)
-                Load_lstObjetos("U");
+                cbObjetosSelect("U");
 
         }
 
@@ -712,7 +726,6 @@ namespace SQLCrypt
             {
                 txTextLimit.Text = "0";
             }
-
         }
 
 
@@ -964,39 +977,7 @@ namespace SQLCrypt
                 lstObjetos.Items.Add(n);
             }
 
-            string sObjeto = "";
-            switch (type)
-            {
-                case "P":
-                    sObjeto = "Procs.";
-                    break;
-
-                case "U":
-                    sObjeto = "Tablas";
-                    break;
-
-                default:
-                    sObjeto = "Objetos";
-                    break;
-
-            }
-
-            laTablas.Text = string.Format("{0} {1}", lstObjetos.Items.Count, sObjeto);
-        }
-
-
-
-        private void btRefresh_Click(object sender, EventArgs e)
-        {
-            if (hSql.ConnectionStatus == false)
-            {
-                MessageBox.Show("Debe estar conectado a una Base de Datos", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-            laBuscarTablas.Text = "Buscar Tablas";
-            PanelTipoObjetos = "U";
-            this.SetMenuTablas();
-            Load_lstObjetos(PanelTipoObjetos);
+            laTablas.Text = $"({lstObjetos.Items.Count})";
         }
 
 
@@ -1033,22 +1014,48 @@ namespace SQLCrypt
         }
 
 
+
         private void SetMenuTablas()
         {
             lstObjetos.ContextMenu = null;
             ContextMenu cm = new ContextMenu();
 
             cm.MenuItems.Add("Get More Info", new EventHandler(ObjGetMoreInfo));
-            cm.MenuItems.Add("Get CREATE TABLE", new EventHandler(ObjGetCreateTable));
+            //cm.MenuItems.Add("Get CREATE TABLE", new EventHandler(ObjGetCreateTable));
             cm.MenuItems.Add("Get Text", new EventHandler(ObjGetText));
             cm.MenuItems.Add("Selected To Clipboard", new EventHandler(ObjSelectedToClipboard));
             cm.MenuItems.Add("-");
-            cm.MenuItems.Add("Select COUNT(*) FROM ", new EventHandler(ObjectSelectCount));
-            cm.MenuItems.Add("Select TOP(10) * FROM ", new EventHandler(ObjectSelectStar));
-            cm.MenuItems.Add("Select * FROM ", new EventHandler(ObjectSelectStarAll));
-            cm.MenuItems.Add("Edit Data", new EventHandler(EditarDatos));
+
+            string Type = ((ObjectType)cbObjetos.SelectedItem).type.Trim();
+            if (Type == "U" || Type == "V" || Type == "S")
+            {
+                cm.MenuItems.Add("Select COUNT(*) FROM ", new EventHandler(ObjectSelectCount));
+                cm.MenuItems.Add("Select TOP(10) * FROM ", new EventHandler(ObjectSelectStar));
+                cm.MenuItems.Add("Select * FROM ", new EventHandler(ObjectSelectStarAll));
+            }
+            if (Type == "U")
+                cm.MenuItems.Add("Edit Data", new EventHandler(EditarDatos));
             cm.MenuItems.Add("-");
-            cm.MenuItems.Add("Find Table by Column Name", new EventHandler(FindTableByColumnName));
+            if (Type == "U" || Type == "V" || Type == "S")
+            {
+                string sAux = "";
+                switch (Type)
+                {
+                    case "V":
+                        sAux = "Vista";
+                        break;
+                    case "S":
+                    case "U":
+                        sAux = "Tabla";
+                        break;
+                    default:
+                        sAux = "";
+                        break;
+                }
+                cm.MenuItems.Add($"Find {sAux} by Column Name", new EventHandler(FindTableByColumnName));
+            }
+            if (Type == "V")
+                cm.MenuItems.Add("Find Object by Text", new EventHandler(FindProcedureByText));
 
             lstObjetos.ContextMenu = cm;
         }
@@ -1059,7 +1066,10 @@ namespace SQLCrypt
             {
                 MessageBox.Show("Indique el Texto a buscar en 'Buscar Procs.'");
             }
-            Objetos.FindByColumn("U", txBuscaEnLista.Text);
+
+            string Type = ((ObjectType)cbObjetos.SelectedItem).type.Trim();
+            Objetos.FindByColumn(Type, txBuscaEnLista.Text);
+            
             if (Objetos.Count == 0)
             {
                 MessageBox.Show("No se encontraron coincidencias");
@@ -1081,14 +1091,13 @@ namespace SQLCrypt
             if (splitC.Panel1Collapsed)
             {
                 splitC.Panel1Collapsed = false;
-                laBuscarTablas.Text = "Buscar Tablas";
-                PanelTipoObjetos = "U";
+                laBuscarTablas.Text = "Buscar...";
+                cbObjetosSelect("U");
                 this.SetMenuTablas();
-                Load_lstObjetos(PanelTipoObjetos);
+                Load_lstObjetos(((ObjectType)cbObjetos.SelectedItem).type.Trim());
             }
             else
             {
-                PanelTipoObjetos = "";
                 splitC.Panel1Collapsed = true;
                 lstObjetos.ContextMenu = null;
             }
@@ -1126,7 +1135,6 @@ namespace SQLCrypt
 
 
         
-
         private void colmSelectionNameToClipBoard(object sender, EventArgs e)
         {
             Clipboard.Clear();
@@ -1143,7 +1151,6 @@ namespace SQLCrypt
 
 
 
-
         private void ObjectSelectStar(object sender, EventArgs e)
         {
             if (lstObjetos.SelectedIndex == -1)
@@ -1152,9 +1159,9 @@ namespace SQLCrypt
             DBObject DBObj = new DBObject(hSql);
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
-            if (DBObj.type.Trim() != "U")
+            if (DBObj.type != "U" && DBObj.type != "V" && DBObj.type != "S")
             {
-                MessageBox.Show("Esta opción es sólo para Tablas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Esta opción es sólo para Tablas y Vistas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             } 
 
@@ -1176,9 +1183,9 @@ namespace SQLCrypt
             DBObject DBObj = new DBObject(hSql);
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
-            if (DBObj.type.Trim() != "U")
+            if (DBObj.type != "U" && DBObj.type != "V" && DBObj.type != "S")
             {
-                MessageBox.Show("Esta opción es sólo para Tablas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Esta opción es sólo para Tablas y Vistas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -1256,7 +1263,7 @@ namespace SQLCrypt
             DBObject DBObj = new DBObject(hSql);
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
-            if (DBObj.type != "U" && DBObj.type != "V")
+            if (DBObj.type != "U" && DBObj.type != "V" && DBObj.type != "S")
                 return;
 
             if (DBObj.description != "")
@@ -1357,6 +1364,8 @@ namespace SQLCrypt
         }
 
 
+
+        //Deshabilitado temporalmente
         private void ObjGetCreateTable(object sender, EventArgs e)
         {
             if (lstObjetos.SelectedIndex == -1)
@@ -1385,15 +1394,19 @@ namespace SQLCrypt
 
         private void SetMenuProcedimientos()
         {
+            string Type = ((ObjectType)cbObjetos.SelectedItem).type.Trim();
+            if (Type != "FN" && Type != "P" && Type != "TF" && Type != "TR")
+                return;
+
             lstObjetos.ContextMenu = null;
             ContextMenu cm = new ContextMenu();
 
             cm.MenuItems.Add("Get More Info", new EventHandler(ObjGetMoreInfo));
-            cm.MenuItems.Add("Get CREATE TABLE", new EventHandler(ObjGetCreateTable));
+            //cm.MenuItems.Add("Get CREATE TABLE", new EventHandler(ObjGetCreateTable));
             cm.MenuItems.Add("Get Text", new EventHandler(ObjGetText));
             cm.MenuItems.Add("Selected To Clipboard", new EventHandler(ObjSelectedToClipboard));
             cm.MenuItems.Add("-");
-            cm.MenuItems.Add("Find Proedure by Text", new EventHandler(FindProcedureByText));            
+            cm.MenuItems.Add("Find Object by Text", new EventHandler(FindProcedureByText));
 
             lstObjetos.ContextMenu = cm;
         }
@@ -1403,9 +1416,9 @@ namespace SQLCrypt
         {
             if (txBuscaEnLista.Text == "")
             {
-                MessageBox.Show("Indique el Texto a buscar en 'Buscar Procs.'");
+                MessageBox.Show("Indique el Texto a buscar en 'Buscar...'");
             }
-            Objetos.FindByText("P", txBuscaEnLista.Text);
+            Objetos.FindByText(((ObjectType)cbObjetos.SelectedItem).type, txBuscaEnLista.Text);
             if (Objetos.Count == 0)
             {
                 MessageBox.Show("No se encontraron coincidencias");
@@ -1419,38 +1432,15 @@ namespace SQLCrypt
             lstObjetos.Items.Clear();
             MytoolTip.SetToolTip(lstObjetos, "");
 
-            string TipoObjeto = "Objetos";
-
-            if (Objetos.Count > 0)
-            {
-                if (Objetos[0].type == "U")
-                    TipoObjeto = "Tablas Filtradas";
-                else if (Objetos[0].type == "P")
-                    TipoObjeto = "Procs. Filtrados";
-            }
-
             foreach (var n in Objetos)
             {
                 lstObjetos.Items.Add(n);
             }
 
-            laTablas.Text = string.Format("{0} {1}", lstObjetos.Items.Count, TipoObjeto);
+            laTablas.Text = $"Objetos: {lstObjetos.Items.Count}";
 
         }
 
-
-        private void btProcs_Click(object sender, EventArgs e)
-        {
-            if (hSql.ConnectionStatus == false)
-            {
-                MessageBox.Show("Debe estar conectado a una Base de Datos", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-            laBuscarTablas.Text = "Buscar Procs.";
-            PanelTipoObjetos = "P";
-            this.SetMenuProcedimientos();
-            Load_lstObjetos(PanelTipoObjetos);
-        }
 
 
         private void ObjGetText(object sender, EventArgs e)
@@ -1635,5 +1625,41 @@ namespace SQLCrypt
             
         }
 
+        private void Load_cbObjetos()
+        {
+            cbObjetos.Items.Clear();
+
+            ObjectTypes objt = new ObjectTypes();
+
+            foreach (var n in objt)
+            {
+                cbObjetos.Items.Add(n);
+            }
+        }
+
+        private void cbObjetos_SelectedValueChanged(object sender, EventArgs e)
+        {
+            Load_lstObjetos( ((ObjectType)cbObjetos.SelectedItem).type );
+        }
+
+
+        private void cbObjetosSelect( string Tipo)
+        {
+            string OriginalValue = "";
+            if (cbObjetos.SelectedIndex != -1)
+            {
+                OriginalValue = ((ObjectType)cbObjetos.SelectedItem).type;
+                if (OriginalValue == Tipo)
+                    Load_lstObjetos(Tipo);
+            }
+            ObjectType obj = null;
+            for (int x = 0; x < cbObjetos.Items.Count; ++x)
+            {
+                obj = (ObjectType)cbObjetos.Items[x];
+                if (obj.type == Tipo)
+                    cbObjetos.SelectedIndex= x;
+            }
+        }
+        
     }
 }
