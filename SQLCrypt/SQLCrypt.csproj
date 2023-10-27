@@ -105,6 +105,12 @@
     <Compile Include="frmExecFiles.Designer.cs">
       <DependentUpon>frmExecFiles.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmExtendedProperties.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmExtendedProperties.Designer.cs">
+      <DependentUpon>frmExtendedProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmIndexes.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -182,6 +188,9 @@
     <EmbeddedResource Include="frmExecFiles.resx">
       <DependentUpon>frmExecFiles.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmExtendedProperties.resx">
+      <DependentUpon>frmExtendedProperties.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmIndexes.resx">
       <DependentUpon>frmIndexes.cs</DependentUpon>
     </EmbeddedResource>
@@ -257,7 +266,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_StartDate="2009/1/1" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" />
+      <UserProperties BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_StartDate="2009/1/1" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

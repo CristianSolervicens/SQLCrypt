@@ -81,12 +81,6 @@ namespace SQLCrypt.StructureClasses
             this.Clear();
             this._type = type;
 
-            if (type != "U" && type != "P")
-            {
-                ErrorString = "Sólo se puede consultar por Tablas y Procedimientos";
-                return;
-            }
-
             this.ErrorString = string.Empty;
 
             string sCommand = @"select obj.[name],

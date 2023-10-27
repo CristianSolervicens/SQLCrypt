@@ -55,25 +55,22 @@
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ayudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.acercaDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.buscarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
-            this.reemplazarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.replaceToolStripMenuItem = new System.Windows.Forms.ToolStripTextBox();
             this.buscarEnBaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databasesToolStripMenuItem = new System.Windows.Forms.ToolStripComboBox();
             this.chkToText = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
             this.tssLaFile = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssLaPath = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssLaPos = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssLaStat = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitC = new System.Windows.Forms.SplitContainer();
             this.laBuscarTablas = new System.Windows.Forms.Label();
-            this.laTablas = new System.Windows.Forms.Label();
             this.txBuscaEnLista = new System.Windows.Forms.TextBox();
             this.panObjetos = new System.Windows.Forms.Panel();
             this.cbObjetos = new System.Windows.Forms.ComboBox();
+            this.laTablas = new System.Windows.Forms.Label();
             this.lstObjetos = new System.Windows.Forms.ListBox();
             this.panColumnas = new System.Windows.Forms.Panel();
             this.lsColumnas = new System.Windows.Forms.ListView();
@@ -83,6 +80,10 @@
             this.txtSql = new System.Windows.Forms.RichTextBox();
             this.txTextLimit = new System.Windows.Forms.MyTextBox();
             this.label3 = new System.Windows.Forms.MyLabel();
+            this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
+            this.buscarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.reemplazarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.extendedPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).BeginInit();
@@ -108,7 +109,7 @@
             this.databasesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1728, 39);
+            this.menuStrip1.Size = new System.Drawing.Size(1728, 37);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -128,6 +129,7 @@
             this.buscaPaginaSQLToolStripMenuItem,
             this.analizarDeadlocksToolStripMenuItem,
             this.ejecutarArchivosEnBatchToolStripMenuItem,
+            this.extendedPropertiesToolStripMenuItem,
             this.toolStripSeparator1,
             this.crearArchivoDeConexiónToolStripMenuItem,
             this.abrirToolStripMenuItem,
@@ -323,32 +325,12 @@
             this.acercaDeToolStripMenuItem.Text = "Acerca de...";
             this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.acercaDeToolStripMenuItem_Click);
             // 
-            // buscarToolStripMenuItem
-            // 
-            this.buscarToolStripMenuItem.Image = global::SQLCrypt.Properties.Resources.Binoculr_x16;
-            this.buscarToolStripMenuItem.Name = "buscarToolStripMenuItem";
-            this.buscarToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.buscarToolStripMenuItem.Size = new System.Drawing.Size(103, 33);
-            this.buscarToolStripMenuItem.Text = "Buscar";
-            this.buscarToolStripMenuItem.ToolTipText = "F3";
-            this.buscarToolStripMenuItem.Click += new System.EventHandler(this.buscarToolStripMenuItem_Click);
-            // 
             // toolStripTextBox1
             // 
             this.toolStripTextBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(178, 33);
             this.toolStripTextBox1.ToolTipText = "Cadena a Buscar";
-            // 
-            // reemplazarToolStripMenuItem
-            // 
-            this.reemplazarToolStripMenuItem.Image = global::SQLCrypt.Properties.Resources._0RecycleRed;
-            this.reemplazarToolStripMenuItem.Name = "reemplazarToolStripMenuItem";
-            this.reemplazarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F3)));
-            this.reemplazarToolStripMenuItem.Size = new System.Drawing.Size(143, 33);
-            this.reemplazarToolStripMenuItem.Text = "Reemplazar";
-            this.reemplazarToolStripMenuItem.ToolTipText = "Ctrl + F3";
-            this.reemplazarToolStripMenuItem.Click += new System.EventHandler(this.reemplazarToolStripMenuItem_Click);
             // 
             // replaceToolStripMenuItem
             // 
@@ -405,16 +387,6 @@
             this.statusStrip1.TabIndex = 14;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // toolStripSplitButton1
-            // 
-            this.toolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton1.Image")));
-            this.toolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripSplitButton1.Name = "toolStripSplitButton1";
-            this.toolStripSplitButton1.Size = new System.Drawing.Size(45, 28);
-            this.toolStripSplitButton1.Text = "toolStripSplitButton1";
-            this.toolStripSplitButton1.ButtonClick += new System.EventHandler(this.toolStripSplitButton1_ButtonClick);
-            // 
             // tssLaFile
             // 
             this.tssLaFile.AutoSize = false;
@@ -458,7 +430,7 @@
             // splitC
             // 
             this.splitC.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitC.Location = new System.Drawing.Point(0, 39);
+            this.splitC.Location = new System.Drawing.Point(0, 37);
             this.splitC.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.splitC.Name = "splitC";
             // 
@@ -478,7 +450,7 @@
             this.splitC.Panel2.Controls.Add(this.txtSql);
             this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(4);
             this.splitC.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.splitC.Size = new System.Drawing.Size(1728, 874);
+            this.splitC.Size = new System.Drawing.Size(1728, 876);
             this.splitC.SplitterDistance = 362;
             this.splitC.SplitterWidth = 6;
             this.splitC.TabIndex = 15;
@@ -494,16 +466,6 @@
             this.laBuscarTablas.Size = new System.Drawing.Size(102, 20);
             this.laBuscarTablas.TabIndex = 28;
             this.laBuscarTablas.Text = "Buscar Tabla";
-            // 
-            // laTablas
-            // 
-            this.laTablas.AutoSize = true;
-            this.laTablas.Location = new System.Drawing.Point(281, 398);
-            this.laTablas.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.laTablas.Name = "laTablas";
-            this.laTablas.Size = new System.Drawing.Size(68, 20);
-            this.laTablas.TabIndex = 27;
-            this.laTablas.Text = "laTablas";
             // 
             // txBuscaEnLista
             // 
@@ -537,6 +499,16 @@
             this.cbObjetos.TabIndex = 13;
             this.cbObjetos.SelectedValueChanged += new System.EventHandler(this.cbObjetos_SelectedValueChanged);
             // 
+            // laTablas
+            // 
+            this.laTablas.AutoSize = true;
+            this.laTablas.Location = new System.Drawing.Point(281, 398);
+            this.laTablas.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.laTablas.Name = "laTablas";
+            this.laTablas.Size = new System.Drawing.Size(68, 20);
+            this.laTablas.TabIndex = 27;
+            this.laTablas.Text = "laTablas";
+            // 
             // lstObjetos
             // 
             this.lstObjetos.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
@@ -563,7 +535,7 @@
             this.panColumnas.Controls.Add(this.lsColumnas);
             this.panColumnas.Location = new System.Drawing.Point(0, 501);
             this.panColumnas.Name = "panColumnas";
-            this.panColumnas.Size = new System.Drawing.Size(362, 368);
+            this.panColumnas.Size = new System.Drawing.Size(362, 370);
             this.panColumnas.TabIndex = 0;
             // 
             // lsColumnas
@@ -580,7 +552,7 @@
             this.lsColumnas.Location = new System.Drawing.Point(0, 0);
             this.lsColumnas.Name = "lsColumnas";
             this.lsColumnas.ShowGroups = false;
-            this.lsColumnas.Size = new System.Drawing.Size(362, 368);
+            this.lsColumnas.Size = new System.Drawing.Size(362, 370);
             this.lsColumnas.TabIndex = 33;
             this.lsColumnas.UseCompatibleStateImageBehavior = false;
             this.lsColumnas.View = System.Windows.Forms.View.Details;
@@ -609,7 +581,7 @@
             this.txtSql.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtSql.Name = "txtSql";
             this.txtSql.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtSql.Size = new System.Drawing.Size(1352, 866);
+            this.txtSql.Size = new System.Drawing.Size(1352, 868);
             this.txtSql.TabIndex = 2;
             this.txtSql.Text = "";
             this.txtSql.WordWrap = false;
@@ -640,6 +612,44 @@
             this.label3.Size = new System.Drawing.Size(76, 20);
             this.label3.TabIndex = 9;
             this.label3.Text = "Text Limit";
+            // 
+            // toolStripSplitButton1
+            // 
+            this.toolStripSplitButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.toolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton1.Image")));
+            this.toolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripSplitButton1.Name = "toolStripSplitButton1";
+            this.toolStripSplitButton1.Size = new System.Drawing.Size(45, 28);
+            this.toolStripSplitButton1.Text = "toolStripSplitButton1";
+            this.toolStripSplitButton1.ButtonClick += new System.EventHandler(this.toolStripSplitButton1_ButtonClick);
+            // 
+            // buscarToolStripMenuItem
+            // 
+            this.buscarToolStripMenuItem.Image = global::SQLCrypt.Properties.Resources.Binoculr_x16;
+            this.buscarToolStripMenuItem.Name = "buscarToolStripMenuItem";
+            this.buscarToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.buscarToolStripMenuItem.Size = new System.Drawing.Size(103, 33);
+            this.buscarToolStripMenuItem.Text = "Buscar";
+            this.buscarToolStripMenuItem.ToolTipText = "F3";
+            this.buscarToolStripMenuItem.Click += new System.EventHandler(this.buscarToolStripMenuItem_Click);
+            // 
+            // reemplazarToolStripMenuItem
+            // 
+            this.reemplazarToolStripMenuItem.Image = global::SQLCrypt.Properties.Resources._0RecycleRed;
+            this.reemplazarToolStripMenuItem.Name = "reemplazarToolStripMenuItem";
+            this.reemplazarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F3)));
+            this.reemplazarToolStripMenuItem.Size = new System.Drawing.Size(143, 33);
+            this.reemplazarToolStripMenuItem.Text = "Reemplazar";
+            this.reemplazarToolStripMenuItem.ToolTipText = "Ctrl + F3";
+            this.reemplazarToolStripMenuItem.Click += new System.EventHandler(this.reemplazarToolStripMenuItem_Click);
+            // 
+            // extendedPropertiesToolStripMenuItem
+            // 
+            this.extendedPropertiesToolStripMenuItem.Name = "extendedPropertiesToolStripMenuItem";
+            this.extendedPropertiesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.extendedPropertiesToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.extendedPropertiesToolStripMenuItem.Text = "Extended Properties";
+            this.extendedPropertiesToolStripMenuItem.Click += new System.EventHandler(this.extendedPropertiesToolStripMenuItem_Click);
             // 
             // frmSqlCrypt
             // 
@@ -733,6 +743,7 @@
         private System.Windows.Forms.ColumnHeader colType;
         private System.Windows.Forms.ColumnHeader colNullable;
         private System.Windows.Forms.ComboBox cbObjetos;
+        private System.Windows.Forms.ToolStripMenuItem extendedPropertiesToolStripMenuItem;
     }
 }
 

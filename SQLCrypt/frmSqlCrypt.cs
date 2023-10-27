@@ -136,8 +136,11 @@ namespace SQLCrypt
 
         private void txtSql_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Move;
-            if (e.Data.GetDataPresent(DataFormats.Text)) e.Effect = DragDropEffects.Copy;
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+            else if (e.Data.GetDataPresent(DataFormats.Text)) e.Effect = DragDropEffects.Move;
+            else if (e.Data.GetDataPresent(DataFormats.UnicodeText)) e.Effect = DragDropEffects.Move;
+            else e.Effect = DragDropEffects.None;
+
         }
 
 
@@ -1036,27 +1039,29 @@ namespace SQLCrypt
             if (Type == "U")
                 cm.MenuItems.Add("Edit Data", new EventHandler(EditarDatos));
             cm.MenuItems.Add("-");
-            if (Type == "U" || Type == "V" || Type == "S")
-            {
-                string sAux = "";
-                switch (Type)
-                {
-                    case "V":
-                        sAux = "Vista";
-                        break;
-                    case "S":
-                    case "U":
-                        sAux = "Tabla";
-                        break;
-                    default:
-                        sAux = "";
-                        break;
-                }
-                cm.MenuItems.Add($"Find {sAux} by Column Name", new EventHandler(FindTableByColumnName));
-            }
-            if (Type == "V")
-                cm.MenuItems.Add("Find Object by Text", new EventHandler(FindProcedureByText));
 
+            string sAux = "";
+
+            switch(Type)
+            {
+                case "S":
+                case "U":
+                case "IT": //Internal Table
+                case "V":
+                    sAux = "Table/View";
+                    cm.MenuItems.Add($"Find {sAux} by Column Name", new EventHandler(FindTableByColumnName));
+                    break;
+
+                case "P":
+                case "FN":  //Func escalar
+                case "TF":  //Func Tabular
+                case "TR":  //Trigger
+
+                    cm.MenuItems.Add("Find Object by Text", new EventHandler(FindProcedureByText));
+                    break;
+
+            }
+            
             lstObjetos.ContextMenu = cm;
         }
 
@@ -1640,6 +1645,7 @@ namespace SQLCrypt
         private void cbObjetos_SelectedValueChanged(object sender, EventArgs e)
         {
             Load_lstObjetos( ((ObjectType)cbObjetos.SelectedItem).type );
+            SetMenuTablas();
         }
 
 
@@ -1660,6 +1666,20 @@ namespace SQLCrypt
                     cbObjetos.SelectedIndex= x;
             }
         }
-        
+
+        private void extendedPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!hSql.ConnectionStatus)
+            {
+                MessageBox.Show("Debe establecer una conexión a Base de Datos", "Atención");
+                return;
+            }
+
+            frmExtendedProperties frmC = new frmExtendedProperties(hSql);
+            frmC.Top = this.Top;
+            frmC.Left = this.Left;
+            frmC.Show();
+
+        }
     }
 }
