@@ -30,7 +30,16 @@ namespace SQLCrypt
             this.hSql = hSql;
             InitializeComponent();
 
-            TreeNode RootNode = new TreeNode();
+            ContextMenu txm = new ContextMenu();
+            txm.MenuItems.Add("DEPRECADO", new EventHandler(txtDeprecado));
+            txm.MenuItems.Add("EN DESUSO", new EventHandler(txtEnDesuso));
+            txm.MenuItems.Add("INTERNA", new EventHandler(txtInterna));
+            txm.MenuItems.Add("RESPALDO", new EventHandler(txtRespaldo));
+
+
+            txtObjDescription.ContextMenu = txm;
+
+            TreeNode RootNode = new TreeNode(hSql.GetCurrentDatabase());
             RootNode.Name = hSql.GetCurrentDatabase();
             RootNode.Text = hSql.GetCurrentDatabase();
             dbObjs.Nodes.Add(RootNode);
@@ -58,9 +67,32 @@ namespace SQLCrypt
 
             controller = new change_control(hSql);
             controller.Clear();
+            RootNode.Expand();
+            cbLabel.SelectedIndex = 0;
 
         }
 
+
+        private void txtDeprecado(object sender, EventArgs e)
+        {
+            txtObjDescription.Text = "DEPRECADO";
+        }
+
+
+        private void txtEnDesuso(object sender, EventArgs e)
+        {
+            txtObjDescription.Text = "EN DESUSO";
+        }
+
+        private void txtInterna(object sender, EventArgs e)
+        {
+            txtObjDescription.Text = "INTERNA";
+        }
+
+        private void txtRespaldo(object sender, EventArgs e)
+        {
+            txtObjDescription.Text = "RESPALDO";
+        }
 
         private bool LoadTables()
         {
@@ -144,7 +176,7 @@ namespace SQLCrypt
             while (hSql.Data.Read())
             {
                 string tbl_name = hSql.Data[0].ToString();
-                TreeNode node = new TreeNode();
+                TreeNode node = new TreeNode(tbl_name);
                 node.Name = "FUNCTION";
                 SclrFuncNode.Nodes.Add(node);
             }
@@ -194,7 +226,7 @@ namespace SQLCrypt
             controller.Clear();
 
             string Comando = $@"SELECT Value
-            FROM ::fn_listextendedproperty ('MS_Description', 'Schema', '{Schema}', 'FUNCTION', '{TableName}', Null, Null)";
+            FROM ::fn_listextendedproperty ('{cbLabel.Text}', 'Schema', '{Schema}', 'FUNCTION', '{TableName}', Null, Null)";
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
@@ -232,7 +264,7 @@ namespace SQLCrypt
             controller.Clear();
 
             string Comando = $@"SELECT Value
-            FROM ::fn_listextendedproperty ('MS_Description', 'Schema', '{Schema}', 'PROCEDURE', '{TableName}', Null, Null)";
+            FROM ::fn_listextendedproperty ('{cbLabel.Text}', 'Schema', '{Schema}', 'PROCEDURE', '{TableName}', Null, Null)";
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
@@ -336,7 +368,7 @@ namespace SQLCrypt
                     left join sys.extended_properties as ep 
                         on v.object_id = ep.major_id
                         and col.column_id = ep.minor_id
-                        and ep.name = 'MS_Description'        
+                        and ep.name = '{cbLabel.Text}'        
                         and ep.class_desc = 'OBJECT_OR_COLUMN'
                 where v.schema_id = SCHEMA_ID('{Schema}')
                   And v.name = '{TableName}'
@@ -357,7 +389,7 @@ namespace SQLCrypt
             controller.Clear();
 
             Comando = $@"SELECT Value
-            FROM ::fn_listextendedproperty ('MS_Description', 'Schema', '{Schema}', 'VIEW', '{TableName}', Null, Null)";
+            FROM ::fn_listextendedproperty ('{cbLabel.Text}', 'Schema', '{Schema}', 'VIEW', '{TableName}', Null, Null)";
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
@@ -531,7 +563,7 @@ namespace SQLCrypt
                     left join sys.extended_properties as ep 
                         on tab.object_id = ep.major_id
                        and col.column_id = ep.minor_id
-                       and ep.name = 'MS_Description'
+                       and ep.name = '{cbLabel.Text}'
                        and ep.class_desc = 'OBJECT_OR_COLUMN'
                     left join sys.computed_columns as cc
                         on tab.object_id = cc.object_id
@@ -557,7 +589,7 @@ namespace SQLCrypt
             controller.Clear();
 
             Comando = $@"SELECT Value
-            FROM ::fn_listextendedproperty ('MS_Description', 'Schema', '{Schema}', 'Table', '{TableName}', Null, Null)";
+            FROM ::fn_listextendedproperty ('{cbLabel.Text}', 'Schema', '{Schema}', 'Table', '{TableName}', Null, Null)";
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
@@ -588,6 +620,8 @@ namespace SQLCrypt
             if (node == null)
                 return;
 
+            controller.CommentLabel = cbLabel.Text;
+
             switch (node.Name)
             {
                 case "TABLE":
@@ -617,6 +651,7 @@ namespace SQLCrypt
         {
             controller.WriteInfo(txtObjDescription.Text, dgObject);
         }
+
     }
 
 
@@ -625,8 +660,7 @@ namespace SQLCrypt
     /// </summary>
     public class change_control
     {
-        const string CommentLabel = "MS_Description";
-
+        public string CommentLabel { get; set; }
         public string Schema { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
