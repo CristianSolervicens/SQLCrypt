@@ -96,7 +96,6 @@
             // 
             // menuStrip1
             // 
-            this.menuStrip1.GripMargin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoToolStripMenuItem,
@@ -109,8 +108,8 @@
             this.databasesToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(6, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1754, 37);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
+            this.menuStrip1.Size = new System.Drawing.Size(1159, 30);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -141,14 +140,14 @@
             this.cerrarToolStripMenuItem,
             this.salirToolStripMenuItem});
             this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
-            this.archivoToolStripMenuItem.Size = new System.Drawing.Size(88, 33);
+            this.archivoToolStripMenuItem.Size = new System.Drawing.Size(60, 28);
             this.archivoToolStripMenuItem.Text = "Archivo";
             // 
             // archivoDeConexiónToolStripMenuItem
             // 
             this.archivoDeConexiónToolStripMenuItem.Name = "archivoDeConexiónToolStripMenuItem";
             this.archivoDeConexiónToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.archivoDeConexiónToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.archivoDeConexiónToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.archivoDeConexiónToolStripMenuItem.Text = "Archivo de Conexión";
             this.archivoDeConexiónToolStripMenuItem.Click += new System.EventHandler(this.archivoDeConexiónToolStripMenuItem_Click);
             // 
@@ -156,7 +155,7 @@
             // 
             this.ConectTSM.Name = "ConectTSM";
             this.ConectTSM.ShortcutKeys = System.Windows.Forms.Keys.F7;
-            this.ConectTSM.Size = new System.Drawing.Size(399, 34);
+            this.ConectTSM.Size = new System.Drawing.Size(267, 22);
             this.ConectTSM.Text = "Conectar";
             this.ConectTSM.Click += new System.EventHandler(this.ConectTSM_Click);
             // 
@@ -164,7 +163,7 @@
             // 
             this.directorioDeTrabajoToolStripMenuItem.Name = "directorioDeTrabajoToolStripMenuItem";
             this.directorioDeTrabajoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this.directorioDeTrabajoToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.directorioDeTrabajoToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.directorioDeTrabajoToolStripMenuItem.Text = "Directorio de Trabajo";
             this.directorioDeTrabajoToolStripMenuItem.Click += new System.EventHandler(this.directorioDeTrabajoToolStripMenuItem_Click);
             // 
@@ -172,7 +171,7 @@
             // 
             this.ejecutarComandoToolStripMenuItem.Name = "ejecutarComandoToolStripMenuItem";
             this.ejecutarComandoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-            this.ejecutarComandoToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.ejecutarComandoToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.ejecutarComandoToolStripMenuItem.Text = "Ejecutar Comando/Selección";
             this.ejecutarComandoToolStripMenuItem.Click += new System.EventHandler(this.ejecutarComandoToolStripMenuItem_Click);
             // 
@@ -180,7 +179,7 @@
             // 
             this.ejecutarTodasLasBasesToolStripMenuItem.Name = "ejecutarTodasLasBasesToolStripMenuItem";
             this.ejecutarTodasLasBasesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-            this.ejecutarTodasLasBasesToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.ejecutarTodasLasBasesToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.ejecutarTodasLasBasesToolStripMenuItem.Text = "Ejecutar En Todas Las Bases";
             this.ejecutarTodasLasBasesToolStripMenuItem.Click += new System.EventHandler(this.ejecutarTodasLasBasesToolStripMenuItem_Click);
             // 
@@ -188,7 +187,7 @@
             // 
             this.comandosInmediatosToolStripMenuItem1.Name = "comandosInmediatosToolStripMenuItem1";
             this.comandosInmediatosToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.I)));
-            this.comandosInmediatosToolStripMenuItem1.Size = new System.Drawing.Size(399, 34);
+            this.comandosInmediatosToolStripMenuItem1.Size = new System.Drawing.Size(267, 22);
             this.comandosInmediatosToolStripMenuItem1.Text = "Comandos Inmediatos";
             this.comandosInmediatosToolStripMenuItem1.Click += new System.EventHandler(this.comandosInmediatosToolStripMenuItem1_Click);
             // 
@@ -196,7 +195,7 @@
             // 
             this.encriptarClavesToolStripMenuItem.Name = "encriptarClavesToolStripMenuItem";
             this.encriptarClavesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-            this.encriptarClavesToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.encriptarClavesToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.encriptarClavesToolStripMenuItem.Text = "Encriptar Claves";
             this.encriptarClavesToolStripMenuItem.Click += new System.EventHandler(this.encriptarClavesToolStripMenuItem_Click);
             // 
@@ -204,7 +203,7 @@
             // 
             this.seleccionarTodoToolStripMenuItem.Name = "seleccionarTodoToolStripMenuItem";
             this.seleccionarTodoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.K)));
-            this.seleccionarTodoToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.seleccionarTodoToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.seleccionarTodoToolStripMenuItem.Text = "Seleccionar Todo";
             this.seleccionarTodoToolStripMenuItem.Click += new System.EventHandler(this.seleccionarTodoToolStripMenuItem_Click);
             // 
@@ -212,7 +211,7 @@
             // 
             this.IndexacionToolStripMenuItem.Name = "IndexacionToolStripMenuItem";
             this.IndexacionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.IndexacionToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.IndexacionToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.IndexacionToolStripMenuItem.Text = "Indexación";
             this.IndexacionToolStripMenuItem.Click += new System.EventHandler(this.IndexacionToolStripMenuItem_Click);
             // 
@@ -220,28 +219,28 @@
             // 
             this.verPanelDeObjetosToolStripMenuItem.Name = "verPanelDeObjetosToolStripMenuItem";
             this.verPanelDeObjetosToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.J)));
-            this.verPanelDeObjetosToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.verPanelDeObjetosToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.verPanelDeObjetosToolStripMenuItem.Text = "Ver Panel de Tablas";
             this.verPanelDeObjetosToolStripMenuItem.Click += new System.EventHandler(this.verPanelDeObjetosToolStripMenuItem_Click);
             // 
             // buscaPaginaSQLToolStripMenuItem
             // 
             this.buscaPaginaSQLToolStripMenuItem.Name = "buscaPaginaSQLToolStripMenuItem";
-            this.buscaPaginaSQLToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.buscaPaginaSQLToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.buscaPaginaSQLToolStripMenuItem.Text = "Busca Pagina SQL";
             this.buscaPaginaSQLToolStripMenuItem.Click += new System.EventHandler(this.buscaPaginaSQLToolStripMenuItem_Click);
             // 
             // analizarDeadlocksToolStripMenuItem
             // 
             this.analizarDeadlocksToolStripMenuItem.Name = "analizarDeadlocksToolStripMenuItem";
-            this.analizarDeadlocksToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.analizarDeadlocksToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.analizarDeadlocksToolStripMenuItem.Text = "Analizar Deadlocks";
             this.analizarDeadlocksToolStripMenuItem.Click += new System.EventHandler(this.analizarDeadlocksToolStripMenuItem_Click);
             // 
             // ejecutarArchivosEnBatchToolStripMenuItem
             // 
             this.ejecutarArchivosEnBatchToolStripMenuItem.Name = "ejecutarArchivosEnBatchToolStripMenuItem";
-            this.ejecutarArchivosEnBatchToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.ejecutarArchivosEnBatchToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.ejecutarArchivosEnBatchToolStripMenuItem.Text = "Ejecutar Archivos en Batch";
             this.ejecutarArchivosEnBatchToolStripMenuItem.Click += new System.EventHandler(this.ejecutarArchivosEnBatchToolStripMenuItem_Click);
             // 
@@ -249,20 +248,20 @@
             // 
             this.extendedPropertiesToolStripMenuItem.Name = "extendedPropertiesToolStripMenuItem";
             this.extendedPropertiesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.extendedPropertiesToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.extendedPropertiesToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.extendedPropertiesToolStripMenuItem.Text = "Extended Properties";
             this.extendedPropertiesToolStripMenuItem.Click += new System.EventHandler(this.extendedPropertiesToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(396, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(264, 6);
             // 
             // crearArchivoDeConexiónToolStripMenuItem
             // 
             this.crearArchivoDeConexiónToolStripMenuItem.Name = "crearArchivoDeConexiónToolStripMenuItem";
             this.crearArchivoDeConexiónToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.crearArchivoDeConexiónToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.crearArchivoDeConexiónToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.crearArchivoDeConexiónToolStripMenuItem.Text = "Crear Archivo de Conexión";
             this.crearArchivoDeConexiónToolStripMenuItem.Click += new System.EventHandler(this.crearArchivoDeConexiónToolStripMenuItem_Click);
             // 
@@ -270,7 +269,7 @@
             // 
             this.abrirToolStripMenuItem.Name = "abrirToolStripMenuItem";
             this.abrirToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.abrirToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.abrirToolStripMenuItem.Text = "Abrir Archivo";
             this.abrirToolStripMenuItem.Click += new System.EventHandler(this.abrirToolStripMenuItem_Click);
             // 
@@ -278,7 +277,7 @@
             // 
             this.grabarToolStripMenuItem.Name = "grabarToolStripMenuItem";
             this.grabarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.grabarToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.grabarToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.grabarToolStripMenuItem.Text = "&Grabar";
             this.grabarToolStripMenuItem.Click += new System.EventHandler(this.grabarToolStripMenuItem_Click);
             // 
@@ -286,20 +285,20 @@
             // 
             this.grabarComoToolStripMenuItem.Name = "grabarComoToolStripMenuItem";
             this.grabarComoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.grabarComoToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.grabarComoToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.grabarComoToolStripMenuItem.Text = "Grabar como...";
             this.grabarComoToolStripMenuItem.Click += new System.EventHandler(this.grabarComoToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(396, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(264, 6);
             // 
             // salidaATextoGrillaToolStripMenuItem
             // 
             this.salidaATextoGrillaToolStripMenuItem.Name = "salidaATextoGrillaToolStripMenuItem";
             this.salidaATextoGrillaToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
-            this.salidaATextoGrillaToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.salidaATextoGrillaToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.salidaATextoGrillaToolStripMenuItem.Text = "Salida a Texto/Grilla";
             this.salidaATextoGrillaToolStripMenuItem.Click += new System.EventHandler(this.salidaATextoGrillaToolStripMenuItem_Click);
             // 
@@ -307,7 +306,7 @@
             // 
             this.cerrarToolStripMenuItem.Name = "cerrarToolStripMenuItem";
             this.cerrarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
-            this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.cerrarToolStripMenuItem.Text = "Cerrar Archivo (Limpiar)";
             this.cerrarToolStripMenuItem.Click += new System.EventHandler(this.cerrarToolStripMenuItem_Click);
             // 
@@ -315,7 +314,7 @@
             // 
             this.salirToolStripMenuItem.Name = "salirToolStripMenuItem";
             this.salirToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.salirToolStripMenuItem.Size = new System.Drawing.Size(399, 34);
+            this.salirToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.salirToolStripMenuItem.Text = "&Salir";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
             // 
@@ -324,13 +323,13 @@
             this.ayudToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.acercaDeToolStripMenuItem});
             this.ayudToolStripMenuItem.Name = "ayudToolStripMenuItem";
-            this.ayudToolStripMenuItem.Size = new System.Drawing.Size(79, 33);
+            this.ayudToolStripMenuItem.Size = new System.Drawing.Size(53, 28);
             this.ayudToolStripMenuItem.Text = "Ayuda";
             // 
             // acercaDeToolStripMenuItem
             // 
             this.acercaDeToolStripMenuItem.Name = "acercaDeToolStripMenuItem";
-            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(203, 34);
+            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.acercaDeToolStripMenuItem.Text = "Acerca de...";
             this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.acercaDeToolStripMenuItem_Click);
             // 
@@ -339,16 +338,15 @@
             this.buscarToolStripMenuItem.Image = global::SQLCrypt.Properties.Resources.Binoculr_x16;
             this.buscarToolStripMenuItem.Name = "buscarToolStripMenuItem";
             this.buscarToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.buscarToolStripMenuItem.Size = new System.Drawing.Size(103, 33);
+            this.buscarToolStripMenuItem.Size = new System.Drawing.Size(78, 28);
             this.buscarToolStripMenuItem.Text = "Buscar";
             this.buscarToolStripMenuItem.ToolTipText = "F3";
             this.buscarToolStripMenuItem.Click += new System.EventHandler(this.buscarToolStripMenuItem_Click);
             // 
             // toolStripTextBox1
             // 
-            this.toolStripTextBox1.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(178, 33);
+            this.toolStripTextBox1.Size = new System.Drawing.Size(120, 28);
             this.toolStripTextBox1.ToolTipText = "Cadena a Buscar";
             // 
             // reemplazarToolStripMenuItem
@@ -356,16 +354,15 @@
             this.reemplazarToolStripMenuItem.Image = global::SQLCrypt.Properties.Resources._0RecycleRed;
             this.reemplazarToolStripMenuItem.Name = "reemplazarToolStripMenuItem";
             this.reemplazarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F3)));
-            this.reemplazarToolStripMenuItem.Size = new System.Drawing.Size(143, 33);
+            this.reemplazarToolStripMenuItem.Size = new System.Drawing.Size(104, 28);
             this.reemplazarToolStripMenuItem.Text = "Reemplazar";
             this.reemplazarToolStripMenuItem.ToolTipText = "Ctrl + F3";
             this.reemplazarToolStripMenuItem.Click += new System.EventHandler(this.reemplazarToolStripMenuItem_Click);
             // 
             // replaceToolStripMenuItem
             // 
-            this.replaceToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.replaceToolStripMenuItem.Name = "replaceToolStripMenuItem";
-            this.replaceToolStripMenuItem.Size = new System.Drawing.Size(178, 33);
+            this.replaceToolStripMenuItem.Size = new System.Drawing.Size(120, 28);
             this.replaceToolStripMenuItem.ToolTipText = "Cadena de Reemplazo";
             // 
             // buscarEnBaseToolStripMenuItem
@@ -373,7 +370,7 @@
             this.buscarEnBaseToolStripMenuItem.Name = "buscarEnBaseToolStripMenuItem";
             this.buscarEnBaseToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+B";
             this.buscarEnBaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
-            this.buscarEnBaseToolStripMenuItem.Size = new System.Drawing.Size(198, 33);
+            this.buscarEnBaseToolStripMenuItem.Size = new System.Drawing.Size(134, 28);
             this.buscarEnBaseToolStripMenuItem.Text = "Buscar en Base Ctrl+B";
             this.buscarEnBaseToolStripMenuItem.Click += new System.EventHandler(this.buscarEnBaseToolStripMenuItem_Click);
             // 
@@ -381,7 +378,7 @@
             // 
             this.databasesToolStripMenuItem.AutoSize = false;
             this.databasesToolStripMenuItem.Name = "databasesToolStripMenuItem";
-            this.databasesToolStripMenuItem.Size = new System.Drawing.Size(260, 33);
+            this.databasesToolStripMenuItem.Size = new System.Drawing.Size(175, 23);
             this.databasesToolStripMenuItem.SelectedIndexChanged += new System.EventHandler(this.databasesToolStripMenuItem_SelectedIndexChanged);
             // 
             // chkToText
@@ -392,10 +389,9 @@
             this.chkToText.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.chkToText.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkToText.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.chkToText.Location = new System.Drawing.Point(1570, 8);
-            this.chkToText.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.chkToText.Location = new System.Drawing.Point(1047, 5);
             this.chkToText.Name = "chkToText";
-            this.chkToText.Size = new System.Drawing.Size(129, 24);
+            this.chkToText.Size = new System.Drawing.Size(90, 17);
             this.chkToText.TabIndex = 8;
             this.chkToText.Text = "Out to Text";
             this.chkToText.UseVisualStyleBackColor = false;
@@ -409,10 +405,9 @@
             this.tssLaPath,
             this.tssLaPos,
             this.tssLaStat});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 931);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 594);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 21, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1754, 31);
+            this.statusStrip1.Size = new System.Drawing.Size(1159, 31);
             this.statusStrip1.TabIndex = 14;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -422,7 +417,7 @@
             this.toolStripSplitButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSplitButton1.Image")));
             this.toolStripSplitButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripSplitButton1.Name = "toolStripSplitButton1";
-            this.toolStripSplitButton1.Size = new System.Drawing.Size(45, 28);
+            this.toolStripSplitButton1.Size = new System.Drawing.Size(40, 29);
             this.toolStripSplitButton1.Text = "toolStripSplitButton1";
             this.toolStripSplitButton1.ButtonClick += new System.EventHandler(this.toolStripSplitButton1_ButtonClick);
             // 
@@ -433,7 +428,7 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.tssLaFile.Name = "tssLaFile";
-            this.tssLaFile.Size = new System.Drawing.Size(240, 24);
+            this.tssLaFile.Size = new System.Drawing.Size(240, 26);
             this.tssLaFile.Text = "tssLaFile";
             // 
             // tssLaPath
@@ -443,7 +438,7 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.tssLaPath.Name = "tssLaPath";
-            this.tssLaPath.Size = new System.Drawing.Size(460, 24);
+            this.tssLaPath.Size = new System.Drawing.Size(460, 26);
             this.tssLaPath.Text = "tssLaPath";
             // 
             // tssLaPos
@@ -453,7 +448,7 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.tssLaPos.Name = "tssLaPos";
-            this.tssLaPos.Size = new System.Drawing.Size(180, 24);
+            this.tssLaPos.Size = new System.Drawing.Size(180, 26);
             this.tssLaPos.Text = "tssLaPos";
             // 
             // tssLaStat
@@ -463,14 +458,13 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.tssLaStat.Name = "tssLaStat";
-            this.tssLaStat.Size = new System.Drawing.Size(210, 24);
+            this.tssLaStat.Size = new System.Drawing.Size(210, 26);
             this.tssLaStat.Text = "tssLaStat";
             // 
             // splitC
             // 
             this.splitC.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitC.Location = new System.Drawing.Point(0, 37);
-            this.splitC.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.splitC.Location = new System.Drawing.Point(0, 30);
             this.splitC.Name = "splitC";
             // 
             // splitC.Panel1
@@ -479,19 +473,18 @@
             this.splitC.Panel1.Controls.Add(this.txBuscaEnLista);
             this.splitC.Panel1.Controls.Add(this.panObjetos);
             this.splitC.Panel1.Controls.Add(this.panColumnas);
-            this.splitC.Panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.splitC.Panel1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.splitC.Panel1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.splitC.Panel1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
             this.splitC.Panel1MinSize = 10;
             // 
             // splitC.Panel2
             // 
             this.splitC.Panel2.BackColor = System.Drawing.SystemColors.Control;
             this.splitC.Panel2.Controls.Add(this.txtSql);
-            this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.splitC.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.splitC.Size = new System.Drawing.Size(1754, 894);
-            this.splitC.SplitterDistance = 366;
-            this.splitC.SplitterWidth = 6;
+            this.splitC.Size = new System.Drawing.Size(1159, 564);
+            this.splitC.SplitterDistance = 241;
             this.splitC.TabIndex = 15;
             // 
             // laBuscarTablas
@@ -499,10 +492,9 @@
             this.laBuscarTablas.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.laBuscarTablas.AutoSize = true;
-            this.laBuscarTablas.Location = new System.Drawing.Point(12, 435);
-            this.laBuscarTablas.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.laBuscarTablas.Location = new System.Drawing.Point(8, 283);
             this.laBuscarTablas.Name = "laBuscarTablas";
-            this.laBuscarTablas.Size = new System.Drawing.Size(102, 20);
+            this.laBuscarTablas.Size = new System.Drawing.Size(70, 13);
             this.laBuscarTablas.TabIndex = 28;
             this.laBuscarTablas.Text = "Buscar Tabla";
             // 
@@ -510,10 +502,9 @@
             // 
             this.txBuscaEnLista.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txBuscaEnLista.Location = new System.Drawing.Point(8, 458);
-            this.txBuscaEnLista.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txBuscaEnLista.Location = new System.Drawing.Point(5, 298);
             this.txBuscaEnLista.Name = "txBuscaEnLista";
-            this.txBuscaEnLista.Size = new System.Drawing.Size(356, 26);
+            this.txBuscaEnLista.Size = new System.Drawing.Size(236, 20);
             this.txBuscaEnLista.TabIndex = 26;
             this.txBuscaEnLista.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txBuscaEnLista_KeyDown);
             // 
@@ -525,26 +516,27 @@
             this.panObjetos.Controls.Add(this.lstObjetos);
             this.panObjetos.Dock = System.Windows.Forms.DockStyle.Top;
             this.panObjetos.Location = new System.Drawing.Point(0, 0);
+            this.panObjetos.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panObjetos.Name = "panObjetos";
-            this.panObjetos.Size = new System.Drawing.Size(366, 495);
+            this.panObjetos.Size = new System.Drawing.Size(241, 322);
             this.panObjetos.TabIndex = 21;
             // 
             // cbObjetos
             // 
             this.cbObjetos.FormattingEnabled = true;
-            this.cbObjetos.Location = new System.Drawing.Point(8, 389);
+            this.cbObjetos.Location = new System.Drawing.Point(5, 253);
+            this.cbObjetos.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbObjetos.Name = "cbObjetos";
-            this.cbObjetos.Size = new System.Drawing.Size(264, 28);
+            this.cbObjetos.Size = new System.Drawing.Size(177, 21);
             this.cbObjetos.TabIndex = 13;
             this.cbObjetos.SelectedValueChanged += new System.EventHandler(this.cbObjetos_SelectedValueChanged);
             // 
             // laTablas
             // 
             this.laTablas.AutoSize = true;
-            this.laTablas.Location = new System.Drawing.Point(280, 398);
-            this.laTablas.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.laTablas.Location = new System.Drawing.Point(187, 259);
             this.laTablas.Name = "laTablas";
-            this.laTablas.Size = new System.Drawing.Size(68, 20);
+            this.laTablas.Size = new System.Drawing.Size(47, 13);
             this.laTablas.TabIndex = 27;
             this.laTablas.Text = "laTablas";
             // 
@@ -554,13 +546,11 @@
             this.lstObjetos.Dock = System.Windows.Forms.DockStyle.Top;
             this.lstObjetos.FormattingEnabled = true;
             this.lstObjetos.HorizontalScrollbar = true;
-            this.lstObjetos.ItemHeight = 20;
             this.lstObjetos.Location = new System.Drawing.Point(0, 0);
-            this.lstObjetos.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.lstObjetos.Name = "lstObjetos";
             this.lstObjetos.ScrollAlwaysVisible = true;
             this.lstObjetos.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstObjetos.Size = new System.Drawing.Size(366, 382);
+            this.lstObjetos.Size = new System.Drawing.Size(241, 249);
             this.lstObjetos.TabIndex = 12;
             this.lstObjetos.SelectedIndexChanged += new System.EventHandler(this.lstObjetos_SelectedIndexChanged);
             this.lstObjetos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstObjetos_MouseDown);
@@ -572,9 +562,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panColumnas.BackColor = System.Drawing.SystemColors.Control;
             this.panColumnas.Controls.Add(this.lsColumnas);
-            this.panColumnas.Location = new System.Drawing.Point(0, 502);
+            this.panColumnas.Location = new System.Drawing.Point(0, 326);
+            this.panColumnas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panColumnas.Name = "panColumnas";
-            this.panColumnas.Size = new System.Drawing.Size(366, 388);
+            this.panColumnas.Size = new System.Drawing.Size(241, 235);
             this.panColumnas.TabIndex = 0;
             // 
             // lsColumnas
@@ -589,9 +580,10 @@
             this.lsColumnas.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lsColumnas.HideSelection = false;
             this.lsColumnas.Location = new System.Drawing.Point(0, 0);
+            this.lsColumnas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.lsColumnas.Name = "lsColumnas";
             this.lsColumnas.ShowGroups = false;
-            this.lsColumnas.Size = new System.Drawing.Size(368, 388);
+            this.lsColumnas.Size = new System.Drawing.Size(244, 237);
             this.lsColumnas.TabIndex = 33;
             this.lsColumnas.UseCompatibleStateImageBehavior = false;
             this.lsColumnas.View = System.Windows.Forms.View.Details;
@@ -616,11 +608,10 @@
             // 
             this.txtSql.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSql.Font = new System.Drawing.Font("Courier New", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSql.Location = new System.Drawing.Point(4, 5);
-            this.txtSql.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txtSql.Location = new System.Drawing.Point(3, 3);
             this.txtSql.Name = "txtSql";
             this.txtSql.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.txtSql.Size = new System.Drawing.Size(1374, 884);
+            this.txtSql.Size = new System.Drawing.Size(908, 558);
             this.txtSql.TabIndex = 2;
             this.txtSql.Text = "";
             this.txtSql.WordWrap = false;
@@ -632,10 +623,9 @@
             // 
             this.txTextLimit.ini_Left = 0;
             this.txTextLimit.ini_Top = 0;
-            this.txTextLimit.Location = new System.Drawing.Point(1371, 6);
-            this.txTextLimit.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.txTextLimit.Location = new System.Drawing.Point(914, 4);
             this.txTextLimit.Name = "txTextLimit";
-            this.txTextLimit.Size = new System.Drawing.Size(148, 26);
+            this.txTextLimit.Size = new System.Drawing.Size(100, 20);
             this.txTextLimit.TabIndex = 10;
             this.txTextLimit.Text = "0";
             this.txTextLimit.Leave += new System.EventHandler(this.txTextLimit_Leave);
@@ -645,18 +635,17 @@
             this.label3.AutoSize = true;
             this.label3.ini_Left = 0;
             this.label3.ini_Top = 0;
-            this.label3.Location = new System.Drawing.Point(1282, 12);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(855, 8);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(76, 20);
+            this.label3.Size = new System.Drawing.Size(52, 13);
             this.label3.TabIndex = 9;
             this.label3.Text = "Text Limit";
             // 
             // frmSqlCrypt
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1754, 962);
+            this.ClientSize = new System.Drawing.Size(1159, 625);
             this.Controls.Add(this.splitC);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.txTextLimit);
@@ -665,9 +654,8 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(1702, 991);
+            this.MinimumSize = new System.Drawing.Size(1140, 658);
             this.Name = "frmSqlCrypt";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sql Crypt";

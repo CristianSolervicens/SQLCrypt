@@ -641,7 +641,7 @@ namespace SQLCrypt
                     break;
 
                 default:
-                    MessageBox.Show($"Tipo de Objeto no soportado {node.Name}");
+                    //MessageBox.Show($"Tipo de Objeto no soportado {node.Name}");
                     break;
             }
             
@@ -650,6 +650,7 @@ namespace SQLCrypt
         private void btGrabar_Click(object sender, EventArgs e)
         {
             controller.WriteInfo(txtObjDescription.Text, dgObject);
+            System.Media.SystemSounds.Beep.Play();
         }
 
     }

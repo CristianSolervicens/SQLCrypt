@@ -1009,9 +1009,12 @@ namespace SQLCrypt
                 EnBusqueda= false;
 
                 if (lstObjetos.SelectedIndices.Count > 0)
+                {
                     lstObjetos.TopIndex = lstObjetos.SelectedIndices[0];
+                }
                 else
                     lstObjetos.TopIndex = 0;
+
             }
         }
 
@@ -1118,7 +1121,10 @@ namespace SQLCrypt
             {
                 Elementos += a.ToString() + "\n";
             }
-            Clipboard.SetText(Elementos);
+            if (Elementos != "")
+                Clipboard.SetText(Elementos);
+            else
+                MessageBox.Show("No hay elementos Seleccionados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -1133,8 +1139,10 @@ namespace SQLCrypt
                 if (lsColumnas.Items[x].Selected)
                     Elementos += $"{lsColumnas.Items[x].Text} {lsColumnas.Items[x].SubItems[1].Text} {lsColumnas.Items[x].SubItems[2].Text}\n";
             }
-
-            Clipboard.SetText(Elementos);
+            if (Elementos != "")
+                Clipboard.SetText(Elementos);
+            else
+                MessageBox.Show("No hay elementos Seleccionados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -1149,8 +1157,10 @@ namespace SQLCrypt
                 if (lsColumnas.Items[x].Selected)
                     Elementos += $"{lsColumnas.Items[x].Text}\n";
             }
-
-            Clipboard.SetText(Elementos);
+            if (Elementos != "")
+                Clipboard.SetText(Elementos);
+            else
+                MessageBox.Show("No hay elementos Seleccionados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 

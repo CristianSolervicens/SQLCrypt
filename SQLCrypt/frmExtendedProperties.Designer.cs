@@ -69,8 +69,8 @@
             this.splitContainer.Panel2.Controls.Add(this.btGrabar);
             this.splitContainer.Panel2.Controls.Add(this.panelDisplay);
             this.splitContainer.Panel2.Controls.Add(this.btSalir);
-            this.splitContainer.Size = new System.Drawing.Size(1301, 614);
-            this.splitContainer.SplitterDistance = 250;
+            this.splitContainer.Size = new System.Drawing.Size(1287, 602);
+            this.splitContainer.SplitterDistance = 247;
             this.splitContainer.SplitterWidth = 3;
             this.splitContainer.TabIndex = 0;
             // 
@@ -81,7 +81,7 @@
             this.dbObjs.Location = new System.Drawing.Point(0, 0);
             this.dbObjs.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dbObjs.Name = "dbObjs";
-            this.dbObjs.Size = new System.Drawing.Size(250, 614);
+            this.dbObjs.Size = new System.Drawing.Size(247, 602);
             this.dbObjs.TabIndex = 0;
             this.dbObjs.DoubleClick += new System.EventHandler(this.dbObjs_DoubleClick);
             // 
@@ -111,7 +111,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(203, 56);
+            this.label1.Location = new System.Drawing.Point(249, 49);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(63, 13);
@@ -120,17 +120,17 @@
             // 
             // txtObjDescription
             // 
-            this.txtObjDescription.Location = new System.Drawing.Point(273, 8);
+            this.txtObjDescription.Location = new System.Drawing.Point(321, 8);
             this.txtObjDescription.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.txtObjDescription.Multiline = true;
             this.txtObjDescription.Name = "txtObjDescription";
-            this.txtObjDescription.Size = new System.Drawing.Size(583, 68);
+            this.txtObjDescription.Size = new System.Drawing.Size(535, 68);
             this.txtObjDescription.TabIndex = 1;
             // 
             // laObjDescription
             // 
             this.laObjDescription.AutoSize = true;
-            this.laObjDescription.Location = new System.Drawing.Point(11, 14);
+            this.laObjDescription.Location = new System.Drawing.Point(7, 14);
             this.laObjDescription.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.laObjDescription.Name = "laObjDescription";
             this.laObjDescription.Size = new System.Drawing.Size(38, 13);
@@ -158,7 +158,7 @@
             this.panelDisplay.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panelDisplay.Name = "panelDisplay";
             this.panelDisplay.Padding = new System.Windows.Forms.Padding(0, 65, 0, 0);
-            this.panelDisplay.Size = new System.Drawing.Size(1046, 517);
+            this.panelDisplay.Size = new System.Drawing.Size(1035, 522);
             this.panelDisplay.TabIndex = 2;
             // 
             // dgObject
@@ -168,13 +168,14 @@
             this.dgObject.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgObject.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.dgObject.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgObject.Location = new System.Drawing.Point(0, 0);
             this.dgObject.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.dgObject.Name = "dgObject";
             this.dgObject.RowHeadersWidth = 62;
             this.dgObject.RowTemplate.Height = 28;
-            this.dgObject.Size = new System.Drawing.Size(1046, 517);
+            this.dgObject.Size = new System.Drawing.Size(1035, 520);
             this.dgObject.TabIndex = 2;
             // 
             // btSalir
@@ -193,7 +194,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1301, 614);
+            this.ClientSize = new System.Drawing.Size(1287, 602);
             this.Controls.Add(this.splitContainer);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
