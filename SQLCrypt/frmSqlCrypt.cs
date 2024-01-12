@@ -1,20 +1,22 @@
 using System;
 using System.Collections.Generic;
-//using System.ComponentModel;
-//using System.Data;
 using System.Drawing;
-//using System.Text;
 using System.Windows.Forms;
 using SQLCrypt.StructureClasses;
 using SQLCrypt.FunctionalClasses.MySql;
+using System.IO;
+using ScintillaNET;
+using ScintillaFindReplaceControl;
+using SQLCrypt.FunctionalClasses;
+using System.Text;
 
 
 namespace SQLCrypt
 {
-    public partial class frmSqlCrypt : Form
+    public partial class FrmSqlCrypt : Form
     {
-        DbObjects Objetos;
-        ToolTip MytoolTip = new ToolTip();
+        private DbObjects Objetos;
+        private ToolTip MytoolTip = new ToolTip();
         public string ConnectionFile = "";
 
         string CurrentFile = "";
@@ -35,9 +37,10 @@ namespace SQLCrypt
         private bool EnBusqueda = false;
 
         private MySql hSql;
+        SearchManager FindMan = null;
 
 
-        public frmSqlCrypt(MySql hSql)
+        public FrmSqlCrypt(MySql hSql)
         {
             InitializeComponent();
 
@@ -47,8 +50,8 @@ namespace SQLCrypt
             tssLaStat.Text = string.Empty;
 
             txtSql.AllowDrop = true;
-            this.txtSql.DragEnter += new DragEventHandler(this.txtSql_DragEnter);
-            this.txtSql.DragDrop += new DragEventHandler(this.txtSql_DragDrop);
+            //this.txtSql.DragEnter += new DragEventHandler(this.txtSql_DragEnter);
+            //this.txtSql.DragDrop += new DragEventHandler(this.txtSql_DragDrop);
 
             this.hSql = hSql;
 
@@ -73,6 +76,12 @@ namespace SQLCrypt
             txm.MenuItems.Add("Ver/Ocultar Panel de Tablas", new EventHandler(verPanelDeObjetosToolStripMenuItem_Click));
             txtSql.ContextMenu = txm;
 
+            FindMan = new SearchManager();
+            FindMan.TextArea = txtSql;
+            InitSyntaxColoring(txtSql);
+            MytoolTip.SetToolTip(btIndentShow, "Activa/Desactiva las guías de Indentación");
+            MytoolTip.SetToolTip(btSpacesShow, "Activa/Desactiva mostrar espacios");
+            MytoolTip.SetToolTip(btCutTrailing, "Elimina los espacios al final de cada línea");
         }
 
 
@@ -91,7 +100,7 @@ namespace SQLCrypt
             }
 
             int Count = DBObj.GetCountRows();
-            string TipoObjeto = (DBObj.type.Trim() == "U" ? "Tabla": "Vista");
+            string TipoObjeto = (DBObj.type.Trim() == "U" ? "Tabla" : "Vista");
             MessageBox.Show($"La {TipoObjeto} [{DBObj.schema_name}].[{DBObj.name}] tiene {Count} Filas.", "Filas", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -102,7 +111,7 @@ namespace SQLCrypt
             if (string.IsNullOrEmpty(txtSql.SelectedText))
                 return;
             Clipboard.SetText(txtSql.SelectedText);
-            txtSql.SelectedText = "";
+            txtSql.SetSelection(0, 0);  //Scintilla
         }
 
         private void txmCopy(object sender, EventArgs e)
@@ -116,13 +125,13 @@ namespace SQLCrypt
 
         private void txmPaste(object sender, EventArgs e)
         {
-            txtSql.SelectionLength = 0;
-            txtSql.SelectedText = Clipboard.GetText();
+            txtSql.Paste();  //Scintilla
         }
 
         private void txmDeSelAll(object sender, EventArgs e)
         {
-            txtSql.SelectionLength = 0;
+            txtSql.SelectionStart = txtSql.CurrentPosition;  //Scintilla
+            txtSql.SelectionEnd = txtSql.CurrentPosition;
         }
 
 
@@ -132,7 +141,7 @@ namespace SQLCrypt
         }
 
 
-
+        // TODO: Change
         private void txtSql_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
@@ -143,13 +152,14 @@ namespace SQLCrypt
         }
 
 
+        // TODO: Change
         private void txtSql_DragDrop(object sender, DragEventArgs e)
         {
 
             if (e.Data.GetDataPresent(DataFormats.Text))
             {
-                txtSql.SelectionLength = 0;
-                txtSql.SelectedText = (string)e.Data.GetData(DataFormats.Text);
+                //txtSql.SelectedText = (string)e.Data.GetData(DataFormats.Text);
+                txtSql.InsertText(txtSql.CurrentPosition, (string)e.Data.GetData(DataFormats.Text));
                 txtSql.Focus();
                 return;
             }
@@ -276,9 +286,9 @@ namespace SQLCrypt
                 frm.Left = this.Left;
 
                 if (txtSql.SelectedText != "")
-                    frm.ExecuteSQLStatement(txtSql.SelectedText.ToString(), TextLimit);
+                    frm.ExecuteSQLStatement(txtSql.SelectedText, TextLimit);
                 else
-                    frm.ExecuteSQLStatement(txtSql.Text.ToString(), TextLimit);
+                    frm.ExecuteSQLStatement(txtSql.Text, TextLimit);
 
                 LoadDatabaseList();
 
@@ -358,6 +368,33 @@ namespace SQLCrypt
 
         }
 
+        private void Lowercase()
+        {
+
+            // save the selection
+            int start = txtSql.SelectionStart;
+            int end = txtSql.SelectionEnd;
+
+            // modify the selected text
+            txtSql.ReplaceSelection(txtSql.GetTextRange(start, end - start).ToLower());
+
+            // preserve the original selection
+            txtSql.SetSelection(start, end);
+        }
+
+        private void Uppercase()
+        {
+
+            // save the selection
+            int start = txtSql.SelectionStart;
+            int end = txtSql.SelectionEnd;
+
+            // modify the selected text
+            txtSql.ReplaceSelection(txtSql.GetTextRange(start, end - start).ToUpper());
+
+            // preserve the original selection
+            txtSql.SetSelection(start, end);
+        }
 
         private void SetCurrentDB()
         {
@@ -423,7 +460,7 @@ namespace SQLCrypt
             SaveFileStd(false);
         }
 
-        
+
 
         private void cerrarToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -455,7 +492,7 @@ namespace SQLCrypt
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                if ( string.Compare(System.IO.Path.GetExtension(ofd.FileName), ".sqc", true) == 0 || string.Compare(System.IO.Path.GetExtension(ofd.FileName), ".cfg", true) == 0 )
+                if (string.Compare(System.IO.Path.GetExtension(ofd.FileName), ".sqc", true) == 0 || string.Compare(System.IO.Path.GetExtension(ofd.FileName), ".cfg", true) == 0)
                 {
                     CurrentFile = ofd.FileName;
                     IsEncrypted = true;
@@ -494,8 +531,9 @@ namespace SQLCrypt
 
             for (i = 1; ; ++i)
             {
-                fn = txtSql.Find($"#{i.ToString()}#");
-                if (fn <= 0)
+                // fn = txtSql.Find($"#{i.ToString()}#");
+                fn = FindMan.Find(true, true, 0, $"#{i.ToString()}#");
+                if (fn < 0)
                     break;
                 else
                     found = true;
@@ -538,49 +576,14 @@ namespace SQLCrypt
 
         private void buscarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(toolStripTextBox1.Text))
-                return;
-
-            int pos = txtSql.SelectionStart + txtSql.SelectionLength;
-            if (pos >= txtSql.TextLength)
-                pos = 0;
-
-            try
-            {
-                pos = txtSql.Text.IndexOf(toolStripTextBox1.Text, pos, txtSql.TextLength - pos, StringComparison.InvariantCultureIgnoreCase);
-            }
-            catch
-            {
-                return;
-            }
-
-            //pos = txtSql.Find(toolStripTextBox1.Text, pos, txtSql.TextLength, RichTextBoxFinds.None);
-            if (pos == -1)
-            {
-                txtSql.SelectionStart = 0;
-                txtSql.SelectionLength = 0;
-            }
-            else
-            {
-                txtSql.SelectionStart = pos;
-                txtSql.SelectionLength = toolStripTextBox1.Text.Length;
-            }
-
-            txtSql.Refresh();
-            Application.DoEvents();
-
-        }
-
-        private void reemplazarToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (string.IsNullOrWhiteSpace(toolStripTextBox1.Text) || string.IsNullOrWhiteSpace(replaceToolStripMenuItem.Text))
-                return;
-
-            txtSql.Text = txtSql.Text.Replace(toolStripTextBox1.Text, replaceToolStripMenuItem.Text);
-            tssLaStat.Text = string.Empty;
+            var _findReplace = new FindReplace();
+            _findReplace.SetTarget(txtSql);
+            _findReplace.SetFind(txtSql);
+            _findReplace.Show();
         }
 
 
+        // TODO: Change
         private void txtSql_TextChanged(object sender, EventArgs e)
         {
             tssLaStat.Text = string.Empty;
@@ -596,24 +599,6 @@ namespace SQLCrypt
             return sValue + new String(' ', dif);
         }
 
-        private void txtSql_SelectionChanged(object sender, EventArgs e)
-        {
-            tssLaStat.Text = string.Empty;
-            try
-            {
-                int line = txtSql.GetLineFromCharIndex(txtSql.SelectionStart);
-                int column = txtSql.SelectionStart - txtSql.GetFirstCharIndexFromLine(line);
-
-                tssLaPos.Text = $"{StringComplete(string.Format("Fila: {0}", line), 13)} {StringComplete(string.Format("Col: {0}", column), 13)}";
-
-            }
-            catch
-            {
-                //Do Nothing
-            }
-        }
-
-        
 
         private void ConectTSM_Click(object sender, EventArgs e)
         {
@@ -717,21 +702,7 @@ namespace SQLCrypt
         }
 
 
-
-        private void txTextLimit_Leave(object sender, EventArgs e)
-        {
-            try
-            {
-                TextLimit = Convert.ToInt32(txTextLimit.Text);
-            }
-            catch
-            {
-                txTextLimit.Text = "0";
-            }
-        }
-
-
-
+        // TODO: Change
         private void txtSql_KeyDown(object sender, KeyEventArgs e)
         {
 
@@ -873,11 +844,11 @@ namespace SQLCrypt
         private void ejecutarTodasLasBasesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             for (int x = 0; x < databasesToolStripMenuItem.Items.Count; ++x)
-            {   
-                
+            {
+
                 databasesToolStripMenuItem.SelectedIndex = x;
                 //Hubo Error al cambiarse de BD?
-                if ( hSql.ErrorExiste )
+                if (hSql.ErrorExiste)
                 {
                     hSql.ErrorClear();
                     continue;
@@ -902,14 +873,14 @@ namespace SQLCrypt
                 return;
             }
 
-            frmIndexes frmIdx= new frmIndexes( hSql);
+            frmIndexes frmIdx = new frmIndexes(hSql);
             frmIdx.ShowDialog();
 
         }
 
 
 
-        private void SaveFileStd( bool bSaveAs)
+        private void SaveFileStd(bool bSaveAs)
         {
             string sqlString;
 
@@ -937,7 +908,7 @@ namespace SQLCrypt
                     MessageBox.Show(this, "Cancelado por usuario", "Cancelado", MessageBoxButtons.OK);
                     return;
                 }
-                
+
             }
 
             if (IsEncrypted)
@@ -947,13 +918,19 @@ namespace SQLCrypt
             }
             else
             {
-                txtSql.SaveFile(CurrentFile, RichTextBoxStreamType.PlainText);
+                //txtSql.SaveFile(CurrentFile, RichTextBoxStreamType.PlainText);
+                txtSql_SaveFile();
             }
 
             tssLaStat.Text = "Archivo Grabado...";
 
         } //SaveFileStd
 
+
+        private void txtSql_SaveFile()
+        {
+            System.IO.File.WriteAllText(CurrentFile, txtSql.Text);
+        }
 
 
         private void salidaATextoGrillaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1476,9 +1453,8 @@ namespace SQLCrypt
             }
 
             txtSql.SelectionStart = 0;
-            txtSql.SelectionLength = 0;
-            txtSql.SelectionLength = 0;
-            txtSql.SelectedText = SqlObtenido;
+            txtSql.SelectionEnd = 0;
+            txtSql.InsertText(txtSql.CurrentPosition, SqlObtenido);
 
         }
 
@@ -1513,7 +1489,7 @@ namespace SQLCrypt
                 if (line.Contains(toBeSearched) )
                 {
                     deadlockCount++;
-                    txtSql.SelectedText = $"\nLínea {lineCount} : {deadlockCount} : Deadlock encontrado\n";
+                    txtSql.InsertText(txtSql.CurrentPosition, $"\nLínea {lineCount} : {deadlockCount} : Deadlock encontrado\n");
                     refresh = true;
                 }
 
@@ -1528,7 +1504,7 @@ namespace SQLCrypt
                     string Page = StrSplit[2].Trim();
 
                     string sAux = hSql.BuscaPagina(Database, File, Page);
-                    txtSql.SelectedText = $"   Línea {lineCount} PAGE:{Database}:{File}:{Page} = {sAux}\n";
+                    txtSql.InsertText(txtSql.CurrentPosition, $"   Línea {lineCount} PAGE:{Database}:{File}:{Page} = {sAux}\n");
                     refresh = true;
                 }
 
@@ -1549,7 +1525,7 @@ namespace SQLCrypt
 
                     string sAux = hSql.BuscaObjeto(Database, Object_id);
                     string db_name = hSql.GetDBNameById(Database);
-                    txtSql.SelectedText = $"      Linea {lineCount} Base = {db_name}  Objeto: {sAux}\n";
+                    txtSql.InsertText(txtSql.CurrentPosition, $"      Linea {lineCount} Base = {db_name}  Objeto: {sAux}\n");
                     refresh = true;
                 }
 
@@ -1562,8 +1538,8 @@ namespace SQLCrypt
 
             } //While lectura del archivo
 
-            txtSql.SelectedText = $"\n\nLectura del Archivo finalizada, contiene {lineCount} líneas\n";
-            txtSql.SelectedText = $"Deadlocks encontrados {deadlockCount}\n";
+            txtSql.InsertText(txtSql.CurrentPosition, $"\n\nLectura del Archivo finalizada, contiene {lineCount} líneas\n");
+            txtSql.InsertText(txtSql.CurrentPosition, $"Deadlocks encontrados {deadlockCount}\n");
 
             file.Close();
             
@@ -1587,12 +1563,15 @@ namespace SQLCrypt
                 return;
 
             string sAux = hSql.BuscaPagina(fBusPag.BaseId, fBusPag.FileId, fBusPag.PageId);
-            txtSql.SelectedText = sAux;
+            txtSql.InsertText(txtSql.CurrentPosition, sAux);
 
         }
 
         private void ejecutarArchivosEnBatchToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("Por implementar");
+            return;
+
             hSql.ErrorClear();
             if (hSql.ConnectionStatus == false)
             {
@@ -1600,10 +1579,10 @@ namespace SQLCrypt
                 return;
             }
 
-            frmExecFiles myForm = new frmExecFiles();
-            myForm.RTEXT_Salida = txtSql;
-            myForm.hSql = hSql;
-            myForm.Show();
+            //frmExecFiles myForm = new frmExecFiles();
+            //myForm.RTEXT_Salida = txtSql;
+            //myForm.hSql = hSql;
+            //myForm.Show();
         }
 
 
@@ -1689,6 +1668,142 @@ namespace SQLCrypt
             frmC.Left = this.Left;
             frmC.Show();
 
+        }
+
+        private void findReplaceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            buscarToolStripMenuItem_Click(sender, e);
+        }
+
+        public static Color IntToColor(int rgb)
+        {
+            return Color.FromArgb(255, (byte)(rgb >> 16), (byte)(rgb >> 8), (byte)rgb);
+        }
+
+        private void InitSyntaxColoring(ScintillaNET.Scintilla TextArea)
+        {
+
+            // Configure the default style
+            TextArea.Margins[0].Width = 5;
+            TextArea.StyleResetDefault();
+            TextArea.Styles[Style.Default].Font = "Consolas";
+            TextArea.Styles[Style.Default].Size = 10;
+            TextArea.Styles[Style.Default].BackColor = IntToColor(0x212121);
+            TextArea.Styles[Style.Default].ForeColor = IntToColor(0xFFFFFF);
+            TextArea.CaretLineBackColor = IntToColor(0x333333);
+            TextArea.CaretForeColor = IntToColor(0xF0F0F0);
+            TextArea.CaretWidth = 2;
+            TextArea.SetSelectionBackColor(true, IntToColor(0x535353));
+            TextArea.StyleClearAll();
+
+            TextArea.Styles[Style.Sql.Identifier].ForeColor = IntToColor(0xD0DAE2);
+            TextArea.Styles[Style.Sql.Comment].ForeColor = IntToColor(0xBD758B);
+            TextArea.Styles[Style.Sql.CommentLine].ForeColor = IntToColor(0x40BF57);
+            TextArea.Styles[Style.Sql.CommentDoc].ForeColor = IntToColor(0x2FAE35);
+            TextArea.Styles[Style.Sql.Number].ForeColor = IntToColor(0xFFFF00);
+            TextArea.Styles[Style.Sql.String].ForeColor = IntToColor(0xFFFF00);
+            TextArea.Styles[Style.Sql.Character].ForeColor = IntToColor(0xE95454);
+            //TextArea.Styles[Style.Sql.Preprocessor].ForeColor = IntToColor(0x8AAFEE);
+            TextArea.Styles[Style.Sql.Operator].ForeColor = IntToColor(0xE0E0E0);
+            //TextArea.Styles[Style.Sql.Regex].ForeColor = IntToColor(0xff00ff);
+            TextArea.Styles[Style.Sql.CommentLineDoc].ForeColor = IntToColor(0x77A7DB);
+            TextArea.Styles[Style.Sql.Word].ForeColor = IntToColor(0x48A8EE);
+            TextArea.Styles[Style.Sql.Word2].ForeColor = IntToColor(0xF98906);
+            TextArea.Styles[Style.Sql.CommentDocKeyword].ForeColor = IntToColor(0xB3D991);
+            TextArea.Styles[Style.Sql.CommentDocKeywordError].ForeColor = IntToColor(0xFF0000);
+            //TextArea.Styles[Style.Sql.GlobalClass].ForeColor = IntToColor(0x48A8EE);
+
+            TextArea.Lexer = Lexer.Sql;
+
+            TextArea.SetKeywords(0, "action add all alter and any as asc authorization backup begin between break browse bulk by cascade case check checkpoint close clustered coalesce collate column commit committed compute confirm constraint contains containstable continue controlrow convert create cross current current_date current_time current_timestamp current_user cursor database dbcc deallocate declare default delete deny desc disable disk distinct distributed double drop dummy dump else enable end errlvl errorexit escape except exec execute exists exit fetch file fillfactor floppy for foreign forward_only freetext freetexttable from full function go goto grant group having holdlock identity identity_insert identitycol if in index inner insert instead intersect into is isolation join key kill left level like lineno load mirrorexit move national no nocheck nocount nonclustered norecovery not nounload null nullif of off offsets on once only open opendatasource openquery openrowset option or order outer output over percent perm permanent pipe plan precision prepare primary print privileges proc procedure processexit public raiserror read readtext read_only reconfigure recovery references repeatable replication restore restrict return returns revoke right rollback rowcount rowguidcol rule save schema select serializable session_user set setuser shutdown some statistics stats system_user table tape temp temporary textsize then to top tran transaction trigger truncate tsequal uncommitted union unique update updatetext use user values varying view waitfor when where while with work writetext");
+            TextArea.SetKeywords(1, "bigint binary bit char character datetime dec decimal float image int integer money nchar ntext numeric nvarchar real smalldatetime smallint smallmoney sql_variant sysname text timestamp tinyint uniqueidentifier varbinary varchar");
+
+        }
+
+        private void txtSql_SelectionChanged(object sender, UpdateUIEventArgs e)
+        {
+            tssLaStat.Text = string.Empty;
+            try
+            {
+                // int line = txtSql.GetLineFromCharIndex(txtSql.SelectionStart);
+                // int column = txtSql.SelectionStart - txtSql.GetFirstCharIndexFromLine(line);
+
+                int line = txtSql.CurrentLine;
+                int column = txtSql.GetColumn(txtSql.CurrentPosition);
+
+                tssLaPos.Text = $"{StringComplete(string.Format("Fila: {0}", line), 13)} {StringComplete(string.Format("Col: {0}", column), 13)}";
+
+            }
+            catch
+            {
+                //Do Nothing
+            }
+        }
+
+        private void btIndentShow_Click(object sender, EventArgs e)
+        {
+            if (txtSql.IndentationGuides == IndentView.None)
+                txtSql.IndentationGuides = IndentView.LookBoth;
+            else
+                txtSql.IndentationGuides = IndentView.None;
+        }
+
+        private void toUpperToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Uppercase();
+        }
+
+        private void toLowerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Lowercase();
+        }
+
+        private void btSpacesShow_Click(object sender, EventArgs e)
+        {
+            if (txtSql.ViewWhitespace == WhitespaceMode.Invisible)
+                txtSql.ViewWhitespace = WhitespaceMode.VisibleAlways;
+            else
+                txtSql.ViewWhitespace = WhitespaceMode.Invisible;
+        }
+
+        private void buscarEnBDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!hSql.ConnectionStatus)
+            {
+                MessageBox.Show("Debe establecer una conexión a Base de Datos", "Atención");
+                return;
+            }
+
+            frmObjects frm = new frmObjects(hSql);
+
+            frm.Show();
+            frm.Top = this.Top;
+            frm.Left = this.Left;
+        }
+
+        private void btBuscarEnBd_Click(object sender, EventArgs e)
+        {
+            buscarEnBDToolStripMenuItem_Click(sender, e);
+        }
+
+        private void btConnectToBd_Click(object sender, EventArgs e)
+        {
+            ConectTSM_Click(sender, e);
+        }
+
+
+        private void btCutTrailing_Click(object sender, EventArgs e)
+        {
+            StringBuilder strB = new StringBuilder();
+
+            for (int i = 0; i < txtSql.Lines.Count; i++)
+            {
+                // Get the text of the current line
+                string lineText = txtSql.Lines[i].Text;
+                // Remove trailing spaces from the line
+                strB.AppendLine( lineText.TrimEnd());
+            }
+            txtSql.Text = strB.ToString();
         }
     }
 }

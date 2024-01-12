@@ -58,6 +58,9 @@
     <Reference Include="EPPlus">
       <HintPath>..\packages\EPPlus.4.0.5\lib\net20\EPPlus.dll</HintPath>
     </Reference>
+    <Reference Include="ScintillaNET, Version=3.6.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\jacobslusser.ScintillaNET.3.6.3\lib\net40\ScintillaNET.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -161,6 +164,7 @@
       <DependentUpon>frmSqlCrypt.cs</DependentUpon>
     </Compile>
     <Compile Include="FunctionalClasses\MySql.cs" />
+    <Compile Include="FunctionalClasses\SearchManager.cs" />
     <Compile Include="myFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -243,6 +247,8 @@
   <ItemGroup>
     <None Include="Resources\Binoculr-x16.ico" />
     <None Include="Resources\0RecycleRed.ico" />
+    <None Include="Resources\DBMonitor.ico" />
+    <None Include="Resources\Connect3.ico" />
     <Content Include="_Frog Full.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -262,7 +268,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\ScintillaFindReplaceControl\ScintillaFindReplaceControl.csproj">
+      <Project>{3c17a70c-b5ce-4b60-95f9-71dd53cc25fb}</Project>
+      <Name>ScintillaFindReplaceControl</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>

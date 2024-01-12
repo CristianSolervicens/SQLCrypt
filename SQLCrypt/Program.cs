@@ -18,7 +18,7 @@ namespace SQLCrypt
       {
          Application.EnableVisualStyles();
          Application.SetCompatibleTextRenderingDefault(false);
-         Application.Run(new frmSqlCrypt(hSql));
+         Application.Run(new FrmSqlCrypt(hSql));
       }
    }
 }
