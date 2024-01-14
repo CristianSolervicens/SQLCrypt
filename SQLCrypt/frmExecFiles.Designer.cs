@@ -52,6 +52,7 @@
             // 
             // btSelFolders
             // 
+            this.btSelFolders.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.btSelFolders.Image = ((System.Drawing.Image)(resources.GetObject("btSelFolders.Image")));
             this.btSelFolders.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btSelFolders.Location = new System.Drawing.Point(70, 2);
@@ -60,11 +61,12 @@
             this.btSelFolders.TabIndex = 2;
             this.btSelFolders.Text = "Select Folder";
             this.btSelFolders.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btSelFolders.UseVisualStyleBackColor = true;
+            this.btSelFolders.UseVisualStyleBackColor = false;
             this.btSelFolders.Click += new System.EventHandler(this.btSelFolders_Click);
             // 
             // btExecute
             // 
+            this.btExecute.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.btExecute.Image = ((System.Drawing.Image)(resources.GetObject("btExecute.Image")));
             this.btExecute.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btExecute.Location = new System.Drawing.Point(169, 1);
@@ -73,13 +75,14 @@
             this.btExecute.TabIndex = 3;
             this.btExecute.Text = "Execute";
             this.btExecute.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btExecute.UseVisualStyleBackColor = true;
+            this.btExecute.UseVisualStyleBackColor = false;
             this.btExecute.Click += new System.EventHandler(this.btExecute_Click);
             // 
             // lstFiles
             // 
             this.lstFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstFiles.BackColor = System.Drawing.SystemColors.Control;
             this.lstFiles.FormattingEnabled = true;
             this.lstFiles.Location = new System.Drawing.Point(4, 35);
             this.lstFiles.Name = "lstFiles";
@@ -89,6 +92,7 @@
             // 
             // btSalir
             // 
+            this.btSalir.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.btSalir.Image = ((System.Drawing.Image)(resources.GetObject("btSalir.Image")));
             this.btSalir.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btSalir.Location = new System.Drawing.Point(6, 1);
@@ -97,11 +101,12 @@
             this.btSalir.TabIndex = 5;
             this.btSalir.Text = "Salir";
             this.btSalir.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btSalir.UseVisualStyleBackColor = true;
+            this.btSalir.UseVisualStyleBackColor = false;
             this.btSalir.Click += new System.EventHandler(this.btSalir_Click);
             // 
             // btToMainWindow
             // 
+            this.btToMainWindow.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.btToMainWindow.Image = ((System.Drawing.Image)(resources.GetObject("btToMainWindow.Image")));
             this.btToMainWindow.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btToMainWindow.Location = new System.Drawing.Point(260, 2);
@@ -110,7 +115,7 @@
             this.btToMainWindow.TabIndex = 6;
             this.btToMainWindow.Text = "A Ventana Principal";
             this.btToMainWindow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btToMainWindow.UseVisualStyleBackColor = true;
+            this.btToMainWindow.UseVisualStyleBackColor = false;
             this.btToMainWindow.Click += new System.EventHandler(this.btToMainWindow_Click);
             // 
             // frmExecFiles

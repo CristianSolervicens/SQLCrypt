@@ -30,6 +30,7 @@
         {
             this.tabControlFindReplace = new System.Windows.Forms.TabControl();
             this.tabPageFind = new System.Windows.Forms.TabPage();
+            this.btSalir = new System.Windows.Forms.Button();
             this.checkBoxWordStart = new System.Windows.Forms.CheckBox();
             this.checkBoxWholeWord = new System.Windows.Forms.CheckBox();
             this.checkBoxRegEx = new System.Windows.Forms.CheckBox();
@@ -67,6 +68,7 @@
             // 
             // tabPageFind
             // 
+            this.tabPageFind.Controls.Add(this.btSalir);
             this.tabPageFind.Controls.Add(this.checkBoxWordStart);
             this.tabPageFind.Controls.Add(this.checkBoxWholeWord);
             this.tabPageFind.Controls.Add(this.checkBoxRegEx);
@@ -82,6 +84,17 @@
             this.tabPageFind.TabIndex = 0;
             this.tabPageFind.Text = "Find";
             this.tabPageFind.UseVisualStyleBackColor = true;
+            // 
+            // btSalir
+            // 
+            this.btSalir.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btSalir.Location = new System.Drawing.Point(3, 93);
+            this.btSalir.Name = "btSalir";
+            this.btSalir.Size = new System.Drawing.Size(21, 26);
+            this.btSalir.TabIndex = 8;
+            this.btSalir.Text = "Salir";
+            this.btSalir.UseVisualStyleBackColor = true;
+            this.btSalir.Click += new System.EventHandler(this.btSalir_Click);
             // 
             // checkBoxWordStart
             // 
@@ -278,10 +291,12 @@
             this.AcceptButton = this.buttonFindNext;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btSalir;
             this.ClientSize = new System.Drawing.Size(449, 148);
             this.Controls.Add(this.tabControlFindReplace);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "FindReplace";
+            this.Opacity = 0.9D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Find and Replace";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FindReplace_FormClosing);
@@ -317,5 +332,6 @@
         private System.Windows.Forms.CheckBox checkBoxWholeWordRep;
         private System.Windows.Forms.CheckBox checkBoxRegExRep;
         private System.Windows.Forms.CheckBox checkBoxMatchCaseRep;
+        private System.Windows.Forms.Button btSalir;
     }
 }

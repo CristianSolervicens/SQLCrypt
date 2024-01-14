@@ -6,7 +6,6 @@ namespace ScintillaFindReplaceControl
 {
     public partial class FindReplace : Form
     {
-        #region Class Def
 
         // Pointer to the Scintilla control to apply actions to
         private Scintilla _scintilla;
@@ -26,6 +25,7 @@ namespace ScintillaFindReplaceControl
             _replaceSearchFlags = new SearchFlags();
             _findSearchFlags = SearchFlags.None;
             _replaceSearchFlags = SearchFlags.None;
+            btSalir.Top = -100;
         }
 
         /// <summary>
@@ -56,8 +56,6 @@ namespace ScintillaFindReplaceControl
             tabControlFindReplace.SelectTab(1);
             _scintilla = scintilla;
         }
-
-        #endregion
 
         #region Control Handlers
 
@@ -236,5 +234,10 @@ namespace ScintillaFindReplaceControl
         }
 
         #endregion
+
+        private void btSalir_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

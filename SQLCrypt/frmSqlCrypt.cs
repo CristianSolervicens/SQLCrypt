@@ -38,6 +38,8 @@ namespace SQLCrypt
 
         private MySql hSql;
         SearchManager FindMan = null;
+        FindReplace _findReplace = null;
+        private int maxLineNumberCharLength;
 
 
         public FrmSqlCrypt(MySql hSql)
@@ -50,8 +52,6 @@ namespace SQLCrypt
             tssLaStat.Text = string.Empty;
 
             txtSql.AllowDrop = true;
-            //this.txtSql.DragEnter += new DragEventHandler(this.txtSql_DragEnter);
-            //this.txtSql.DragDrop += new DragEventHandler(this.txtSql_DragDrop);
 
             this.hSql = hSql;
 
@@ -76,12 +76,13 @@ namespace SQLCrypt
             txm.MenuItems.Add("Ver/Ocultar Panel de Tablas", new EventHandler(verPanelDeObjetosToolStripMenuItem_Click));
             txtSql.ContextMenu = txm;
 
+            _findReplace = new FindReplace();
+            _findReplace.SetTarget(txtSql);
+            _findReplace.SetFind(txtSql);
+
             FindMan = new SearchManager();
             FindMan.TextArea = txtSql;
             InitSyntaxColoring(txtSql);
-            MytoolTip.SetToolTip(btIndentShow, "Activa/Desactiva las guías de Indentación");
-            MytoolTip.SetToolTip(btSpacesShow, "Activa/Desactiva mostrar espacios");
-            MytoolTip.SetToolTip(btCutTrailing, "Elimina los espacios al final de cada línea");
         }
 
 
@@ -195,7 +196,8 @@ namespace SQLCrypt
             System.Threading.Thread.Sleep(500);
             this.TopMost = false;
             this.BringToFront();
-
+            txtSql.SetSavePoint();
+            txtSql.EmptyUndoBuffer();
         }
 
 
@@ -225,27 +227,44 @@ namespace SQLCrypt
         //Menú Archivo-Salir
         private void salirToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (AlCerrarElFormulario() == DialogResult.Yes)
+            {
+                txtSql.SetSavePoint();
+                this.Close();
+            }
+        }
+
+
+        /// <summary>
+        /// Validación antes de Cerrar el Formulario
+        /// </summary>
+        /// <returns>DialogResult   YES para Salir, Cancel NO SALIR </returns>
+        private DialogResult AlCerrarElFormulario()
+        {
+            if (txtSql.Modified)
+            {
+                var res = MessageBox.Show("El Documento ha sido Modificado.\nDesea Grabar antes de Salir?", "Atención", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (res == DialogResult.Yes)
+                {
+                    if (CurrentFile == "")
+                        SaveFileStd(true);
+                    else
+                        SaveFileStd(false);
+
+                    if (txtSql.Modified)
+                        return DialogResult.Cancel;
+                }
+                else if (res == DialogResult.Cancel)
+                    return DialogResult.Cancel;
+                else if (res == DialogResult.No)
+                    return DialogResult.Yes;
+            }
+
             if (hSql.ConnectionStatus == true)
                 hSql.CloseDBConn();
 
-            this.Close();
+            return DialogResult.Yes;
         }
-
-
-        //WorkingDir
-        private void directorioDeTrabajoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            fbd.SelectedPath = Application.StartupPath;
-            if (fbd.ShowDialog() == DialogResult.OK)
-            {
-                WorkPath = fbd.SelectedPath;
-                tssLaPath.Text = WorkPath;
-            }
-            else
-                MessageBox.Show(this, "Cancelado por usuario", "Cancelado", MessageBoxButtons.OK);
-        }
-
 
 
         private void frmSqlCrypt_Load(object sender, EventArgs e)
@@ -368,6 +387,7 @@ namespace SQLCrypt
 
         }
 
+
         private void Lowercase()
         {
 
@@ -381,6 +401,7 @@ namespace SQLCrypt
             // preserve the original selection
             txtSql.SetSelection(start, end);
         }
+
 
         private void Uppercase()
         {
@@ -396,58 +417,7 @@ namespace SQLCrypt
             txtSql.SetSelection(start, end);
         }
 
-        private void SetCurrentDB()
-        {
-            string current_db = hSql.GetCurrentDatabase();
-            databasesToolStripMenuItem.Text = current_db;
-        }
-
-        //archivoDeConexiónToolStripMenuItem_Click
-        private void archivoDeConexiónToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.InitialDirectory = WorkPath;
-            ofd.FileName = "ConnectionString.cfg";
-            ofd.Filter = "Config files (*.cfg)|*.cfg";
-            ofd.FilterIndex = 2;
-            ofd.RestoreDirectory = true;
-
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-
-                ConnectionFile = ofd.FileName;
-                if (hSql.ConnectionStatus == true)
-                {
-                    hSql.CloseDBConn();
-                }
-
-                hSql.ConnectionFile = ConnectionFile;
-
-                try
-                {
-                    hSql.ConnectToDB();
-                    tssLaFile.Text = ConnectionFile;
-                }
-                catch
-                {
-                    tssLaFile.Text = "";
-                    MessageBox.Show(this, $"Error conectándose a Base de Datos \n{hSql.ErrorString}", "No conectado", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    ConnectionFile = "";
-                }
-
-                //Normalmente entra acá en caso de no conectarse.
-                if (hSql.ConnectionStatus == false)
-                {
-                    tssLaFile.Text = "";
-                    MessageBox.Show(this, $"Error conectándose a Base de Datos \n{hSql.ErrorString}", "No conectado", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    ConnectionFile = "";
-                }
-            }
-            else
-                MessageBox.Show(this, "Cancelado por usuario", "Cancelado", MessageBoxButtons.OK);
-
-        }
-
+        
         //Grabar archivo encriptado.
         private void grabarToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -461,7 +431,6 @@ namespace SQLCrypt
         }
 
 
-
         private void cerrarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CurrentFile = "";
@@ -471,6 +440,8 @@ namespace SQLCrypt
             grabarToolStripMenuItem.Enabled = false;
             cerrarToolStripMenuItem.Enabled = true;
             tssLaStat.Text = "Archivo Cerrado...";
+            txtSql.SetSavePoint();
+            txtSql.EmptyUndoBuffer();
         }
 
 
@@ -516,11 +487,12 @@ namespace SQLCrypt
             }
             else
             {
-                MessageBox.Show(this, "Cancelado por usuario", "Cancelado", MessageBoxButtons.OK);
+                txtSql.SetSavePoint();
                 return;
             }
             tssLaStat.Text = "Archivo Abierto...";
-
+            txtSql.SetSavePoint();
+            txtSql.EmptyUndoBuffer();
         }
 
         private int paramCount()
@@ -531,7 +503,6 @@ namespace SQLCrypt
 
             for (i = 1; ; ++i)
             {
-                // fn = txtSql.Find($"#{i.ToString()}#");
                 fn = FindMan.Find(true, true, 0, $"#{i.ToString()}#");
                 if (fn < 0)
                     break;
@@ -545,48 +516,10 @@ namespace SQLCrypt
                 return i - 1;
         }
 
-        private void crearArchivoDeConexiónToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            frmCnxFile frmC = new frmCnxFile();
-            frmC.ShowDialog();
-
-            if (string.IsNullOrWhiteSpace(frmC.ConectionFile))
-            {
-                return;
-            }
-
-            ConnectionFile = frmC.ConectionFile;
-            hSql.ConnectionFile = ConnectionFile;
-
-            hSql.ConnectToDB();
-
-            //Normalmente entra acá en caso de no conectarse.
-            if (hSql.ConnectionStatus == false)
-            {
-                tssLaFile.Text = "";
-                MessageBox.Show(this, $"Error conectándose a Base de Datos \n{hSql.ErrorString}", "No conectado", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                ConnectionFile = "";
-            }
-
-            //laFile.Text = ConnectionFile; //Sólo si se Conecta...
-            tssLaFile.Text = ConnectionFile; //Sólo si se Conecta...
-
-        }
-
 
         private void buscarToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var _findReplace = new FindReplace();
-            _findReplace.SetTarget(txtSql);
-            _findReplace.SetFind(txtSql);
             _findReplace.Show();
-        }
-
-
-        // TODO: Change
-        private void txtSql_TextChanged(object sender, EventArgs e)
-        {
-            tssLaStat.Text = string.Empty;
         }
 
 
@@ -600,7 +533,7 @@ namespace SQLCrypt
         }
 
 
-        private void ConectTSM_Click(object sender, EventArgs e)
+        private void ConnectToDatabase(object sender, EventArgs e)
         {
             if (hSql.ConnectionStatus)
                 hSql.CloseDBConn();
@@ -641,6 +574,7 @@ namespace SQLCrypt
         {
             string OriginalDB = databasesToolStripMenuItem.Text;
             string DBName = hSql.GetCurrentDatabase();
+            databasesToolStripMenuItem.Text = databasesToolStripMenuItem.Text;
 
             List<string> databases = hSql.GetDatabases();
 
@@ -665,24 +599,6 @@ namespace SQLCrypt
         }
 
 
-        private void buscarEnBaseToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-            if (!hSql.ConnectionStatus)
-            {
-                MessageBox.Show("Debe establecer una conexión a Base de Datos", "Atención");
-                return;
-            }
-
-            frmObjects frm = new frmObjects(hSql);
-
-            frm.Show();
-            frm.Top = this.Top;
-            frm.Left = this.Left;
-        }
-
-
-
         private void databasesToolStripMenuItem_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (databasesToolStripMenuItem.SelectedIndex == -1)
@@ -698,7 +614,8 @@ namespace SQLCrypt
 
             if (splitC.Panel1Collapsed == false)
                 cbObjetosSelect("U");
-
+            
+            databasesToolStripMenuItem.Text = databasesToolStripMenuItem.Text;
         }
 
 
@@ -725,8 +642,6 @@ namespace SQLCrypt
             frmPassWord frmPass = new frmPassWord();
             frmPass.Show();
         }
-
-
 
 
         /// <summary>
@@ -819,26 +734,16 @@ namespace SQLCrypt
         }
 
 
-
-        private void seleccionarTodoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            txtSql.SelectAll();
-        }
-
-
-
         private void comandosInmediatosToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             btConsultas_Click(null, null);
         }
 
 
-
         private void toolStripSplitButton1_ButtonClick(object sender, EventArgs e)
         {
             btConsultas_Click(null, null);
         }
-
 
 
         private void ejecutarTodasLasBasesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -860,24 +765,6 @@ namespace SQLCrypt
                 ejecutarComandoToolStripMenuItem_Click(null, null);
             }
         }
-
-
-
-        private void IndexacionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            hSql.ErrorClear();
-
-            if (!hSql.ConnectionStatus)
-            {
-                MessageBox.Show("Debe estar conectado a una Base de Datos", "Atención");
-                return;
-            }
-
-            frmIndexes frmIdx = new frmIndexes(hSql);
-            frmIdx.ShowDialog();
-
-        }
-
 
 
         private void SaveFileStd(bool bSaveAs)
@@ -904,10 +791,7 @@ namespace SQLCrypt
                     cerrarToolStripMenuItem.Enabled = true;
                 }
                 else
-                {
-                    MessageBox.Show(this, "Cancelado por usuario", "Cancelado", MessageBoxButtons.OK);
                     return;
-                }
 
             }
 
@@ -918,10 +802,11 @@ namespace SQLCrypt
             }
             else
             {
-                //txtSql.SaveFile(CurrentFile, RichTextBoxStreamType.PlainText);
                 txtSql_SaveFile();
             }
 
+            txtSql.SetSavePoint();
+            txtSql.EmptyUndoBuffer();
             tssLaStat.Text = "Archivo Grabado...";
 
         } //SaveFileStd
@@ -937,7 +822,6 @@ namespace SQLCrypt
         {
             chkToText.Checked =  chkToText.Checked ? false : true ;
         }
-
 
 
         public void Load_lstObjetos(string type)
@@ -958,8 +842,6 @@ namespace SQLCrypt
 
             laTablas.Text = $"({lstObjetos.Items.Count})";
         }
-
-
 
 
         private void txBuscaEnLista_KeyDown(object sender, KeyEventArgs e)
@@ -994,7 +876,6 @@ namespace SQLCrypt
 
             }
         }
-
 
 
         private void SetMenuTablas()
@@ -1044,6 +925,7 @@ namespace SQLCrypt
             lstObjetos.ContextMenu = cm;
         }
 
+
         private void FindTableByColumnName(object sender, EventArgs e)
         {
             if (txBuscaEnLista.Text == "")
@@ -1089,7 +971,6 @@ namespace SQLCrypt
 
 
 
-
         private void ObjSelectedToClipboard(object sender, EventArgs e)
         {
             Clipboard.Clear();
@@ -1122,7 +1003,6 @@ namespace SQLCrypt
                 MessageBox.Show("No hay elementos Seleccionados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-
         
         private void colmSelectionNameToClipBoard(object sender, EventArgs e)
         {
@@ -1139,7 +1019,6 @@ namespace SQLCrypt
             else
                 MessageBox.Show("No hay elementos Seleccionados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
-
 
 
         private void ObjectSelectStar(object sender, EventArgs e)
@@ -1165,7 +1044,6 @@ namespace SQLCrypt
 
 
 
-
         private void ObjectSelectStarAll(object sender, EventArgs e)
         {
             if (lstObjetos.SelectedIndex == -1)
@@ -1188,7 +1066,6 @@ namespace SQLCrypt
         }
 
 
-
         private void EditarDatos(object sender, EventArgs e)
         {
             if (lstObjetos.SelectedIndex == -1)
@@ -1207,7 +1084,6 @@ namespace SQLCrypt
             DataEdit.Show();
 
         }
-
 
 
         private void ObjGetMoreInfo(object sender, EventArgs e)
@@ -1542,7 +1418,6 @@ namespace SQLCrypt
             txtSql.InsertText(txtSql.CurrentPosition, $"Deadlocks encontrados {deadlockCount}\n");
 
             file.Close();
-            
 
         }
 
@@ -1670,10 +1545,6 @@ namespace SQLCrypt
 
         }
 
-        private void findReplaceToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            buscarToolStripMenuItem_Click(sender, e);
-        }
 
         public static Color IntToColor(int rgb)
         {
@@ -1685,6 +1556,7 @@ namespace SQLCrypt
 
             // Configure the default style
             TextArea.Margins[0].Width = 5;
+
             TextArea.StyleResetDefault();
             TextArea.Styles[Style.Default].Font = "Consolas";
             TextArea.Styles[Style.Default].Size = 10;
@@ -1715,24 +1587,19 @@ namespace SQLCrypt
 
             TextArea.Lexer = Lexer.Sql;
 
-            TextArea.SetKeywords(0, "action add all alter and any as asc authorization backup begin between break browse bulk by cascade case check checkpoint close clustered coalesce collate column commit committed compute confirm constraint contains containstable continue controlrow convert create cross current current_date current_time current_timestamp current_user cursor database dbcc deallocate declare default delete deny desc disable disk distinct distributed double drop dummy dump else enable end errlvl errorexit escape except exec execute exists exit fetch file fillfactor floppy for foreign forward_only freetext freetexttable from full function go goto grant group having holdlock identity identity_insert identitycol if in index inner insert instead intersect into is isolation join key kill left level like lineno load mirrorexit move national no nocheck nocount nonclustered norecovery not nounload null nullif of off offsets on once only open opendatasource openquery openrowset option or order outer output over percent perm permanent pipe plan precision prepare primary print privileges proc procedure processexit public raiserror read readtext read_only reconfigure recovery references repeatable replication restore restrict return returns revoke right rollback rowcount rowguidcol rule save schema select serializable session_user set setuser shutdown some statistics stats system_user table tape temp temporary textsize then to top tran transaction trigger truncate tsequal uncommitted union unique update updatetext use user values varying view waitfor when where while with work writetext");
-            TextArea.SetKeywords(1, "bigint binary bit char character datetime dec decimal float image int integer money nchar ntext numeric nvarchar real smalldatetime smallint smallmoney sql_variant sysname text timestamp tinyint uniqueidentifier varbinary varchar");
-
+            TextArea.SetKeywords(0, "action add all alter and any as asc authorization backup begin between break browse bulk by cascade case check checkpoint close clustered coalesce collate column commit committed compute confirm constraint contains containstable continue controlrow convert create cross current current_date current_time current_timestamp current_user cursor database dbcc deallocate declare default delete deny desc disable disk distinct distributed double drop dummy dump else enable end errlvl errorexit escape except exec execute exists exit fetch file fillfactor floppy for foreign forward_only freetext freetexttable from full function go goto grant group having holdlock identity identity_insert identitycol if in index inner insert instead intersect into is isolation join key kill left level like lineno load mirrorexit move national no nocheck nocount nonclustered norecovery not nounload null nullif of off offsets on once only open opendatasource openquery openrowset option or order outer output over percent perm permanent pipe plan precision prepare primary print privileges proc procedure processexit public raiserror read readtext read_only reconfigure recovery references repeatable replication restore restrict return returns revoke right rollback rowcount rowguidcol rule save schema select serializable session_user set setuser shutdown some statistics stats synonym system_user table tape temp temporary textsize then to top tran transaction trigger truncate tsequal uncommitted union unique update updatetext use user values varying view waitfor when where while with work writetext");
+            TextArea.SetKeywords(1, "bigint binary bit char character date datetime dec decimal float image int integer money nchar ntext numeric nvarchar real smalldatetime smallint smallmoney sql_variant sysname text timestamp tinyint uniqueidentifier varbinary varchar");
+            TextArea.Styles[Style.LineNumber].ForeColor = IntToColor(0x000000);
         }
 
         private void txtSql_SelectionChanged(object sender, UpdateUIEventArgs e)
         {
-            tssLaStat.Text = string.Empty;
             try
             {
-                // int line = txtSql.GetLineFromCharIndex(txtSql.SelectionStart);
-                // int column = txtSql.SelectionStart - txtSql.GetFirstCharIndexFromLine(line);
-
                 int line = txtSql.CurrentLine;
                 int column = txtSql.GetColumn(txtSql.CurrentPosition);
 
                 tssLaPos.Text = $"{StringComplete(string.Format("Fila: {0}", line), 13)} {StringComplete(string.Format("Col: {0}", column), 13)}";
-
             }
             catch
             {
@@ -1748,23 +1615,6 @@ namespace SQLCrypt
                 txtSql.IndentationGuides = IndentView.None;
         }
 
-        private void toUpperToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Uppercase();
-        }
-
-        private void toLowerToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Lowercase();
-        }
-
-        private void btSpacesShow_Click(object sender, EventArgs e)
-        {
-            if (txtSql.ViewWhitespace == WhitespaceMode.Invisible)
-                txtSql.ViewWhitespace = WhitespaceMode.VisibleAlways;
-            else
-                txtSql.ViewWhitespace = WhitespaceMode.Invisible;
-        }
 
         private void buscarEnBDToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1788,11 +1638,11 @@ namespace SQLCrypt
 
         private void btConnectToBd_Click(object sender, EventArgs e)
         {
-            ConectTSM_Click(sender, e);
+            ConnectToDatabase(sender, e);
         }
 
 
-        private void btCutTrailing_Click(object sender, EventArgs e)
+        private void CutTrailingSpaces()
         {
             StringBuilder strB = new StringBuilder();
 
@@ -1805,5 +1655,90 @@ namespace SQLCrypt
             }
             txtSql.Text = strB.ToString();
         }
+
+        private void mostrarEspaciosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (txtSql.ViewWhitespace == WhitespaceMode.Invisible)
+                txtSql.ViewWhitespace = WhitespaceMode.VisibleAlways;
+            else
+                txtSql.ViewWhitespace = WhitespaceMode.Invisible;
+        }
+
+
+        private void guiaIndentacionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (txtSql.IndentationGuides == IndentView.None)
+                txtSql.IndentationGuides = IndentView.LookBoth;
+            else
+                txtSql.IndentationGuides = IndentView.None;
+        }
+
+        private void eliminarEspaciosFinDeLíneaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CutTrailingSpaces();
+        }
+
+        private void selecciónAMayúsculasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Uppercase();
+        }
+
+        private void selecciónAMinúsculasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Lowercase();
+        }
+
+        private void toolStripTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            int outVal;
+            int.TryParse(toolStripTextBox1.Text, out outVal);
+            txtSql.TabWidth = (outVal ==0 )? 0:outVal;
+        }
+
+        private void findReplaceToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            buscarToolStripMenuItem_Click(sender, e);
+        }
+
+
+        private void txtSql_TextChanged(object sender, EventArgs e)
+        {
+            if (txtSql.Modified && tssLaStat.Text != "Archivo Modificado...")
+                tssLaStat.Text = "Archivo Modificado...";
+
+            if (txtSql.Margins[0].Width == 3)
+                return;            
+
+            // Did the number of characters in the line number display change?
+            // i.e. nnn VS nn, or nnnn VS nn, etc...
+            var maxLineNumberCharLength = txtSql.Lines.Count.ToString().Length;
+            if (maxLineNumberCharLength == this.maxLineNumberCharLength)
+                return;
+
+            // Calculate the width required to display the last line number
+            // and include some padding for good measure.
+            const int padding = 2;
+            txtSql.Margins[0].Width = txtSql.TextWidth(Style.LineNumber, new string('9', maxLineNumberCharLength + 1)) + padding;
+            this.maxLineNumberCharLength = maxLineNumberCharLength;
+        }
+
+        private void numerosDeLíneaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (txtSql.Margins[0].Width != 3)
+                txtSql.Margins[0].Width = 3;
+            else
+            {
+                const int padding = 2;
+                txtSql.Margins[0].Width = txtSql.TextWidth(Style.LineNumber, new string('9', maxLineNumberCharLength + 1)) + padding;
+            }
+        }
+
+        private void FrmSqlCrypt_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (AlCerrarElFormulario() == DialogResult.Cancel)
+                e.Cancel = true;
+
+        }
+
     }
 }

@@ -70,30 +70,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AboutBox1.cs">
+    <Compile Include="frmUtiles\AboutBox1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AboutBox1.Designer.cs">
+    <Compile Include="frmUtiles\AboutBox1.Designer.cs">
       <DependentUpon>AboutBox1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Conexiones.cs" />
-    <Compile Include="CSDataGrid.cs" />
+    <Compile Include="StructureClasses\Conexiones.cs" />
+    <Compile Include="FunctionalClasses\CSDataGrid.cs" />
+    <Compile Include="frmUtiles\FindReplace.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmUtiles\FindReplace.Designer.cs">
+      <DependentUpon>FindReplace.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmBuscaPagina.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmBuscaPagina.Designer.cs">
       <DependentUpon>frmBuscaPagina.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmCommonTasks.cs">
+    <Compile Include="frmUtiles\frmCommonTasks.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCommonTasks.Designer.cs">
+    <Compile Include="frmUtiles\frmCommonTasks.Designer.cs">
       <DependentUpon>frmCommonTasks.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmDataEdit.cs">
+    <Compile Include="frmUtiles\frmDataEdit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmDataEdit.Designer.cs">
+    <Compile Include="frmUtiles\frmDataEdit.Designer.cs">
       <DependentUpon>frmDataEdit.cs</DependentUpon>
     </Compile>
     <Compile Include="frmDespliegueTxt.cs">
@@ -108,22 +114,16 @@
     <Compile Include="frmExecFiles.Designer.cs">
       <DependentUpon>frmExecFiles.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmExtendedProperties.cs">
+    <Compile Include="frmUtiles\frmExtendedProperties.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmExtendedProperties.Designer.cs">
+    <Compile Include="frmUtiles\frmExtendedProperties.Designer.cs">
       <DependentUpon>frmExtendedProperties.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmIndexes.cs">
+    <Compile Include="frmUtiles\frmPassWord.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmIndexes.Designer.cs">
-      <DependentUpon>frmIndexes.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmPassWord.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmPassWord.Designer.cs">
+    <Compile Include="frmUtiles\frmPassWord.Designer.cs">
       <DependentUpon>frmPassWord.cs</DependentUpon>
     </Compile>
     <Compile Include="FunctionalClasses\Crypto.cs" />
@@ -133,17 +133,11 @@
     <Compile Include="frmObjects.Designer.cs">
       <DependentUpon>frmObjects.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmConexion.cs">
+    <Compile Include="frmUtiles\frmConexion.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmConexion.Designer.cs">
+    <Compile Include="frmUtiles\frmConexion.Designer.cs">
       <DependentUpon>frmConexion.cs</DependentUpon>
-    </Compile>
-    <Compile Include="frmCnxFile.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmCnxFile.designer.cs">
-      <DependentUpon>frmCnxFile.cs</DependentUpon>
     </Compile>
     <Compile Include="frmDespliegue.cs">
       <SubType>Form</SubType>
@@ -151,10 +145,10 @@
     <Compile Include="frmDespliegue.Designer.cs">
       <DependentUpon>frmDespliegue.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmParam.cs">
+    <Compile Include="FunctionalClasses\frmParam.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmParam.Designer.cs">
+    <Compile Include="FunctionalClasses\frmParam.Designer.cs">
       <DependentUpon>frmParam.cs</DependentUpon>
     </Compile>
     <Compile Include="frmSqlCrypt.cs">
@@ -173,17 +167,20 @@
     <Compile Include="TextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <EmbeddedResource Include="AboutBox1.resx">
+    <EmbeddedResource Include="frmUtiles\AboutBox1.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AboutBox1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmUtiles\FindReplace.resx">
+      <DependentUpon>FindReplace.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmBuscaPagina.resx">
       <DependentUpon>frmBuscaPagina.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmCommonTasks.resx">
+    <EmbeddedResource Include="frmUtiles\frmCommonTasks.resx">
       <DependentUpon>frmCommonTasks.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmDataEdit.resx">
+    <EmbeddedResource Include="frmUtiles\frmDataEdit.resx">
       <DependentUpon>frmDataEdit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmDespliegueTxt.resx">
@@ -192,30 +189,24 @@
     <EmbeddedResource Include="frmExecFiles.resx">
       <DependentUpon>frmExecFiles.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmExtendedProperties.resx">
+    <EmbeddedResource Include="frmUtiles\frmExtendedProperties.resx">
       <DependentUpon>frmExtendedProperties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmIndexes.resx">
-      <DependentUpon>frmIndexes.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmObjects.resx">
       <DependentUpon>frmObjects.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmConexion.resx">
+    <EmbeddedResource Include="frmUtiles\frmConexion.resx">
       <DependentUpon>frmConexion.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmCnxFile.resx">
-      <DependentUpon>frmCnxFile.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmDespliegue.resx">
       <SubType>Designer</SubType>
       <DependentUpon>frmDespliegue.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmParam.resx">
+    <EmbeddedResource Include="FunctionalClasses\frmParam.resx">
       <SubType>Designer</SubType>
       <DependentUpon>frmParam.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmPassWord.resx">
+    <EmbeddedResource Include="frmUtiles\frmPassWord.resx">
       <DependentUpon>frmPassWord.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSqlCrypt.resx">
@@ -267,12 +258,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ScintillaFindReplaceControl\ScintillaFindReplaceControl.csproj">
-      <Project>{3c17a70c-b5ce-4b60-95f9-71dd53cc25fb}</Project>
-      <Name>ScintillaFindReplaceControl</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
