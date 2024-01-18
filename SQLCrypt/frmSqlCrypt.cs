@@ -494,7 +494,7 @@ namespace SQLCrypt
 
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.InitialDirectory = WorkPath;
-            ofd.Filter = "Sql Files (*.sql)|*.sql|Sql Crypt Files (*.sqc)|*.sqc|Text Files (*.txt)|*.txt|Config Files (*.cfg)|*.cfg";
+            ofd.Filter = "Sql Files (*.sql;*.sqc)|*.sql;*.sqc|Text Files (*.txt)|*.txt|Config Files (*.cfg)|*.cfg";
             ofd.FilterIndex = 1;
             ofd.FileName = CurrentFile;
 
