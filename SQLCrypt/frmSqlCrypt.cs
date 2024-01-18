@@ -9,6 +9,8 @@ using ScintillaNET;
 using ScintillaFindReplaceControl;
 using SQLCrypt.FunctionalClasses;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Runtime.InteropServices;
 
 
 namespace SQLCrypt
@@ -1756,5 +1758,47 @@ namespace SQLCrypt
 
         }
 
+
+        private void commentSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (txtSql.SelectedText.Length > 0)
+            {
+                int f = txtSql.LineFromPosition(txtSql.SelectionStart);
+                int t = txtSql.LineFromPosition(txtSql.SelectionEnd);
+
+                for (int i = f; i <= t; i++)
+                {
+                    txtSql.InsertText(txtSql.Lines[i].Position, "--");
+                }
+                txtSql.SelectionStart = txtSql.Lines[f].Position;
+                txtSql.SelectionEnd = txtSql.Lines[t].EndPosition -1;
+            }
+        }
+
+        private void uncommentSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (txtSql.SelectedText.Length > 0)
+            {
+                int f = txtSql.LineFromPosition(txtSql.SelectionStart);
+                int t = txtSql.LineFromPosition(txtSql.SelectionEnd);
+
+                for (int i = f; i <= t; i++)
+                {
+                    string s = txtSql.Lines[i].Text;
+                    if (s.StartsWith("--"))
+                    {
+                        var regex = new Regex(Regex.Escape("--"));
+                        var newText = regex.Replace(s, "", 1);
+                        int x = txtSql.Lines[i].Position;
+                        int y = txtSql.Lines[i].EndPosition;
+                        txtSql.SelectionStart = x;
+                        txtSql.SelectionEnd = y;
+                        txtSql.ReplaceSelection(newText);
+                    }
+                }
+                txtSql.SelectionStart = txtSql.Lines[f].Position;
+                txtSql.SelectionEnd = txtSql.Lines[t].EndPosition -1;
+            }
+        }
     }
 }

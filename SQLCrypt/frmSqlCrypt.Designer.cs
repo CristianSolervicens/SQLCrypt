@@ -57,6 +57,8 @@
             this.selecciónAMinúsculasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findReplaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.numerosDeLíneaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.commentSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.uncommentSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ayudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.acercaDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buscarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -285,7 +287,9 @@
             this.selecciónAMayúsculasToolStripMenuItem,
             this.selecciónAMinúsculasToolStripMenuItem,
             this.findReplaceToolStripMenuItem,
-            this.numerosDeLíneaToolStripMenuItem});
+            this.numerosDeLíneaToolStripMenuItem,
+            this.commentSelectionToolStripMenuItem,
+            this.uncommentSelectionToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 28);
             this.editToolStripMenuItem.Text = "&Edit";
@@ -342,6 +346,23 @@
             this.numerosDeLíneaToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
             this.numerosDeLíneaToolStripMenuItem.Text = "Numeros de Línea";
             this.numerosDeLíneaToolStripMenuItem.Click += new System.EventHandler(this.numerosDeLíneaToolStripMenuItem_Click);
+            // 
+            // commentSelectionToolStripMenuItem
+            // 
+            this.commentSelectionToolStripMenuItem.Name = "commentSelectionToolStripMenuItem";
+            this.commentSelectionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
+            this.commentSelectionToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+            this.commentSelectionToolStripMenuItem.Text = "Comment Selection";
+            this.commentSelectionToolStripMenuItem.Click += new System.EventHandler(this.commentSelectionToolStripMenuItem_Click);
+            // 
+            // uncommentSelectionToolStripMenuItem
+            // 
+            this.uncommentSelectionToolStripMenuItem.Name = "uncommentSelectionToolStripMenuItem";
+            this.uncommentSelectionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.M)));
+            this.uncommentSelectionToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+            this.uncommentSelectionToolStripMenuItem.Text = "Uncomment Selection";
+            this.uncommentSelectionToolStripMenuItem.Click += new System.EventHandler(this.uncommentSelectionToolStripMenuItem_Click);
             // 
             // ayudToolStripMenuItem
             // 
@@ -770,6 +791,8 @@
         private System.Windows.Forms.ToolStripMenuItem selecciónAMinúsculasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findReplaceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem numerosDeLíneaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem commentSelectionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem uncommentSelectionToolStripMenuItem;
     }
 }
 
