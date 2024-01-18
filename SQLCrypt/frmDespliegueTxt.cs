@@ -70,6 +70,8 @@ namespace SQLCrypt
             if (TextLimit == 0 || TextLimit > 512)
                 TextLimit = 512;
 
+            StringBuilder sb = new StringBuilder();
+
             this.Cancelar = false;
             this.btCancelar.Enabled = true;
             while (true)
@@ -78,14 +80,16 @@ namespace SQLCrypt
                 pos = MyComandoSQL.IndexOf("\nGO", start, StringComparison.InvariantCultureIgnoreCase);
                 if (pos == -1) pos = MyComandoSQL.Length;
 
+                // Control de Error
                 if (start >= MyComandoSQL.Length)
                 {
-                    this.rtchSalida.Text += Salida;
+                    this.rtchSalida.Text = sb.ToString();
                     Salida = "";
                     LinSalida = 0;
                     return;
                 }
 
+                // Control de Error
                 if (( pos - start ) <= 0)
                     return;
 
@@ -142,7 +146,8 @@ namespace SQLCrypt
                             //Encabezados Primera Fila
                             if (row == 0)
                             {
-                                Salida += "\n";
+                                //Salida += "\n";
+                                sb.Append("\n");
                                 string guiones = "";
 
                                 for (int x = 0; x < hSql.Data.FieldCount; ++x)
@@ -161,12 +166,12 @@ namespace SQLCrypt
                                     guiones += ((x > 0) ? " " : "") + new String('-', lenC[x]);
 
                                     //this.rtchSalida.Text += ((x > 0) ? " " : "") + StringComplete(hSql.Data.GetName(x), lenC[x]);
-                                    Salida += ((x > 0) ? " " : "") + StringComplete(hSql.Data.GetName(x), lenC[x]);
+                                    sb.Append( ((x > 0) ? " " : "") + StringComplete(hSql.Data.GetName(x), lenC[x]));
                                     ++LinSalida;
                                 }
 
                                 //this.rtchSalida.Text += "\n" + guiones + "\n";
-                                Salida += "\n" + guiones + "\n";
+                                sb.Append("\n" + guiones + "\n");
                                 ++LinSalida;
                             }
 
@@ -176,37 +181,39 @@ namespace SQLCrypt
                                 if (hSql.Data.IsDBNull(x))
                                 {
                                     //this.rtchSalida.Text += ((x > 0) ? " " : "") + StringComplete("null", lenC[x]);
-                                    Salida += ((x > 0) ? " " : "") + StringComplete("null", lenC[x]);
+                                    sb.Append(((x > 0) ? " " : "") + StringComplete("null", lenC[x]));
                                     ++LinSalida;
                                 }
                                 else
                                 {
                                     //this.rtchSalida.Text += ((x > 0) ? " " : "") + StringComplete(Convert.ToString(hSql.Data[x]), lenC[x]);
-                                    Salida += ((x > 0) ? " " : "") + StringComplete(Convert.ToString(hSql.Data[x]), lenC[x]);
+                                    sb.Append(((x > 0) ? " " : "") + StringComplete(Convert.ToString(hSql.Data[x]), lenC[x]));
                                     ++LinSalida;
                                 }
                             }
                             //this.rtchSalida.Text += "\n";
-                            Salida += "\n";
+                            sb.Append("\n");
                             ++LinSalida;
                             ++row;
 
-                            if (LinSalida > 200)
-                            {
-                                laInfo.Text = string.Format("Filas Afectadas : {0}", row);
-                                this.rtchSalida.Text += Salida;
-                                Salida = "";
-                                LinSalida = 0;
-                            }
+                            //if (LinSalida > 200)
+                            //{
+                            //    laInfo.Text = string.Format("Filas Afectadas : {0}", row);
+                            //    this.rtchSalida.Text += Salida;
+                            //    Salida = "";
+                            //    LinSalida = 0;
+                            //}
 
                         }
 
                         //this.rtchSalida.Text += string.Format("\n( {0} Filas afectadas)\n", row);
                         //Salida += string.Format("\n( {0} Filas afectadas)\n", row);
+                        
                         ++LinSalida;
 
                         DisplayMensaje();
 
+                        sb.Append('\n');
                         //this.rtchSalida.Text += "\n";
 
                         if (this.Cancelar)
@@ -229,6 +236,7 @@ namespace SQLCrypt
 
             this.btCancelar.Enabled = false;
 
+            this.rtchSalida.Text = sb.ToString();
             if (!string.IsNullOrEmpty( hSql.Messages) )
             {
                 this.rtchSalida.Text += Salida + "\n\n *** Mensajes *** \n\n" + hSql.Messages;

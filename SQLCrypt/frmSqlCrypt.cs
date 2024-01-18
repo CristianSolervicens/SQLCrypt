@@ -42,7 +42,7 @@ namespace SQLCrypt
         private int maxLineNumberCharLength;
 
 
-        public FrmSqlCrypt(MySql hSql)
+        public FrmSqlCrypt(MySql hSql, string fileName)
         {
             InitializeComponent();
 
@@ -83,6 +83,41 @@ namespace SQLCrypt
             FindMan = new SearchManager();
             FindMan.TextArea = txtSql;
             InitSyntaxColoring(txtSql);
+
+            if (fileName != "")
+                OpenFileInEditor(fileName);
+        }
+
+
+        private void OpenFileInEditor(string fileName)
+        {
+            txtSql.Text = "";
+
+            if (string.Compare(System.IO.Path.GetExtension(fileName), ".sqc", true) == 0 || string.Compare(System.IO.Path.GetExtension(fileName), ".cfg", true) == 0)
+            {
+                CurrentFile = fileName;
+                IsEncrypted = true;
+                OpenCryptoFile(CurrentFile);
+                this.Text = $"SQLCrypt - {CurrentFile}";
+                grabarToolStripMenuItem.Enabled = true;  //Grabar Encriptado
+                grabarComoToolStripMenuItem.Enabled = true;
+                WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
+            }
+            else
+            {
+                CurrentFile = fileName;
+                IsEncrypted = false;
+                txtSql.Text = System.IO.File.ReadAllText(CurrentFile);
+                this.Text = CurrentFile;
+                this.Text = $"SQLCrypt - {CurrentFile}";
+                grabarToolStripMenuItem.Enabled = true;   //Grabar Encriptado
+                grabarComoToolStripMenuItem.Enabled = true;
+                WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
+            }
+
+            tssLaStat.Text = "Archivo Abierto...";
+            txtSql.SetSavePoint();
+            txtSql.EmptyUndoBuffer();
         }
 
 
@@ -463,27 +498,7 @@ namespace SQLCrypt
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-                if (string.Compare(System.IO.Path.GetExtension(ofd.FileName), ".sqc", true) == 0 || string.Compare(System.IO.Path.GetExtension(ofd.FileName), ".cfg", true) == 0)
-                {
-                    CurrentFile = ofd.FileName;
-                    IsEncrypted = true;
-                    OpenCryptoFile(CurrentFile);
-                    this.Text = $"SQLCrypt - {CurrentFile}";
-                    grabarToolStripMenuItem.Enabled = true;  //Grabar Encriptado
-                    grabarComoToolStripMenuItem.Enabled = true;
-                    WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
-                }
-                else
-                {
-                    CurrentFile = ofd.FileName;
-                    IsEncrypted = false;
-                    txtSql.Text = System.IO.File.ReadAllText(CurrentFile);
-                    this.Text = CurrentFile;
-                    this.Text = $"SQLCrypt - {CurrentFile}";
-                    grabarToolStripMenuItem.Enabled = true;   //Grabar Encriptado
-                    grabarComoToolStripMenuItem.Enabled = true;
-                    WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
-                }
+                OpenFileInEditor(ofd.FileName);
             }
             else
             {
@@ -494,6 +509,7 @@ namespace SQLCrypt
             txtSql.SetSavePoint();
             txtSql.EmptyUndoBuffer();
         }
+
 
         private int paramCount()
         {
