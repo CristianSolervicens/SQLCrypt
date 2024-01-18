@@ -494,7 +494,7 @@ namespace SQLCrypt
 
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.InitialDirectory = WorkPath;
-            ofd.Filter = "Sql Crypt Files (*.sqc)|*.sqc|Text Files (*.txt)|*.txt|Sql Files (*.sql)|*.sql|Config Files (*.cfg)|*.cfg";
+            ofd.Filter = "Sql Files (*.sql)|*.sql|Sql Crypt Files (*.sqc)|*.sqc|Text Files (*.txt)|*.txt|Config Files (*.cfg)|*.cfg";
             ofd.FilterIndex = 1;
             ofd.FileName = CurrentFile;
 
@@ -1785,7 +1785,7 @@ namespace SQLCrypt
                 for (int i = f; i <= t; i++)
                 {
                     string s = txtSql.Lines[i].Text;
-                    if (s.StartsWith("--"))
+                    if (s.TrimStart().StartsWith("--"))
                     {
                         var regex = new Regex(Regex.Escape("--"));
                         var newText = regex.Replace(s, "", 1);

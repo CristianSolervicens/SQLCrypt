@@ -88,6 +88,9 @@
             this.btBuscarEnBd = new System.Windows.Forms.Button();
             this.btConnectToBd = new System.Windows.Forms.Button();
             this.txTextLimit = new System.Windows.Forms.MyTextBox();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).BeginInit();
@@ -281,15 +284,18 @@
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.findReplaceToolStripMenuItem,
+            this.toolStripSeparator3,
             this.mostrarEspaciosToolStripMenuItem,
             this.guiaIndentacionToolStripMenuItem,
-            this.eliminarEspaciosFinDeLíneaToolStripMenuItem,
+            this.numerosDeLíneaToolStripMenuItem,
+            this.toolStripSeparator4,
             this.selecciónAMayúsculasToolStripMenuItem,
             this.selecciónAMinúsculasToolStripMenuItem,
-            this.findReplaceToolStripMenuItem,
-            this.numerosDeLíneaToolStripMenuItem,
             this.commentSelectionToolStripMenuItem,
-            this.uncommentSelectionToolStripMenuItem});
+            this.uncommentSelectionToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.eliminarEspaciosFinDeLíneaToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 28);
             this.editToolStripMenuItem.Text = "&Edit";
@@ -696,6 +702,21 @@
             this.txTextLimit.Size = new System.Drawing.Size(100, 20);
             this.txTextLimit.TabIndex = 0;
             // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(267, 6);
+            // 
+            // toolStripSeparator4
+            // 
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(267, 6);
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(267, 6);
+            // 
             // FrmSqlCrypt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -793,6 +814,9 @@
         private System.Windows.Forms.ToolStripMenuItem numerosDeLíneaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem commentSelectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem uncommentSelectionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
     }
 }
 
