@@ -86,6 +86,7 @@ namespace SQLCrypt
             FindMan.TextArea = txtSql;
             InitSyntaxColoring(txtSql);
 
+            
             if (fileName != "")
                 OpenFileInEditor(fileName);
         }
@@ -101,7 +102,6 @@ namespace SQLCrypt
                 IsEncrypted = true;
                 OpenCryptoFile(CurrentFile);
                 this.Text = $"SQLCrypt - {CurrentFile}";
-                grabarToolStripMenuItem.Enabled = true;  //Grabar Encriptado
                 grabarComoToolStripMenuItem.Enabled = true;
                 WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
             }
@@ -112,7 +112,6 @@ namespace SQLCrypt
                 txtSql.Text = System.IO.File.ReadAllText(CurrentFile);
                 this.Text = CurrentFile;
                 this.Text = $"SQLCrypt - {CurrentFile}";
-                grabarToolStripMenuItem.Enabled = true;   //Grabar Encriptado
                 grabarComoToolStripMenuItem.Enabled = true;
                 WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
             }
@@ -225,7 +224,6 @@ namespace SQLCrypt
 
                 this.Text = $"SQLCrypt - {CurrentFile}";
                 txtSql.Text = System.IO.File.ReadAllText(files[0]);
-                grabarToolStripMenuItem.Enabled = true;
                 cerrarToolStripMenuItem.Enabled = true;
             }
 
@@ -248,7 +246,6 @@ namespace SQLCrypt
             txtSql.Text = hSql.DecryptFiletoString(CurrentFile);
 
             this.Text = $"SQLCrypt - {CurrentFile}";
-            grabarToolStripMenuItem.Enabled = true;
             cerrarToolStripMenuItem.Enabled = true;
         }
 
@@ -308,7 +305,6 @@ namespace SQLCrypt
         {
             tssLaFile.Text = "";
             tssLaPath.Text = "";
-            grabarToolStripMenuItem.Enabled = false;
             WorkPath = Application.StartupPath;
         }
 
@@ -460,11 +456,12 @@ namespace SQLCrypt
         {
             if (CurrentFile == "")
             {
-                tssLaStat.Text = "No hay archivo Abierto";
-                return;
+                SaveFileStd(true);
             }
-
-            SaveFileStd(false);
+            else
+            {
+                SaveFileStd(false);
+            }
         }
 
 
@@ -474,8 +471,6 @@ namespace SQLCrypt
             IsEncrypted = false;
             txtSql.Text = "";
             this.Text = "SQLCrypt";
-            grabarToolStripMenuItem.Enabled = false;
-            cerrarToolStripMenuItem.Enabled = true;
             tssLaStat.Text = "Archivo Cerrado...";
             txtSql.SetSavePoint();
             txtSql.EmptyUndoBuffer();
@@ -532,12 +527,6 @@ namespace SQLCrypt
                 return 0;
             else
                 return i - 1;
-        }
-
-
-        private void buscarToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            _findReplace.Show();
         }
 
 
@@ -805,8 +794,6 @@ namespace SQLCrypt
 
                     CurrentFile = sfd.FileName;
                     this.Text = "SQLCrypt - " + CurrentFile;
-                    grabarToolStripMenuItem.Enabled = true;
-                    cerrarToolStripMenuItem.Enabled = true;
                 }
                 else
                     return;
@@ -1608,6 +1595,9 @@ namespace SQLCrypt
             TextArea.SetKeywords(0, "action add all alter and any as asc authorization backup begin between break browse bulk by cascade case check checkpoint close clustered coalesce collate column commit committed compute confirm constraint contains containstable continue controlrow convert create cross current current_date current_time current_timestamp current_user cursor database dbcc deallocate declare default delete deny desc disable disk distinct distributed double drop dummy dump else enable end errlvl errorexit escape except exec execute exists exit fetch file fillfactor floppy for foreign forward_only freetext freetexttable from full function go goto grant group having holdlock identity identity_insert identitycol if in index inner insert instead intersect into is isolation join key kill left level like lineno load mirrorexit move national no nocheck nocount nonclustered norecovery not nounload null nullif of off offsets on once only open opendatasource openquery openrowset option or order outer output over percent perm permanent pipe plan precision prepare primary print privileges proc procedure processexit public raiserror read readtext read_only reconfigure recovery references repeatable replication restore restrict return returns revoke right rollback rowcount rowguidcol rule save schema select serializable session_user set setuser shutdown some statistics stats synonym system_user table tape temp temporary textsize then to top tran transaction trigger truncate tsequal uncommitted union unique update updatetext use user values varying view waitfor when where while with work writetext");
             TextArea.SetKeywords(1, "bigint binary bit char character date datetime dec decimal float image int integer money nchar ntext numeric nvarchar real smalldatetime smallint smallmoney sql_variant sysname text timestamp tinyint uniqueidentifier varbinary varchar");
             TextArea.Styles[Style.LineNumber].ForeColor = IntToColor(0x000000);
+
+            TextArea.AdditionalSelectionTyping = true;
+            
         }
 
         private void txtSql_SelectionChanged(object sender, UpdateUIEventArgs e)
@@ -1617,7 +1607,7 @@ namespace SQLCrypt
                 int line = txtSql.CurrentLine;
                 int column = txtSql.GetColumn(txtSql.CurrentPosition);
 
-                tssLaPos.Text = $"{StringComplete(string.Format("Fila: {0}", line), 13)} {StringComplete(string.Format("Col: {0}", column), 13)}";
+                tssLaPos.Text = $"{StringComplete(string.Format("Fila: {0}", line+1), 13)} {StringComplete(string.Format("Col: {0}", column+1), 13)}";
             }
             catch
             {
@@ -1715,7 +1705,7 @@ namespace SQLCrypt
 
         private void findReplaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            buscarToolStripMenuItem_Click(sender, e);
+            _findReplace.Show();
         }
 
 
@@ -1799,6 +1789,18 @@ namespace SQLCrypt
                 txtSql.SelectionStart = txtSql.Lines[f].Position;
                 txtSql.SelectionEnd = txtSql.Lines[t].EndPosition -1;
             }
+        }
+
+        private void findNextToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!_findReplace.FindNext())
+                _findReplace.Show();
+        }
+
+        private void findPreviousToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!_findReplace.FindPrevious())
+                _findReplace.Show();
         }
     }
 }

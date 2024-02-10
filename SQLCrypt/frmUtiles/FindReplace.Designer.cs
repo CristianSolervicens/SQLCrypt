@@ -296,10 +296,10 @@
             this.Controls.Add(this.tabControlFindReplace);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "FindReplace";
-            this.Opacity = 0.9D;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Find and Replace";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FindReplace_FormClosing);
+            this.Shown += new System.EventHandler(this.FindReplace_Shown);
             this.tabControlFindReplace.ResumeLayout(false);
             this.tabPageFind.ResumeLayout(false);
             this.tabPageFind.PerformLayout();

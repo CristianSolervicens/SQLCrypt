@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Specialized;
+using System.Media;
 using System.Windows.Forms;
 using ScintillaNET;
 
@@ -26,6 +28,23 @@ namespace ScintillaFindReplaceControl
             _findSearchFlags = SearchFlags.None;
             _replaceSearchFlags = SearchFlags.None;
             btSalir.Top = -100;
+            textBoxFind.Focus();
+        }
+
+        public bool FindNext()
+        {
+            if (this.textBoxFind.Text == "")
+                return false;
+            buttonFindNext_Click(null, null);
+            return true;
+        }
+
+        public bool FindPrevious()
+        {
+            if (this.textBoxFind.Text == "")
+                return false;
+            buttonFindPrev_Click(null, null);
+            return true;
         }
 
         /// <summary>
@@ -57,7 +76,6 @@ namespace ScintillaFindReplaceControl
             _scintilla = scintilla;
         }
 
-        #region Control Handlers
 
         /// <summary>
         ///     Prevents the form from being destroyed
@@ -127,9 +145,6 @@ namespace ScintillaFindReplaceControl
             _scintilla.AnchorPosition = currentAnchorPos;
         }
 
-        #endregion
-
-        #region Text find and replace
 
         /// <summary>
         ///     Finds the next occurnce of the text in the active Scintilla control
@@ -144,6 +159,12 @@ namespace ScintillaFindReplaceControl
             _scintilla.TargetEnd = _scintilla.TextLength;
 
             var pos = _scintilla.SearchInTarget(text);
+
+            if ( pos == -1)
+            {
+                SystemSounds.Beep.Play();
+            }
+
             if (pos >= 0)
                 _scintilla.SetSel(_scintilla.TargetStart, _scintilla.TargetEnd);
 
@@ -163,6 +184,12 @@ namespace ScintillaFindReplaceControl
             _scintilla.TargetEnd = 0;
 
             var pos = _scintilla.SearchInTarget(text);
+
+            if (pos == -1)
+            {
+                SystemSounds.Beep.Play();
+            }
+
             if (pos >= 0)
                 _scintilla.SetSel(_scintilla.TargetStart, _scintilla.TargetEnd);
 
@@ -199,9 +226,6 @@ namespace ScintillaFindReplaceControl
             }
         }
 
-        #endregion
-
-        #region UI helpers
 
         /// <summary>
         ///     Set the Find search flags based on checked options
@@ -233,11 +257,16 @@ namespace ScintillaFindReplaceControl
                 _replaceSearchFlags |= SearchFlags.WordStart;
         }
 
-        #endregion
 
         private void btSalir_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void FindReplace_Shown(object sender, EventArgs e)
+        {
+            if (tabControlFindReplace.SelectedIndex == 0)
+                textBoxFind.Select();
         }
     }
 }
