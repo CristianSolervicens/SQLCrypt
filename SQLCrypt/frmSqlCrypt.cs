@@ -11,6 +11,7 @@ using SQLCrypt.FunctionalClasses;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
+using SQLCrypt.frmUtiles;
 
 
 namespace SQLCrypt
@@ -1801,6 +1802,12 @@ namespace SQLCrypt
         {
             if (!_findReplace.FindPrevious())
                 _findReplace.Show();
+        }
+
+        private void indicesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var frm = new frmIndexes(hSql);
+            frm.ShowDialog();
         }
     }
 }

@@ -41,6 +41,7 @@
             this.ejecutarArchivosEnBatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extendedPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buscarEnBDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.indicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.abrirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grabarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,11 +65,12 @@
             this.uncommentSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ayudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.acercaDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.databasesToolStripMenuItem = new System.Windows.Forms.ToolStripComboBox();
             this.tabSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.baseDeDatoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.databasesToolStripMenuItem = new System.Windows.Forms.ToolStripComboBox();
+            this.ayudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.acercaDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chkToText = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
@@ -91,7 +93,6 @@
             this.txtSql = new ScintillaNET.Scintilla();
             this.btBuscarEnBd = new System.Windows.Forms.Button();
             this.btConnectToBd = new System.Windows.Forms.Button();
-            this.baseDeDatoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).BeginInit();
@@ -109,11 +110,11 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoToolStripMenuItem,
             this.editToolStripMenuItem,
-            this.ayudToolStripMenuItem,
             this.tabSizeToolStripMenuItem,
             this.toolStripTextBox1,
             this.baseDeDatoToolStripMenuItem,
-            this.databasesToolStripMenuItem});
+            this.databasesToolStripMenuItem,
+            this.ayudToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
@@ -134,6 +135,7 @@
             this.ejecutarArchivosEnBatchToolStripMenuItem,
             this.extendedPropertiesToolStripMenuItem,
             this.buscarEnBDToolStripMenuItem,
+            this.indicesToolStripMenuItem,
             this.toolStripSeparator1,
             this.abrirToolStripMenuItem,
             this.grabarToolStripMenuItem,
@@ -143,7 +145,7 @@
             this.cerrarToolStripMenuItem,
             this.salirToolStripMenuItem});
             this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
-            this.archivoToolStripMenuItem.Size = new System.Drawing.Size(60, 28);
+            this.archivoToolStripMenuItem.Size = new System.Drawing.Size(60, 23);
             this.archivoToolStripMenuItem.Text = "&Archivo";
             // 
             // ejecutarComandoToolStripMenuItem
@@ -223,6 +225,14 @@
             this.buscarEnBDToolStripMenuItem.Text = "Buscar en BD";
             this.buscarEnBDToolStripMenuItem.Click += new System.EventHandler(this.buscarEnBDToolStripMenuItem_Click);
             // 
+            // indicesToolStripMenuItem
+            // 
+            this.indicesToolStripMenuItem.Name = "indicesToolStripMenuItem";
+            this.indicesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.indicesToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
+            this.indicesToolStripMenuItem.Text = "Indices";
+            this.indicesToolStripMenuItem.Click += new System.EventHandler(this.indicesToolStripMenuItem_Click);
+            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -300,7 +310,7 @@
             this.toolStripSeparator5,
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 28);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 23);
             this.editToolStripMenuItem.Text = "&Edit";
             // 
             // findReplaceToolStripMenuItem
@@ -404,20 +414,24 @@
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem.Text = "Eliminar espacios fin de línea";
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem.Click += new System.EventHandler(this.eliminarEspaciosFinDeLíneaToolStripMenuItem_Click);
             // 
-            // ayudToolStripMenuItem
+            // tabSizeToolStripMenuItem
             // 
-            this.ayudToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.acercaDeToolStripMenuItem});
-            this.ayudToolStripMenuItem.Name = "ayudToolStripMenuItem";
-            this.ayudToolStripMenuItem.Size = new System.Drawing.Size(53, 28);
-            this.ayudToolStripMenuItem.Text = "Ay&uda";
+            this.tabSizeToolStripMenuItem.Name = "tabSizeToolStripMenuItem";
+            this.tabSizeToolStripMenuItem.Size = new System.Drawing.Size(60, 23);
+            this.tabSizeToolStripMenuItem.Text = "Tab Size";
             // 
-            // acercaDeToolStripMenuItem
+            // toolStripTextBox1
             // 
-            this.acercaDeToolStripMenuItem.Name = "acercaDeToolStripMenuItem";
-            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
-            this.acercaDeToolStripMenuItem.Text = "Acerca de...";
-            this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.acercaDeToolStripMenuItem_Click);
+            this.toolStripTextBox1.Name = "toolStripTextBox1";
+            this.toolStripTextBox1.Size = new System.Drawing.Size(20, 23);
+            this.toolStripTextBox1.Text = "4";
+            this.toolStripTextBox1.TextChanged += new System.EventHandler(this.toolStripTextBox1_TextChanged);
+            // 
+            // baseDeDatoToolStripMenuItem
+            // 
+            this.baseDeDatoToolStripMenuItem.Name = "baseDeDatoToolStripMenuItem";
+            this.baseDeDatoToolStripMenuItem.Size = new System.Drawing.Size(87, 23);
+            this.baseDeDatoToolStripMenuItem.Text = "Base de Dato";
             // 
             // databasesToolStripMenuItem
             // 
@@ -427,18 +441,20 @@
             this.databasesToolStripMenuItem.Size = new System.Drawing.Size(210, 23);
             this.databasesToolStripMenuItem.SelectedIndexChanged += new System.EventHandler(this.databasesToolStripMenuItem_SelectedIndexChanged);
             // 
-            // tabSizeToolStripMenuItem
+            // ayudToolStripMenuItem
             // 
-            this.tabSizeToolStripMenuItem.Name = "tabSizeToolStripMenuItem";
-            this.tabSizeToolStripMenuItem.Size = new System.Drawing.Size(60, 28);
-            this.tabSizeToolStripMenuItem.Text = "Tab Size";
+            this.ayudToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.acercaDeToolStripMenuItem});
+            this.ayudToolStripMenuItem.Name = "ayudToolStripMenuItem";
+            this.ayudToolStripMenuItem.Size = new System.Drawing.Size(53, 23);
+            this.ayudToolStripMenuItem.Text = "Ay&uda";
             // 
-            // toolStripTextBox1
+            // acercaDeToolStripMenuItem
             // 
-            this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(20, 28);
-            this.toolStripTextBox1.Text = "4";
-            this.toolStripTextBox1.TextChanged += new System.EventHandler(this.toolStripTextBox1_TextChanged);
+            this.acercaDeToolStripMenuItem.Name = "acercaDeToolStripMenuItem";
+            this.acercaDeToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.acercaDeToolStripMenuItem.Text = "Acerca de...";
+            this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.acercaDeToolStripMenuItem_Click);
             // 
             // chkToText
             // 
@@ -694,7 +710,7 @@
             this.btBuscarEnBd.BackColor = System.Drawing.SystemColors.Control;
             this.btBuscarEnBd.Image = global::SQLCrypt.Properties.Resources.Lupa;
             this.btBuscarEnBd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btBuscarEnBd.Location = new System.Drawing.Point(731, 3);
+            this.btBuscarEnBd.Location = new System.Drawing.Point(731, 1);
             this.btBuscarEnBd.Name = "btBuscarEnBd";
             this.btBuscarEnBd.Size = new System.Drawing.Size(98, 25);
             this.btBuscarEnBd.TabIndex = 18;
@@ -708,7 +724,7 @@
             this.btConnectToBd.BackColor = System.Drawing.SystemColors.Control;
             this.btConnectToBd.Image = global::SQLCrypt.Properties.Resources.Connect3;
             this.btConnectToBd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btConnectToBd.Location = new System.Drawing.Point(593, 3);
+            this.btConnectToBd.Location = new System.Drawing.Point(593, 1);
             this.btConnectToBd.Name = "btConnectToBd";
             this.btConnectToBd.Size = new System.Drawing.Size(118, 25);
             this.btConnectToBd.TabIndex = 19;
@@ -716,12 +732,6 @@
             this.btConnectToBd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btConnectToBd.UseVisualStyleBackColor = false;
             this.btConnectToBd.Click += new System.EventHandler(this.btConnectToBd_Click);
-            // 
-            // baseDeDatoToolStripMenuItem
-            // 
-            this.baseDeDatoToolStripMenuItem.Name = "baseDeDatoToolStripMenuItem";
-            this.baseDeDatoToolStripMenuItem.Size = new System.Drawing.Size(87, 23);
-            this.baseDeDatoToolStripMenuItem.Text = "Base de Dato";
             // 
             // FrmSqlCrypt
             // 
@@ -825,6 +835,7 @@
         private System.Windows.Forms.ToolStripMenuItem findNextToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findPreviousToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem baseDeDatoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem indicesToolStripMenuItem;
     }
 }
 
