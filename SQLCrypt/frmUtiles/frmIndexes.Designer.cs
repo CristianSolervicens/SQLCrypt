@@ -37,6 +37,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.btCreateIndex = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtTableName = new System.Windows.Forms.TextBox();
+            this.btGetIndexes = new System.Windows.Forms.Button();
+            this.btSalir = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtIndex
@@ -71,9 +75,11 @@
             // laStatus
             // 
             this.laStatus.AutoSize = true;
+            this.laStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.laStatus.ForeColor = System.Drawing.SystemColors.HotTrack;
             this.laStatus.Location = new System.Drawing.Point(7, 488);
             this.laStatus.Name = "laStatus";
-            this.laStatus.Size = new System.Drawing.Size(35, 13);
+            this.laStatus.Size = new System.Drawing.Size(50, 16);
             this.laStatus.TabIndex = 4;
             this.laStatus.Text = "label1";
             // 
@@ -96,6 +102,7 @@
             this.lsExistingIndexes.ItemHeight = 15;
             this.lsExistingIndexes.Location = new System.Drawing.Point(8, 242);
             this.lsExistingIndexes.Name = "lsExistingIndexes";
+            this.lsExistingIndexes.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.lsExistingIndexes.Size = new System.Drawing.Size(1092, 229);
             this.lsExistingIndexes.TabIndex = 6;
             // 
@@ -127,11 +134,52 @@
             this.btCreateIndex.UseVisualStyleBackColor = true;
             this.btCreateIndex.Click += new System.EventHandler(this.btCreateIndex_Click);
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(314, 225);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(133, 13);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "Table Name (with schema)";
+            // 
+            // txtTableName
+            // 
+            this.txtTableName.Location = new System.Drawing.Point(456, 219);
+            this.txtTableName.Name = "txtTableName";
+            this.txtTableName.Size = new System.Drawing.Size(184, 20);
+            this.txtTableName.TabIndex = 11;
+            // 
+            // btGetIndexes
+            // 
+            this.btGetIndexes.Location = new System.Drawing.Point(658, 217);
+            this.btGetIndexes.Name = "btGetIndexes";
+            this.btGetIndexes.Size = new System.Drawing.Size(115, 23);
+            this.btGetIndexes.TabIndex = 12;
+            this.btGetIndexes.Text = "Get Indexes";
+            this.btGetIndexes.UseVisualStyleBackColor = true;
+            this.btGetIndexes.Click += new System.EventHandler(this.btGetIndexes_Click);
+            // 
+            // btSalir
+            // 
+            this.btSalir.Location = new System.Drawing.Point(990, 10);
+            this.btSalir.Name = "btSalir";
+            this.btSalir.Size = new System.Drawing.Size(115, 23);
+            this.btSalir.TabIndex = 13;
+            this.btSalir.Text = "Salir";
+            this.btSalir.UseVisualStyleBackColor = true;
+            this.btSalir.Click += new System.EventHandler(this.btSalir_Click);
+            // 
             // frmIndexes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.btSalir;
             this.ClientSize = new System.Drawing.Size(1112, 508);
+            this.Controls.Add(this.btSalir);
+            this.Controls.Add(this.btGetIndexes);
+            this.Controls.Add(this.txtTableName);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.btCreateIndex);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -159,5 +207,9 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btCreateIndex;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtTableName;
+        private System.Windows.Forms.Button btGetIndexes;
+        private System.Windows.Forms.Button btSalir;
     }
 }

@@ -899,11 +899,14 @@ namespace SQLCrypt
             if (Type == "U" || Type == "V" || Type == "S")
             {
                 cm.MenuItems.Add("Select COUNT(*) FROM ", new EventHandler(ObjectSelectCount));
-                cm.MenuItems.Add("Select TOP(10) * FROM ", new EventHandler(ObjectSelectStar));
+                cm.MenuItems.Add("Select TOP(100) * FROM ", new EventHandler(ObjectSelectStar));
                 cm.MenuItems.Add("Select * FROM ", new EventHandler(ObjectSelectStarAll));
             }
             if (Type == "U")
+            {
                 cm.MenuItems.Add("Edit Data", new EventHandler(EditarDatos));
+                cm.MenuItems.Add("Get Indexes", new EventHandler(GetIndexes));
+            }
             cm.MenuItems.Add("-");
 
             string sAux = "";
@@ -983,7 +986,7 @@ namespace SQLCrypt
             string Elementos = "";
             foreach (var a in lstObjetos.SelectedItems)
             {
-                Elementos += a.ToString() + "\n";
+                Elementos += (Elementos != "" ? "\n" : "") + a.ToString();
             }
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
@@ -1001,7 +1004,7 @@ namespace SQLCrypt
             for(int x = 0; x < lsColumnas.Items.Count; ++x)
             {
                 if (lsColumnas.Items[x].Selected)
-                    Elementos += $"{lsColumnas.Items[x].Text} {lsColumnas.Items[x].SubItems[1].Text} {lsColumnas.Items[x].SubItems[2].Text}\n";
+                    Elementos += (Elementos != "" ? "\n" : "") + $"{lsColumnas.Items[x].Text} {lsColumnas.Items[x].SubItems[1].Text} {lsColumnas.Items[x].SubItems[2].Text}";
             }
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
@@ -1018,7 +1021,7 @@ namespace SQLCrypt
             for (int x = 0; x < lsColumnas.Items.Count; ++x)
             {
                 if (lsColumnas.Items[x].Selected)
-                    Elementos += $"{lsColumnas.Items[x].Text}\n";
+                    Elementos += (Elementos != "" ? "\n" : "") + $"{lsColumnas.Items[x].Text}";
             }
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
@@ -1069,6 +1072,25 @@ namespace SQLCrypt
             frmDespliegue Despliegue = new frmDespliegue();
             Despliegue.Text = sAux;
             Despliegue.Show();
+        }
+
+
+        private void GetIndexes(object sender, EventArgs e)
+        {
+            if (lstObjetos.SelectedIndex == -1)
+                return;
+
+            DBObject DBObj = new DBObject(hSql);
+            DBObj = (DBObject)lstObjetos.SelectedItem;
+
+            if (DBObj.type.Trim() != "U")
+            {
+                MessageBox.Show("Esta opción aplica sólo para Tablas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var frm = new frmIndexes(hSql, lstObjetos.Text);
+            frm.Show();
         }
 
 
@@ -1806,8 +1828,14 @@ namespace SQLCrypt
 
         private void indicesToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (!hSql.ConnectionStatus)
+            {
+                MessageBox.Show("Debe estar conectado a una Base de Datos", "Atención");
+                return;
+            }
+
             var frm = new frmIndexes(hSql);
-            frm.ShowDialog();
+            frm.Show();
         }
     }
 }

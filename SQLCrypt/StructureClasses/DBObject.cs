@@ -529,7 +529,7 @@ ORDER  BY CAST(OBJECT_SCHEMA_NAME(c.[TableId]) + '.' + c.[TableName] as Varchar(
             string sComando = "";
 
             if (limitedByTen)
-               sComando = "SELECT TOP(10) * FROM [" + this.schema_name + "].[" + this.name + "]";
+               sComando = "SELECT TOP(100) * FROM [" + this.schema_name + "].[" + this.name + "]";
             else
                sComando = "SELECT * FROM [" + this.schema_name + "].[" + this.name + "]";
 

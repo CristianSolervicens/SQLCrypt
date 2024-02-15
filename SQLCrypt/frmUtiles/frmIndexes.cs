@@ -25,7 +25,69 @@ namespace SQLCrypt.frmUtiles
             InitializeComponent();
             this.hSql = hSql;
             laStatus.Text = "";
+            lsExistingIndexesContextMenu();
         }
+
+        public frmIndexes(MySql hSql, string tableName) 
+        {
+            InitializeComponent();
+            this.hSql = hSql;
+            laStatus.Text = "";
+            txtTableName.Text = tableName;
+            
+            lsExistingIndexesContextMenu();
+
+            lsCurrentIndex.Items.Clear();
+            lsExistingIndexes.Items.Clear();
+
+            if (String.IsNullOrEmpty(txtTableName.Text))
+                return;
+
+            LoadExistingIndexes(txtTableName.Text);
+        }
+
+
+
+
+        private void lsExistingIndexesContextMenu()
+        {
+            lsExistingIndexes.ContextMenu = null;
+            ContextMenu cm = new ContextMenu();
+            cm.MenuItems.Add("Selected To Clipboard", new EventHandler(ExistingIndexesToClipboard));
+            cm.MenuItems.Add("Select All", new EventHandler(ExistingIndexesSelectAll));
+            cm.MenuItems.Add("Invert Selection", new EventHandler(ExistingIndexesInvertSelection));
+            lsExistingIndexes.ContextMenu = cm;
+        }
+
+
+        private void ExistingIndexesSelectAll(object sender, EventArgs e)
+        {
+            for (int i = 0; i < lsExistingIndexes.Items.Count; i++)
+                lsExistingIndexes.SetSelected(i, true);
+        }
+
+
+        private void ExistingIndexesInvertSelection(object sender, EventArgs e)
+        {
+            for (int i = 0; i < lsExistingIndexes.Items.Count; i++)
+                lsExistingIndexes.SetSelected(i, !lsExistingIndexes.GetSelected(i));
+        }
+
+
+        private void ExistingIndexesToClipboard(object sender, EventArgs e)
+        {
+            Clipboard.Clear();
+            string Elementos = "";
+            foreach (var a in lsExistingIndexes.SelectedItems)
+            {
+                Elementos += (Elementos != ""? "\n": "") + a.ToString();
+            }
+            if (Elementos != "")
+                Clipboard.SetText(Elementos);
+            else
+                laStatus.Text = "NADA SELECCIONADO !!!";
+        }
+
 
         private void btPaste_Click(object sender, EventArgs e)
         {
@@ -65,6 +127,8 @@ namespace SQLCrypt.frmUtiles
             var index_text = txtIndex.Text.ToLower().Substring(pos_on + 3).Trim();
             int pos_o_p = index_text.IndexOf("(");
             var tabla = index_text.Substring(0, pos_o_p - 1);
+            txtTableName.Text = tabla;
+
             index_text = index_text.Substring(pos_o_p + 1);
             int pos_c_p = index_text.IndexOf(")");
             index_text = index_text.Substring(0, pos_c_p);
@@ -293,5 +357,21 @@ ORDER BY table_name, si.index_id
             MessageBox.Show("Index Created !");
         }
 
+        private void btGetIndexes_Click(object sender, EventArgs e)
+        {
+            lsCurrentIndex.Items.Clear();
+            lsExistingIndexes.Items.Clear();
+
+            if (String.IsNullOrEmpty(txtTableName.Text))
+                return;
+            
+            LoadExistingIndexes(txtTableName.Text);
+        }
+
+
+        private void btSalir_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }
