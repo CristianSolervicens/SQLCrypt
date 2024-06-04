@@ -141,8 +141,6 @@ namespace SQLCrypt
             {
                 ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Reporte");
                 ws.Cells["A1"].LoadFromDataTable( dt, true);
-
-                ws.Cells.AutoFitColumns();
                 for (int c = 0; c < dt.Columns.Count; c++)
                 {
                     if (dt.Columns[c].DataType == typeof(DateTime))
@@ -170,8 +168,8 @@ namespace SQLCrypt
                 using (var range = ws.Cells[1, 1, 1, dt.Columns.Count])
                 {
                     range.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    range.Style.Fill.BackgroundColor.SetColor(Color.LightSteelBlue);
-                    range.Style.Font.Color.SetColor(Color.DarkSlateGray);
+                    range.Style.Fill.BackgroundColor.SetColor(Color.CornflowerBlue);
+                    range.Style.Font.Color.SetColor(Color.AliceBlue);
                     range.Style.Font.Bold = true;
                     ApplyBorders(range, Color.Black);
                 }
@@ -181,6 +179,8 @@ namespace SQLCrypt
 
                 // Freeze the first row
                 ws.View.FreezePanes(2, 1);
+
+                ws.Cells.AutoFitColumns();
 
 
                 pck.Save();
