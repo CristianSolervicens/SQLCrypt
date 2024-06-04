@@ -1,14 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Windows.Forms;
-using System.Data.Odbc;
 using System.IO;
 using OfficeOpenXml;
-using OfficeOpenXml.Style;
 using System.Globalization;
 
 
@@ -31,7 +25,7 @@ namespace SQLCrypt
             {
                 if (Program.hSql != null && Program.hSql.ErrorExiste)
                 {
-                    MessageBox.Show("Error SQL en consulta\n\n" + Program.hSql.ErrorString, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"Error SQL en consulta\n\n{Program.hSql.ErrorString}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Program.hSql.ErrorClear();
                 }
                 this.Close();
@@ -40,7 +34,7 @@ namespace SQLCrypt
 
             if (Program.hSql.ErrorExiste)
             {
-                MessageBox.Show("Error SQL\n\n" + Program.hSql.ErrorString, "Error SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error SQL\n\n{Program.hSql.ErrorString}" , "Error SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Program.hSql.ErrorClear();
                 this.Close();
                 return;
@@ -102,7 +96,11 @@ namespace SQLCrypt
             dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
         }
 
-        private void SaveToExcel2()
+
+        //-------------------------------
+        // Grabación de la Salida a Excel
+        //-------------------------------
+        private void SaveToExcel()
         {
             SaveFileDialog saveForm = new SaveFileDialog();
             saveForm.RestoreDirectory = true;
@@ -141,72 +139,6 @@ namespace SQLCrypt
         }
 
 
-        private void SaveToExcell()
-        {
-            SaveFileDialog saveForm = new SaveFileDialog();
-            saveForm.RestoreDirectory = true;
-            saveForm.Filter = "Excell File|*.xlsx";
-            saveForm.Title = "Save As Excell File";
-            saveForm.ShowDialog();
-
-            if (saveForm.FileName == "")
-                return;
-
-            if (File.Exists(saveForm.FileName))
-                File.Delete(saveForm.FileName);
-
-            FileInfo newFile = new FileInfo(saveForm.FileName);
-            ExcelPackage pck = new ExcelPackage(newFile);
-
-            ExcelWorksheet wks = pck.Workbook.Worksheets.Add("Reporte");
-
-            for (int fila = 0; fila < dataGridView.Rows.Count; ++fila)
-            {
-
-                if (fila == 0)
-                {
-                    for (int i = 0; i < dataGridView.Columns.Count; ++i)
-                    {
-                        wks.Cells[fila + 1, i + 1].Value = dataGridView.Columns[i].HeaderText;
-                    }
-
-                    using (var range = wks.Cells[1, 1, 1, dataGridView.Columns.Count])
-                    {
-                        range.Style.Font.Bold = true;
-                        range.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                        range.Style.Fill.BackgroundColor.SetColor(Color.DarkBlue);
-                        range.Style.Font.Color.SetColor(Color.White);
-                    }
-                }
-
-                for (int i = 0; i < dataGridView.Columns.Count; ++i)
-                {
-                    try
-                    {
-                        wks.Cells[fila + 2, i + 1].Value = dataGridView.Rows[fila].Cells[i].FormattedValue;
-                    }
-                    catch
-                    {
-                        wks.Cells[fila + 2, i + 1].Value = dataGridView.Rows[fila].Cells[i].FormattedValue.ToString();
-                    }
-                }
-
-                using (var range = wks.Cells[fila + 2, 1, fila + 2, dataGridView.Columns.Count])
-                {
-                    range.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    if (fila % 2 == 0)
-                        range.Style.Fill.BackgroundColor.SetColor(Color.Aqua);
-                    else
-                        range.Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
-                }
-            }
-
-            //wks.Cells.AutoFitColumns(0);
-            wks.View.PageLayoutView = false;
-            pck.Save();
-
-        }
-
         //------------------------
         //frmDespliegue_Closing
         //------------------------
@@ -230,8 +162,7 @@ namespace SQLCrypt
 
         private void grabarExcellToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //SaveToExcell();
-            SaveToExcel2();
+            SaveToExcel();
         }
 
         private void salirToolStripMenuItem_Click(object sender, EventArgs e)
