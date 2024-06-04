@@ -65,6 +65,7 @@
             this.uncommentSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tABAEspaciosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.baseDeDatoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -118,7 +119,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
-            this.menuStrip1.Size = new System.Drawing.Size(1148, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(1161, 25);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -228,7 +229,7 @@
             // indicesToolStripMenuItem
             // 
             this.indicesToolStripMenuItem.Name = "indicesToolStripMenuItem";
-            this.indicesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.indicesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
             this.indicesToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.indicesToolStripMenuItem.Text = "Indices";
             this.indicesToolStripMenuItem.Click += new System.EventHandler(this.indicesToolStripMenuItem_Click);
@@ -308,7 +309,8 @@
             this.commentSelectionToolStripMenuItem,
             this.uncommentSelectionToolStripMenuItem,
             this.toolStripSeparator5,
-            this.eliminarEspaciosFinDeLíneaToolStripMenuItem});
+            this.eliminarEspaciosFinDeLíneaToolStripMenuItem,
+            this.tABAEspaciosToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 23);
             this.editToolStripMenuItem.Text = "&Edit";
@@ -414,6 +416,13 @@
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem.Text = "Eliminar espacios fin de línea";
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem.Click += new System.EventHandler(this.eliminarEspaciosFinDeLíneaToolStripMenuItem_Click);
             // 
+            // tABAEspaciosToolStripMenuItem
+            // 
+            this.tABAEspaciosToolStripMenuItem.Name = "tABAEspaciosToolStripMenuItem";
+            this.tABAEspaciosToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+            this.tABAEspaciosToolStripMenuItem.Text = "TAB a Espacios";
+            this.tABAEspaciosToolStripMenuItem.Click += new System.EventHandler(this.tABAEspaciosToolStripMenuItem_Click);
+            // 
             // tabSizeToolStripMenuItem
             // 
             this.tabSizeToolStripMenuItem.Name = "tabSizeToolStripMenuItem";
@@ -483,7 +492,7 @@
             this.tssLaStat});
             this.statusStrip1.Location = new System.Drawing.Point(0, 594);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1148, 31);
+            this.statusStrip1.Size = new System.Drawing.Size(1161, 31);
             this.statusStrip1.TabIndex = 14;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -561,8 +570,8 @@
             this.splitC.Panel2.Controls.Add(this.txtSql);
             this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(3);
             this.splitC.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.splitC.Size = new System.Drawing.Size(1148, 569);
-            this.splitC.SplitterDistance = 232;
+            this.splitC.Size = new System.Drawing.Size(1161, 569);
+            this.splitC.SplitterDistance = 233;
             this.splitC.TabIndex = 15;
             // 
             // laBuscarTablas
@@ -585,7 +594,7 @@
             this.txBuscaEnLista.ForeColor = System.Drawing.Color.Black;
             this.txBuscaEnLista.Location = new System.Drawing.Point(5, 298);
             this.txBuscaEnLista.Name = "txBuscaEnLista";
-            this.txBuscaEnLista.Size = new System.Drawing.Size(224, 20);
+            this.txBuscaEnLista.Size = new System.Drawing.Size(225, 20);
             this.txBuscaEnLista.TabIndex = 26;
             this.txBuscaEnLista.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txBuscaEnLista_KeyDown);
             // 
@@ -600,7 +609,7 @@
             this.panObjetos.Location = new System.Drawing.Point(0, 0);
             this.panObjetos.Margin = new System.Windows.Forms.Padding(2);
             this.panObjetos.Name = "panObjetos";
-            this.panObjetos.Size = new System.Drawing.Size(232, 322);
+            this.panObjetos.Size = new System.Drawing.Size(233, 322);
             this.panObjetos.TabIndex = 21;
             // 
             // cbObjetos
@@ -636,7 +645,7 @@
             this.lstObjetos.Name = "lstObjetos";
             this.lstObjetos.ScrollAlwaysVisible = true;
             this.lstObjetos.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstObjetos.Size = new System.Drawing.Size(232, 249);
+            this.lstObjetos.Size = new System.Drawing.Size(233, 249);
             this.lstObjetos.TabIndex = 12;
             this.lstObjetos.SelectedIndexChanged += new System.EventHandler(this.lstObjetos_SelectedIndexChanged);
             this.lstObjetos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstObjetos_MouseDown);
@@ -651,7 +660,7 @@
             this.panColumnas.Location = new System.Drawing.Point(0, 326);
             this.panColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.panColumnas.Name = "panColumnas";
-            this.panColumnas.Size = new System.Drawing.Size(232, 240);
+            this.panColumnas.Size = new System.Drawing.Size(233, 240);
             this.panColumnas.TabIndex = 0;
             // 
             // lsColumnas
@@ -671,7 +680,7 @@
             this.lsColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.lsColumnas.Name = "lsColumnas";
             this.lsColumnas.ShowGroups = false;
-            this.lsColumnas.Size = new System.Drawing.Size(232, 240);
+            this.lsColumnas.Size = new System.Drawing.Size(233, 240);
             this.lsColumnas.TabIndex = 33;
             this.lsColumnas.UseCompatibleStateImageBehavior = false;
             this.lsColumnas.View = System.Windows.Forms.View.Details;
@@ -698,7 +707,7 @@
             this.txtSql.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSql.Location = new System.Drawing.Point(3, 3);
             this.txtSql.Name = "txtSql";
-            this.txtSql.Size = new System.Drawing.Size(906, 563);
+            this.txtSql.Size = new System.Drawing.Size(918, 563);
             this.txtSql.TabIndex = 0;
             this.txtSql.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.txtSql_SelectionChanged);
             this.txtSql.TextChanged += new System.EventHandler(this.txtSql_TextChanged);
@@ -738,7 +747,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::SQLCrypt.Properties.Settings.Default.AppBackColor;
-            this.ClientSize = new System.Drawing.Size(1148, 625);
+            this.ClientSize = new System.Drawing.Size(1161, 625);
             this.Controls.Add(this.btConnectToBd);
             this.Controls.Add(this.btBuscarEnBd);
             this.Controls.Add(this.splitC);
@@ -747,7 +756,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(1130, 626);
+            this.MinimumSize = new System.Drawing.Size(1130, 625);
             this.Name = "FrmSqlCrypt";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sql Crypt";
@@ -836,6 +845,7 @@
         private System.Windows.Forms.ToolStripMenuItem findPreviousToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem baseDeDatoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem indicesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tABAEspaciosToolStripMenuItem;
     }
 }
 

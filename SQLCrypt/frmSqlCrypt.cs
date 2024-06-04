@@ -1837,5 +1837,36 @@ namespace SQLCrypt
             var frm = new frmIndexes(hSql);
             frm.Show();
         }
+
+        private void tABAEspaciosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TAB_to_spaces();
+        }
+
+        private void TAB_to_spaces()
+        {
+            string spaces = "";
+            try
+            {
+                int numSpaces = Convert.ToInt32(toolStripTextBox1.Text);
+                for (int i = 0; i < numSpaces; ++i)
+                    spaces += " ";
+            }
+            catch
+            {
+                MessageBox.Show("Por favor ingrese el número de espacios en 'Tab Size'");
+                return;
+            }
+            StringBuilder strB = new StringBuilder();
+
+            for (int i = 0; i < txtSql.Lines.Count; i++)
+            {
+                // Get the text of the current line
+                string lineText = txtSql.Lines[i].Text;
+                // Remove trailing spaces from the line
+                strB.AppendLine(lineText.TrimEnd().Replace("\t", spaces));
+            }
+            txtSql.Text = strB.ToString();
+        }
     }
 }

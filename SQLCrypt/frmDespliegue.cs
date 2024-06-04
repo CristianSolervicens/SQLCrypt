@@ -9,6 +9,7 @@ using System.Data.Odbc;
 using System.IO;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using System.Globalization;
 
 
 namespace SQLCrypt
@@ -101,6 +102,44 @@ namespace SQLCrypt
             dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
         }
 
+        private void SaveToExcel2()
+        {
+            SaveFileDialog saveForm = new SaveFileDialog();
+            saveForm.RestoreDirectory = true;
+            saveForm.Filter = "Excell File|*.xlsx";
+            saveForm.Title = "Save As Excell File";
+            saveForm.ShowDialog();
+
+            if (saveForm.FileName == "")
+                return;
+
+            if (File.Exists(saveForm.FileName))
+                File.Delete(saveForm.FileName);
+
+            FileInfo newFile = new FileInfo(saveForm.FileName);
+
+
+            string dateFormat = $"{CultureInfo.CurrentUICulture.DateTimeFormat.ShortDatePattern} HH:MM:SS";
+            //string dateFormat = "MM-dd-yyyy HH:MM:SS";
+            var dt = (DataTable)dataGridView.DataSource;
+            using (ExcelPackage pck = new ExcelPackage(newFile))
+            {
+                ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Reporte");
+                ws.Cells["A1"].LoadFromDataTable( dt, true);
+
+                ws.Cells.AutoFitColumns();
+                for (int c = 0; c < dt.Columns.Count; c++)
+                {
+                    if (dt.Columns[c].DataType == typeof(DateTime))
+                    {
+                        ws.Column(c + 1).Style.Numberformat.Format = dateFormat;
+                    }
+                }
+
+                pck.Save();
+            }
+        }
+
 
         private void SaveToExcell()
         {
@@ -142,7 +181,14 @@ namespace SQLCrypt
 
                 for (int i = 0; i < dataGridView.Columns.Count; ++i)
                 {
-                    wks.Cells[fila + 2, i + 1].Value = dataGridView.Rows[fila].Cells[i].FormattedValue.ToString();
+                    try
+                    {
+                        wks.Cells[fila + 2, i + 1].Value = dataGridView.Rows[fila].Cells[i].FormattedValue;
+                    }
+                    catch
+                    {
+                        wks.Cells[fila + 2, i + 1].Value = dataGridView.Rows[fila].Cells[i].FormattedValue.ToString();
+                    }
                 }
 
                 using (var range = wks.Cells[fila + 2, 1, fila + 2, dataGridView.Columns.Count])
@@ -184,7 +230,8 @@ namespace SQLCrypt
 
         private void grabarExcellToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveToExcell();
+            //SaveToExcell();
+            SaveToExcel2();
         }
 
         private void salirToolStripMenuItem_Click(object sender, EventArgs e)
