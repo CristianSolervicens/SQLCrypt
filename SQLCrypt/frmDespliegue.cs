@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using System.IO;
 using OfficeOpenXml;
 using System.Globalization;
+using OfficeOpenXml.Style;
+using System.Drawing;
 
 
 namespace SQLCrypt
@@ -102,6 +104,8 @@ namespace SQLCrypt
         //-------------------------------
         private void SaveToExcel()
         {
+
+            // Selección del Archivo de Salida
             SaveFileDialog saveForm = new SaveFileDialog();
             saveForm.RestoreDirectory = true;
             saveForm.Filter = "Excell File|*.xlsx";
@@ -112,13 +116,26 @@ namespace SQLCrypt
                 return;
 
             if (File.Exists(saveForm.FileName))
-                File.Delete(saveForm.FileName);
+            {
+                try
+                {
+                    File.Delete(saveForm.FileName);
+                }
+                catch
+                {
+                    MessageBox.Show("No fue posible eliminar el Archivo existente.\nVerifique que no esté en uso.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+            }
+                
 
             FileInfo newFile = new FileInfo(saveForm.FileName);
-
-
+            
+            // Obtener Formato de Fecha desde el Sistema
             string dateFormat = $"{CultureInfo.CurrentUICulture.DateTimeFormat.ShortDatePattern} HH:MM:SS";
             //string dateFormat = "MM-dd-yyyy HH:MM:SS";
+
+            // Salida a Excel
             var dt = (DataTable)dataGridView.DataSource;
             using (ExcelPackage pck = new ExcelPackage(newFile))
             {
@@ -134,10 +151,53 @@ namespace SQLCrypt
                     }
                 }
 
+
+                // Color de Fondo de las Filas de Dato
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    var row = ws.Cells[i + 2, 1, i + 2, dt.Columns.Count];
+                    row.Style.Font.Color.SetColor(Color.Black);
+                    if (i % 2 != 0)
+                    {
+                        row.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        row.Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
+
+                    }
+                    ApplyBorders(row, Color.LightGray);
+                }
+
+                // Formateo de Header + Auto Filter, y Freeze de la primera Fila
+                using (var range = ws.Cells[1, 1, 1, dt.Columns.Count])
+                {
+                    range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    range.Style.Fill.BackgroundColor.SetColor(Color.LightSteelBlue);
+                    range.Style.Font.Color.SetColor(Color.DarkSlateGray);
+                    range.Style.Font.Bold = true;
+                    ApplyBorders(range, Color.Black);
+                }
+
+                // Apply auto filter to the first row
+                ws.Cells[1, 1, 1, dt.Columns.Count].AutoFilter = true;
+
+                // Freeze the first row
+                ws.View.FreezePanes(2, 1);
+
+
                 pck.Save();
             }
         }
 
+        static void ApplyBorders(ExcelRange range, Color color)
+        {
+            range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            range.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            range.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            range.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            range.Style.Border.Top.Color.SetColor(color);
+            range.Style.Border.Bottom.Color.SetColor(color);
+            range.Style.Border.Left.Color.SetColor(color);
+            range.Style.Border.Right.Color.SetColor(color);
+        }
 
         //------------------------
         //frmDespliegue_Closing
