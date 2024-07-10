@@ -144,12 +144,12 @@ namespace SQLCrypt.frmUtiles
 
             int rows = CountAllRows(tabla);
 
-            lsCurrentIndex.Items.Add($"{tabla:40} {rows}");
+            lsCurrentIndex.Items.Add($"Filas en Tabla {tabla:40} = {rows}");
             foreach (var col in columnas)
             {
                 var col_name = col.Trim();
                 int col_rows = CountColumnRows(tabla, col_name);
-                lsCurrentIndex.Items.Add($"{col_name:40} {col_rows}");
+                lsCurrentIndex.Items.Add($"Valores distintos de la Columna: {col_name:40} = {col_rows}");
             }
 
             LoadExistingIndexes(tabla);
