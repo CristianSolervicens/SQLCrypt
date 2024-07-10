@@ -126,7 +126,14 @@ namespace SQLCrypt.frmUtiles
             }
             var index_text = txtIndex.Text.ToLower().Substring(pos_on + 3).Trim();
             int pos_o_p = index_text.IndexOf("(");
-            var tabla = index_text.Substring(0, pos_o_p - 1);
+            var tabla = index_text.Substring(0, pos_o_p).Trim();
+            
+            if (tabla.IndexOf(".") == -1)
+            {
+                MessageBox.Show("El nombre de la tabla debe contener el Schema (Ej: dbo.tabla)");
+                tabla = $"dbo.{tabla}";
+            }
+
             txtTableName.Text = tabla;
 
             index_text = index_text.Substring(pos_o_p + 1);
@@ -320,6 +327,9 @@ ORDER BY table_name, si.index_id
                 return -1;
             }
 
+            if (!hSql.Data.HasRows)
+                return 0;
+
             hSql.Data.Read();
             count = hSql.Data.GetInt32(0);
 
@@ -338,6 +348,9 @@ ORDER BY table_name, si.index_id
                 hSql.ErrorClear();
                 return -1;
             }
+
+            if (!hSql.Data.HasRows)
+                return 0;
 
             hSql.Data.Read();
             count = hSql.Data.GetInt32(0);
