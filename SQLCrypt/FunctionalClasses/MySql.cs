@@ -14,6 +14,7 @@ namespace SQLCrypt.FunctionalClasses
     using System.Data;
     using System.Text.RegularExpressions;
     using System.Windows.Forms;
+    using System.Security.Policy;
 
     namespace MySql
     {
@@ -23,22 +24,22 @@ namespace SQLCrypt.FunctionalClasses
         public class MySql
         {
 
-            //Archivo encriptado que contiene el String de Conexión a la BD
-            private string sConnectionFile = "ConnectionString.cfg";             //Crypt Connection String File
-                                                                                 //Mantiene el estado de conexión
-            private Boolean bConnected = false;
             //Cadena que contiene el estado de error (si lo hubiera)
             private String sError = "";
+            
             //Objeto de conexión a la Base de Datos.
             public SqlConnection Conn = null;
+            
             //Cadena de conexión a la Base de Datos.
             private String sConnectionStr;
             private String sMensajes;
 
             //Constante usada como semilla para la encriptación
             private const string passKey = "AthELeIa";
+            
             //Path hacia los Archivos de ComandosAlmacenados.
             public string sPathToCommands = "";
+            
             //ResultSet para las consultas con datos
             public SqlDataReader Data = null;
 
@@ -84,17 +85,11 @@ namespace SQLCrypt.FunctionalClasses
                     catch (SqlException e)
                     {
                         sError = "Error: " + e.Message;
-                        bConnected = false;
                     }
                 }
+                get { return sConnectionStr; }
             }
 
-            //ConnectionFile
-            public string ConnectionFile
-            {
-                get { return sConnectionFile; }
-                set { sConnectionFile = value; }
-            }
 
             //Entrega el String con el último error
             public string ErrorString
@@ -113,7 +108,19 @@ namespace SQLCrypt.FunctionalClasses
             /// </summary>
             public Boolean ConnectionStatus
             {
-                get { return bConnected; }
+                get { 
+                    if (Conn == null)
+                        return false;
+                    if (Conn.State == ConnectionState.Broken)
+                        return false;
+                    if (Conn.State == ConnectionState.Closed)
+                        return false;
+
+                    if (Conn.State == ConnectionState.Open);
+                        return true;
+                    
+                    return false;
+                }
             }
 
 
@@ -201,7 +208,6 @@ namespace SQLCrypt.FunctionalClasses
             {
                 Data = null;
                 sConnectionStr = "";
-                sConnectionFile = "";
                 sError = "";
                 sMensajes = "";
                 sPathToCommands = "";
@@ -226,18 +232,7 @@ namespace SQLCrypt.FunctionalClasses
 
                 if (sConnectionStr == "")
                 {
-                    if (sConnectionFile != "")
-                    {
-                        if (System.IO.File.Exists(sConnectionFile))
-                            sConnectionStr = DecryptFiletoString(sConnectionFile);
-                        else
-                        {
-                            sError = $"El Archivo de conexión indicado no existe\n  [{sConnectionFile}]";
-                            return 0;
-                        }
-
-                    }
-
+                    return 0;
                 }
 
                 //Si no es una cadena correctamente compuesta, la asignación levanta un error.
@@ -250,13 +245,11 @@ namespace SQLCrypt.FunctionalClasses
                 catch (System.Data.Odbc.OdbcException e)
                 {
                     sError = $"Error: {e.Message}";
-                    bConnected = false;
                     return 0;
                 }
                 catch
                 {
                     sError = "Error desconocido o de formato del String de conexión.";
-                    bConnected = false;
                     return 0;
                 }
 
@@ -267,18 +260,15 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (SqlException e)
                 {
-                    bConnected = false;
                     sError = $"Error: {e.Message}";
                     return 0;
                 }
                 catch
                 {
                     sError = "Error desconocido o de formato del String de conexión.";
-                    bConnected = false;
                     return 0;
                 }
 
-                bConnected = true;
                 return 1;
             }
 
@@ -290,10 +280,11 @@ namespace SQLCrypt.FunctionalClasses
             /// <returns></returns>
             public int CloseDBConn()
             {
-                if (bConnected)
+                if (ConnectionStatus)
                 {
                     Conn.Close();
-                    bConnected = false;
+                    Conn.Dispose();
+                    Conn = null;
                     return 1;
                 }
                 else
@@ -369,7 +360,6 @@ namespace SQLCrypt.FunctionalClasses
                 {
                     sError = $"Error: {exw.Message}";
                     this.CloseDBConn();
-                    this.bConnected = false;
                     Cmd.Dispose();
                     return false;
                 }
@@ -885,10 +875,16 @@ namespace SQLCrypt.FunctionalClasses
 
             public bool SetDatabase(string Database)
             {
+                this.ErrorClear();
                 string sComando = $"USE [{Database}]";
                 ExecuteSql(sComando);
-                if (this.ErrorExiste)
+                if (this.ErrorExiste || GetCurrentDatabase().ToLower() != Database.ToLower() )
+                {
+                    sError += (sError!= "")? $"\n{sMensajes}": sMensajes;
+                    if (sError == "")
+                        sError = $"No se ha podio acceder a la Base de Dato: [{Database}]";
                     return false;
+                }
                 return true;
             }
 
@@ -922,6 +918,21 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 DataClose();
                 return db_name;
+            }
+
+
+            public string GetServerName()
+            {
+                string Comando = "SELECT @@SERVERNAME";
+                string server_name = "";
+                ExecuteSqlData(Comando);
+                if (Data != null)
+                {
+                    Data.Read();
+                    server_name = Data.GetString(0);
+                }
+                DataClose();
+                return server_name;
             }
 
 

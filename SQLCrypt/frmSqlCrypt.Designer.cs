@@ -79,10 +79,12 @@
             this.tssLaPath = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssLaPos = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssLaStat = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitC = new System.Windows.Forms.SplitContainer();
             this.laBuscarTablas = new System.Windows.Forms.Label();
             this.txBuscaEnLista = new System.Windows.Forms.TextBox();
             this.panObjetos = new System.Windows.Forms.Panel();
+            this.btRefreshType = new System.Windows.Forms.Button();
             this.cbObjetos = new System.Windows.Forms.ComboBox();
             this.laTablas = new System.Windows.Forms.Label();
             this.lstObjetos = new System.Windows.Forms.ListBox();
@@ -94,6 +96,7 @@
             this.txtSql = new ScintillaNET.Scintilla();
             this.btBuscarEnBd = new System.Windows.Forms.Button();
             this.btConnectToBd = new System.Windows.Forms.Button();
+            this.btReconnect = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).BeginInit();
@@ -489,7 +492,8 @@
             this.tssLaFile,
             this.tssLaPath,
             this.tssLaPos,
-            this.tssLaStat});
+            this.tssLaStat,
+            this.toolStripStatusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 594);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1161, 31);
@@ -513,7 +517,7 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.tssLaFile.Name = "tssLaFile";
-            this.tssLaFile.Size = new System.Drawing.Size(240, 26);
+            this.tssLaFile.Size = new System.Drawing.Size(350, 26);
             this.tssLaFile.Text = "tssLaFile";
             // 
             // tssLaPath
@@ -523,7 +527,7 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.tssLaPath.Name = "tssLaPath";
-            this.tssLaPath.Size = new System.Drawing.Size(460, 26);
+            this.tssLaPath.Size = new System.Drawing.Size(360, 26);
             this.tssLaPath.Text = "tssLaPath";
             // 
             // tssLaPos
@@ -546,6 +550,12 @@
             this.tssLaStat.Name = "tssLaStat";
             this.tssLaStat.Size = new System.Drawing.Size(210, 26);
             this.tssLaStat.Text = "tssLaStat";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 15);
+            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
             // splitC
             // 
@@ -602,6 +612,7 @@
             // 
             this.panObjetos.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panObjetos.BackColor = System.Drawing.SystemColors.Control;
+            this.panObjetos.Controls.Add(this.btRefreshType);
             this.panObjetos.Controls.Add(this.cbObjetos);
             this.panObjetos.Controls.Add(this.laTablas);
             this.panObjetos.Controls.Add(this.lstObjetos);
@@ -612,6 +623,17 @@
             this.panObjetos.Size = new System.Drawing.Size(233, 322);
             this.panObjetos.TabIndex = 21;
             // 
+            // btRefreshType
+            // 
+            this.btRefreshType.Image = ((System.Drawing.Image)(resources.GetObject("btRefreshType.Image")));
+            this.btRefreshType.Location = new System.Drawing.Point(192, 252);
+            this.btRefreshType.Name = "btRefreshType";
+            this.btRefreshType.Size = new System.Drawing.Size(27, 25);
+            this.btRefreshType.TabIndex = 28;
+            this.btRefreshType.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btRefreshType.UseVisualStyleBackColor = true;
+            this.btRefreshType.Click += new System.EventHandler(this.btRefreshType_Click);
+            // 
             // cbObjetos
             // 
             this.cbObjetos.BackColor = System.Drawing.SystemColors.Control;
@@ -620,14 +642,14 @@
             this.cbObjetos.Location = new System.Drawing.Point(5, 253);
             this.cbObjetos.Margin = new System.Windows.Forms.Padding(2);
             this.cbObjetos.Name = "cbObjetos";
-            this.cbObjetos.Size = new System.Drawing.Size(177, 21);
+            this.cbObjetos.Size = new System.Drawing.Size(183, 21);
             this.cbObjetos.TabIndex = 13;
             this.cbObjetos.SelectedValueChanged += new System.EventHandler(this.cbObjetos_SelectedValueChanged);
             // 
             // laTablas
             // 
             this.laTablas.AutoSize = true;
-            this.laTablas.Location = new System.Drawing.Point(187, 259);
+            this.laTablas.Location = new System.Drawing.Point(130, 279);
             this.laTablas.Name = "laTablas";
             this.laTablas.Size = new System.Drawing.Size(47, 13);
             this.laTablas.TabIndex = 27;
@@ -719,7 +741,7 @@
             this.btBuscarEnBd.BackColor = System.Drawing.SystemColors.Control;
             this.btBuscarEnBd.Image = global::SQLCrypt.Properties.Resources.Lupa;
             this.btBuscarEnBd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btBuscarEnBd.Location = new System.Drawing.Point(731, 1);
+            this.btBuscarEnBd.Location = new System.Drawing.Point(756, 1);
             this.btBuscarEnBd.Name = "btBuscarEnBd";
             this.btBuscarEnBd.Size = new System.Drawing.Size(98, 25);
             this.btBuscarEnBd.TabIndex = 18;
@@ -742,12 +764,24 @@
             this.btConnectToBd.UseVisualStyleBackColor = false;
             this.btConnectToBd.Click += new System.EventHandler(this.btConnectToBd_Click);
             // 
+            // btReconnect
+            // 
+            this.btReconnect.Image = ((System.Drawing.Image)(resources.GetObject("btReconnect.Image")));
+            this.btReconnect.Location = new System.Drawing.Point(714, 1);
+            this.btReconnect.Name = "btReconnect";
+            this.btReconnect.Size = new System.Drawing.Size(26, 25);
+            this.btReconnect.TabIndex = 29;
+            this.btReconnect.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btReconnect.UseVisualStyleBackColor = true;
+            this.btReconnect.Click += new System.EventHandler(this.btReconnect_Click);
+            // 
             // FrmSqlCrypt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::SQLCrypt.Properties.Settings.Default.AppBackColor;
             this.ClientSize = new System.Drawing.Size(1161, 625);
+            this.Controls.Add(this.btReconnect);
             this.Controls.Add(this.btConnectToBd);
             this.Controls.Add(this.btBuscarEnBd);
             this.Controls.Add(this.splitC);
@@ -846,6 +880,9 @@
         private System.Windows.Forms.ToolStripMenuItem baseDeDatoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem indicesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tABAEspaciosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.Button btRefreshType;
+        private System.Windows.Forms.Button btReconnect;
     }
 }
 

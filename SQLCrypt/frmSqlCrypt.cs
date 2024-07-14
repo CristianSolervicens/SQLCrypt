@@ -24,7 +24,6 @@ namespace SQLCrypt
 
         string CurrentFile = "";
         bool IsEncrypted = false;
-
         public string WorkPath = "";
         private string Server = "";
         private int TextLimit = 0;
@@ -614,7 +613,9 @@ namespace SQLCrypt
 
             if (!hSql.SetDatabase(databasesToolStripMenuItem.Text))
             {
-                MessageBox.Show(hSql.ErrorString, "Error Abriendo Base de Datos");
+                MessageBox.Show(hSql.ErrorString, $"Error Abriendo Base de Datos\n{hSql.ErrorString}");
+                hSql.ErrorClear();
+                databasesToolStripMenuItem.Text = hSql.GetCurrentDatabase();
                 return;
             }
 
@@ -623,7 +624,7 @@ namespace SQLCrypt
             if (splitC.Panel1Collapsed == false)
                 cbObjetosSelect("U");
             
-            databasesToolStripMenuItem.Text = databasesToolStripMenuItem.Text;
+            // databasesToolStripMenuItem.Text = databasesToolStripMenuItem.Text;
         }
 
 
@@ -1867,6 +1868,45 @@ namespace SQLCrypt
                 strB.AppendLine(lineText.TrimEnd().Replace("\t", spaces));
             }
             txtSql.Text = strB.ToString();
+        }
+
+
+        private void btRefreshType_Click(object sender, EventArgs e)
+        {
+            cbObjetos_SelectedValueChanged(sender, e);
+        }
+
+
+        private void btReconnect_Click(object sender, EventArgs e)
+        {
+            if (hSql.ConnectionString != "" && !hSql.ConnectionStatus)
+            {
+                hSql.ErrorClear();
+                hSql.CloseDBConn();
+                databasesToolStripMenuItem.Items.Clear();
+                hSql.ConnectToDB();
+
+                if (hSql.ErrorExiste)
+                {
+                    MessageBox.Show(hSql.ErrorString, "Error conectándose a la Base de Datos");
+                    hSql.ErrorClear();
+                    return;
+                }
+
+                LoadDatabaseList();
+
+                tssLaFile.Text = $"{hSql.GetServerName()}/{databasesToolStripMenuItem.Text}";
+
+                Objetos = new DbObjects(hSql);
+                Table = new TableDef(hSql);
+                Load_cbObjetos();
+            }
+
+            if (hSql.ConnectionStatus)
+                MessageBox.Show("Re-Conectado");
+            else
+                MessageBox.Show("No Re-Conectado");
+
         }
     }
 }
