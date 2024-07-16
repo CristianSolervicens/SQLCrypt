@@ -97,6 +97,7 @@
             this.btBuscarEnBd = new System.Windows.Forms.Button();
             this.btConnectToBd = new System.Windows.Forms.Button();
             this.btReconnect = new System.Windows.Forms.Button();
+            this.autoCompleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).BeginInit();
@@ -313,7 +314,8 @@
             this.uncommentSelectionToolStripMenuItem,
             this.toolStripSeparator5,
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem,
-            this.tABAEspaciosToolStripMenuItem});
+            this.tABAEspaciosToolStripMenuItem,
+            this.autoCompleteToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(49, 28);
             this.editToolStripMenuItem.Text = "&Edit";
@@ -791,6 +793,13 @@
             this.btReconnect.UseVisualStyleBackColor = true;
             this.btReconnect.Click += new System.EventHandler(this.btReconnect_Click);
             // 
+            // autoCompleteToolStripMenuItem
+            // 
+            this.autoCompleteToolStripMenuItem.Name = "autoCompleteToolStripMenuItem";
+            this.autoCompleteToolStripMenuItem.Size = new System.Drawing.Size(335, 26);
+            this.autoCompleteToolStripMenuItem.Text = "Auto Complete";
+            this.autoCompleteToolStripMenuItem.Click += new System.EventHandler(this.autoCompleteToolStripMenuItem_Click);
+            // 
             // FrmSqlCrypt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -900,6 +909,7 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Button btRefreshType;
         private System.Windows.Forms.Button btReconnect;
+        private System.Windows.Forms.ToolStripMenuItem autoCompleteToolStripMenuItem;
     }
 }
 

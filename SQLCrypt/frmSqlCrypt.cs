@@ -30,6 +30,10 @@ using System.Security.Cryptography.Xml;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Windows.Media.TextFormatting;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using System.Reflection;
+using System.Security.Principal;
+using System.Windows.Media.Media3D;
 
 
 namespace SQLCrypt
@@ -61,10 +65,44 @@ namespace SQLCrypt
         FindReplace _findReplace = null;
         private int maxLineNumberCharLength;
         private int lastCaretPos = 0;
+        private bool autoCompleteEnabled = true;
+        
+        private string keyWords = "add all alter and any as asc " +
+                                  "backup begin between break browse bulk by " +
+                                  "cascade case check checkpoint close clustered coalesce collate column commit constraint continue convert create cross current " +
+                                  "current_timestamp current_user cursor " +
+                                  "database datediff datepart dbcc deallocate declare default delete deny desc disable disk distinct distributed double drop dummy dump " +
+                                  "else enable end errlvl errorexit escape except exec execute exists exit " +
+                                  "fetch file fillfactor for foreign forward_only freetext from full function " +
+                                  "getdate go grant group " +
+                                  "having holdlock " +
+                                  "identity identity_insert identitycol if in index inner insert instead intersect into is isnull isolation " +
+                                  "join " +
+                                  "key kill " +
+                                  "left level like load " +
+                                  "move " +
+                                  "no nocheck nocount nonclustered norecovery not null nullif " +
+                                  "object_id of off offsets on once only open opendatasource openquery openrowset option or order outer output over " +
+                                  "percent perm prepare primary print proc procedure public " +
+                                  "raiserror read readtext read_only reconfigure recovery references repeatable replication restore restrict return returns revoke right " +
+                                  "rollback rowcount rowguidcol rule " +
+                                  "save schema select serializable session_user set setuser shutdown some statistics stats synonym system_user " +
+                                  "table tape temp then to top tran transaction trigger truncate " +
+                                  "uncommitted union unique update updatetext use user " +
+                                  "values view " +
+                                  "waitfor when where while with work writetext";
+
+        private string keyWords2 = "bigint binary max bit char character date datetime dec decimal float image int integer money nchar ntext numeric nvarchar " +
+                                   "real smalldatetime smallint smallmoney sql_variant sysname text timestamp tinyint uniqueidentifier varbinary varchar";
+
+        private string autoCompleteKeywords = "";
+
 
         public FrmSqlCrypt(MySql hSql, string fileName)
         {
             InitializeComponent();
+
+            autoCompleteKeywords = keyWords.ToUpper();
 
             laTablas.Text = "";
             tssLaFile.Text = "";
@@ -104,10 +142,335 @@ namespace SQLCrypt
             FindMan.TextArea = txtSql;
             InitSyntaxColoring(txtSql);
 
-            
+            SetAutocompleteMenuItemText();
+
             if (fileName != "")
                 OpenFileInEditor(fileName);
         }
+
+
+        /// <summary>
+        /// SCINTILLA REGION
+        /// </summary>
+         
+        #region Scintilla
+
+        public static Color IntToColor(int rgb)
+        {
+            return Color.FromArgb(255, (byte)(rgb >> 16), (byte)(rgb >> 8), (byte)rgb);
+        }
+
+        private static bool IsBrace(int c)
+        {
+            switch (c)
+            {
+                case '(':
+                case ')':
+                case '[':
+                case ']':
+                case '{':
+                case '}':
+                case '<':
+                case '>':
+                    return true;
+            }
+
+            return false;
+        }
+
+
+        private void InitSyntaxColoring(ScintillaNET.Scintilla TextArea)
+        {
+
+            // Configure the default style
+            TextArea.Margins[0].Width = 5;
+
+            TextArea.StyleResetDefault();
+            TextArea.Styles[Style.Default].Font = "Consolas";
+            TextArea.Styles[Style.Default].Size = 10;
+            TextArea.Styles[Style.Default].BackColor = IntToColor(0x212121);
+            TextArea.Styles[Style.Default].ForeColor = IntToColor(0xFFFFFF);
+            TextArea.CaretLineBackColor = IntToColor(0x333333);
+            TextArea.CaretForeColor = IntToColor(0xF0F0F0);
+            TextArea.CaretWidth = 2;
+            TextArea.SetSelectionBackColor(true, IntToColor(0x535353));
+            TextArea.StyleClearAll();
+
+            //Resaltado de Parentesis (Braces)
+            TextArea.Styles[Style.BraceBad].ForeColor = IntToColor(0xFFFFFF);
+            TextArea.Styles[Style.BraceLight].ForeColor = IntToColor(0xFF00AA);
+
+            TextArea.Styles[Style.Sql.Identifier].ForeColor = IntToColor(0xD0DAE2);
+            TextArea.Styles[Style.Sql.Comment].ForeColor = IntToColor(0xBD758B);
+            TextArea.Styles[Style.Sql.CommentLine].ForeColor = IntToColor(0x40BF57);
+            TextArea.Styles[Style.Sql.CommentDoc].ForeColor = IntToColor(0x2FAE35);
+            TextArea.Styles[Style.Sql.Number].ForeColor = IntToColor(0xFFFF00);
+            TextArea.Styles[Style.Sql.String].ForeColor = IntToColor(0xFFFF00);
+            TextArea.Styles[Style.Sql.Character].ForeColor = IntToColor(0xE95454);
+            //TextArea.Styles[Style.Sql.Preprocessor].ForeColor = IntToColor(0x8AAFEE);
+            TextArea.Styles[Style.Sql.Operator].ForeColor = IntToColor(0xE0E0E0);
+            //TextArea.Styles[Style.Sql.Regex].ForeColor = IntToColor(0xff00ff);
+            TextArea.Styles[Style.Sql.CommentLineDoc].ForeColor = IntToColor(0x77A7DB);
+            TextArea.Styles[Style.Sql.Word].ForeColor = IntToColor(0x48A8EE);
+            TextArea.Styles[Style.Sql.Word2].ForeColor = IntToColor(0xF98906);
+            TextArea.Styles[Style.Sql.CommentDocKeyword].ForeColor = IntToColor(0xB3D991);
+            TextArea.Styles[Style.Sql.CommentDocKeywordError].ForeColor = IntToColor(0xFF0000);
+            //TextArea.Styles[Style.Sql.GlobalClass].ForeColor = IntToColor(0x48A8EE);
+
+            TextArea.Lexer = Lexer.Sql;
+
+            TextArea.SetKeywords(0, keyWords);
+            TextArea.SetKeywords(1, keyWords2);
+            TextArea.Styles[Style.LineNumber].ForeColor = IntToColor(0x000000);
+
+            TextArea.AdditionalSelectionTyping = true;
+
+        }
+
+        private void scintilla__SelectionChanged(object sender, UpdateUIEventArgs e)
+        {
+            // Has the caret changed position?
+            var caretPos = txtSql.CurrentPosition;
+            if (lastCaretPos != caretPos)
+            {
+                lastCaretPos = caretPos;
+                var bracePos1 = -1;
+                var bracePos2 = -1;
+
+                // Is there a brace to the left or right?
+                if (caretPos > 0 && IsBrace(txtSql.GetCharAt(caretPos - 1)))
+                    bracePos1 = (caretPos - 1);
+                else if (IsBrace(txtSql.GetCharAt(caretPos)))
+                    bracePos1 = caretPos;
+
+                if (bracePos1 >= 0)
+                {
+                    // Find the matching brace
+                    bracePos2 = txtSql.BraceMatch(bracePos1);
+                    if (bracePos2 == Scintilla.InvalidPosition)
+                        txtSql.BraceBadLight(bracePos1);
+                    else
+                        txtSql.BraceHighlight(bracePos1, bracePos2);
+                }
+                else
+                {
+                    // Turn off brace matching
+                    txtSql.BraceHighlight(Scintilla.InvalidPosition, Scintilla.InvalidPosition);
+                }
+            }
+
+            try
+            {
+                int line = txtSql.CurrentLine;
+                int column = txtSql.GetColumn(txtSql.CurrentPosition);
+
+                tssLaPos.Text = $"{StringComplete(string.Format("Fila: {0}", line + 1), 13)} {StringComplete(string.Format("Col: {0}", column + 1), 13)}";
+            }
+            catch
+            {
+                //Do Nothing
+            }
+        }
+
+        private void scintilla__IndentationGuides()
+        {
+            if (txtSql.IndentationGuides == IndentView.None)
+                txtSql.IndentationGuides = IndentView.LookBoth;
+            else
+                txtSql.IndentationGuides = IndentView.None;
+        }
+
+        private void scintilla__TextChanged()
+        {
+            if (txtSql.Modified && tssLaStat.Text != "Archivo Modificado...")
+                tssLaStat.Text = "Archivo Modificado...";
+
+            if (txtSql.Margins[0].Width == 3)
+                return;
+
+            // Did the number of characters in the line number display change?
+            // i.e. nnn VS nn, or nnnn VS nn, etc...
+            var maxLineNumberCharLength = txtSql.Lines.Count.ToString().Length;
+            if (maxLineNumberCharLength == this.maxLineNumberCharLength)
+                return;
+
+            // Calculate the width required to display the last line number
+            // and include some padding for good measure.
+            const int padding = 2;
+            txtSql.Margins[0].Width = txtSql.TextWidth(Style.LineNumber, new string('9', maxLineNumberCharLength + 1)) + padding;
+            this.maxLineNumberCharLength = maxLineNumberCharLength;
+
+        }
+
+
+        private void CutTrailingSpaces()
+        {
+            StringBuilder strB = new StringBuilder();
+
+            for (int i = 0; i < txtSql.Lines.Count; i++)
+            {
+                // Get the text of the current line
+                string lineText = txtSql.Lines[i].Text;
+                // Remove trailing spaces from the line
+                strB.AppendLine(lineText.TrimEnd());
+            }
+            txtSql.Text = strB.ToString();
+        }
+
+        private void mostrarEspaciosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (txtSql.ViewWhitespace == WhitespaceMode.Invisible)
+                txtSql.ViewWhitespace = WhitespaceMode.VisibleAlways;
+            else
+                txtSql.ViewWhitespace = WhitespaceMode.Invisible;
+        }
+
+
+        private void guiaIndentacionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (txtSql.IndentationGuides == IndentView.None)
+                txtSql.IndentationGuides = IndentView.LookBoth;
+            else
+                txtSql.IndentationGuides = IndentView.None;
+        }
+
+        private void toolStripTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            int outVal;
+            int.TryParse(toolStripTextBox1.Text, out outVal);
+            txtSql.TabWidth = (outVal == 0) ? 0 : outVal;
+        }
+
+        private void numerosDeLíneaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (txtSql.Margins[0].Width != 3)
+                txtSql.Margins[0].Width = 3;
+            else
+            {
+                const int padding = 2;
+                txtSql.Margins[0].Width = txtSql.TextWidth(Style.LineNumber, new string('9', maxLineNumberCharLength + 1)) + padding;
+            }
+        }
+
+
+        private void commentSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (txtSql.SelectedText.Length > 0)
+            {
+                int f = txtSql.LineFromPosition(txtSql.SelectionStart);
+                int t = txtSql.LineFromPosition(txtSql.SelectionEnd);
+
+                for (int i = f; i <= t; i++)
+                {
+                    txtSql.InsertText(txtSql.Lines[i].Position, "--");
+                }
+                txtSql.SelectionStart = txtSql.Lines[f].Position;
+                txtSql.SelectionEnd = txtSql.Lines[t].EndPosition - 1;
+            }
+        }
+
+
+        private void uncommentSelectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (txtSql.SelectedText.Length > 0)
+            {
+                int f = txtSql.LineFromPosition(txtSql.SelectionStart);
+                int t = txtSql.LineFromPosition(txtSql.SelectionEnd);
+
+                for (int i = f; i <= t; i++)
+                {
+                    string s = txtSql.Lines[i].Text;
+                    if (s.TrimStart().StartsWith("--"))
+                    {
+                        var regex = new Regex(Regex.Escape("--"));
+                        var newText = regex.Replace(s, "", 1);
+                        int x = txtSql.Lines[i].Position;
+                        int y = txtSql.Lines[i].EndPosition;
+                        txtSql.SelectionStart = x;
+                        txtSql.SelectionEnd = y;
+                        txtSql.ReplaceSelection(newText);
+                    }
+                }
+                txtSql.SelectionStart = txtSql.Lines[f].Position;
+                txtSql.SelectionEnd = txtSql.Lines[t].EndPosition - 1;
+            }
+        }
+
+
+        private void TAB_to_spaces()
+        {
+            string spaces = "";
+            try
+            {
+                int numSpaces = Convert.ToInt32(toolStripTextBox1.Text);
+                for (int i = 0; i < numSpaces; ++i)
+                    spaces += " ";
+            }
+            catch
+            {
+                MessageBox.Show("Por favor ingrese el número de espacios en 'Tab Size'");
+                return;
+            }
+            StringBuilder strB = new StringBuilder();
+
+            for (int i = 0; i < txtSql.Lines.Count; i++)
+            {
+                // Get the text of the current line
+                string lineText = txtSql.Lines[i].Text;
+                // Remove trailing spaces from the line
+                strB.AppendLine(lineText.TrimEnd().Replace("\t", spaces));
+            }
+            txtSql.Text = strB.ToString();
+        }
+
+
+        /// <summary>
+        /// Rutina para Autocompletar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtSql_CharAdded(object sender, CharAddedEventArgs e)
+        {
+
+            switch (e.Char)
+            {
+                case '(':
+                    txtSql.InsertText(txtSql.CurrentPosition, ")");
+                    break;
+                case '{':
+                    txtSql.InsertText(txtSql.CurrentPosition, "}");
+                    break;
+                case '[':
+                    txtSql.InsertText(txtSql.CurrentPosition, "]");
+                    break;
+            }
+            
+            if (!autoCompleteEnabled)
+                return;
+
+            // Find the word start
+            var currentPos = txtSql.CurrentPosition;
+            var wordStartPos = txtSql.WordStartPosition(currentPos, true);
+
+            // Display the autocompletion list
+            var lenEntered = currentPos - wordStartPos;
+            if (lenEntered > 0)
+            {
+                if (!txtSql.AutoCActive)
+                {
+                    txtSql.AutoCIgnoreCase = true;
+                    txtSql.AutoCShow(lenEntered, autoCompleteKeywords);
+                }
+            }
+        }
+
+
+        private void SetAutocompleteMenuItemText()
+        {
+            autoCompleteToolStripMenuItem.Text = "Auto Complete" + (autoCompleteEnabled ? "   - Deshabilitar" : "   - Habilitar");
+        }
+
+        #endregion
 
 
         private void OpenFileInEditor(string fileName)
@@ -1486,8 +1849,8 @@ namespace SQLCrypt
 
             string sAux = hSql.BuscaPagina(fBusPag.BaseId, fBusPag.FileId, fBusPag.PageId);
             txtSql.InsertText(txtSql.CurrentPosition, sAux);
-
         }
+
 
         private void ejecutarArchivosEnBatchToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1500,11 +1863,6 @@ namespace SQLCrypt
                 MessageBox.Show(this, "Debe estar conectado(a) a una Base de Datos.", "Atención", MessageBoxButtons.OK);
                 return;
             }
-
-            //frmExecFiles myForm = new frmExecFiles();
-            //myForm.RTEXT_Salida = txtSql;
-            //myForm.hSql = hSql;
-            //myForm.Show();
         }
 
 
@@ -1593,190 +1951,11 @@ namespace SQLCrypt
         }
 
 
-        public static Color IntToColor(int rgb)
-        {
-            return Color.FromArgb(255, (byte)(rgb >> 16), (byte)(rgb >> 8), (byte)rgb);
-        }
-
-        private static bool IsBrace(int c)
-        {
-            switch (c)
-            {
-                case '(':
-                case ')':
-                case '[':
-                case ']':
-                case '{':
-                case '}':
-                case '<':
-                case '>':
-                    return true;
-            }
-
-            return false;
-        }
-
-
-        private void InitSyntaxColoring(ScintillaNET.Scintilla TextArea)
-        {
-
-            // Configure the default style
-            TextArea.Margins[0].Width = 5;
-
-            TextArea.StyleResetDefault();
-            TextArea.Styles[Style.Default].Font = "Consolas";
-            TextArea.Styles[Style.Default].Size = 10;
-            TextArea.Styles[Style.Default].BackColor = IntToColor(0x212121);
-            TextArea.Styles[Style.Default].ForeColor = IntToColor(0xFFFFFF);
-            TextArea.CaretLineBackColor = IntToColor(0x333333);
-            TextArea.CaretForeColor = IntToColor(0xF0F0F0);
-            TextArea.CaretWidth = 2;
-            TextArea.SetSelectionBackColor(true, IntToColor(0x535353));
-            TextArea.StyleClearAll();
-
-            //Resaltado de Parentesis (Braces)
-            TextArea.Styles[Style.BraceBad].ForeColor = IntToColor(0xFFFFFF);
-            TextArea.Styles[Style.BraceLight].ForeColor = IntToColor(0xFF00AA);
-
-            TextArea.Styles[Style.Sql.Identifier].ForeColor = IntToColor(0xD0DAE2);
-            TextArea.Styles[Style.Sql.Comment].ForeColor = IntToColor(0xBD758B);
-            TextArea.Styles[Style.Sql.CommentLine].ForeColor = IntToColor(0x40BF57);
-            TextArea.Styles[Style.Sql.CommentDoc].ForeColor = IntToColor(0x2FAE35);
-            TextArea.Styles[Style.Sql.Number].ForeColor = IntToColor(0xFFFF00);
-            TextArea.Styles[Style.Sql.String].ForeColor = IntToColor(0xFFFF00);
-            TextArea.Styles[Style.Sql.Character].ForeColor = IntToColor(0xE95454);
-            //TextArea.Styles[Style.Sql.Preprocessor].ForeColor = IntToColor(0x8AAFEE);
-            TextArea.Styles[Style.Sql.Operator].ForeColor = IntToColor(0xE0E0E0);
-            //TextArea.Styles[Style.Sql.Regex].ForeColor = IntToColor(0xff00ff);
-            TextArea.Styles[Style.Sql.CommentLineDoc].ForeColor = IntToColor(0x77A7DB);
-            TextArea.Styles[Style.Sql.Word].ForeColor = IntToColor(0x48A8EE);
-            TextArea.Styles[Style.Sql.Word2].ForeColor = IntToColor(0xF98906);
-            TextArea.Styles[Style.Sql.CommentDocKeyword].ForeColor = IntToColor(0xB3D991);
-            TextArea.Styles[Style.Sql.CommentDocKeywordError].ForeColor = IntToColor(0xFF0000);
-            //TextArea.Styles[Style.Sql.GlobalClass].ForeColor = IntToColor(0x48A8EE);
-
-            TextArea.Lexer = Lexer.Sql;
-
-            TextArea.SetKeywords(0, "add all alter and any as asc backup begin between break browse bulk by cascade case check checkpoint close clustered coalesce collate column commit constraint continue convert create cross current getdate current_timestamp current_user cursor database dbcc deallocate declare default delete deny desc disable disk distinct distributed double drop dummy dump else enable end errlvl errorexit escape except exec execute exists exit fetch file fillfactor for foreign forward_only freetext from full function go grant group having holdlock identity identity_insert identitycol if in index inner insert instead intersect into is isolation join key kill left level like load move no nocheck nocount nonclustered norecovery not null nullif isnull of off offsets on once only open opendatasource openquery openrowset option or order outer output over percent perm prepare primary print proc procedure public raiserror read readtext read_only reconfigure recovery references repeatable replication restore restrict return returns revoke right rollback rowcount rowguidcol rule save schema select serializable session_user set setuser shutdown some statistics stats synonym system_user table tape temp then to top tran transaction trigger truncate uncommitted union unique update updatetext use user values view waitfor when where while with work writetext");
-            TextArea.SetKeywords(1, "bigint binary max bit char character date datetime dec decimal float image int integer money nchar ntext numeric nvarchar real smalldatetime smallint smallmoney sql_variant sysname text timestamp tinyint uniqueidentifier varbinary varchar");
-            TextArea.Styles[Style.LineNumber].ForeColor = IntToColor(0x000000);
-
-            TextArea.AdditionalSelectionTyping = true;
-            
-        }
-
-        private void txtSql_SelectionChanged(object sender, UpdateUIEventArgs e)
-        {
-
-            // Has the caret changed position?
-            var caretPos = txtSql.CurrentPosition;
-            if (lastCaretPos != caretPos)
-            {
-                lastCaretPos = caretPos;
-                var bracePos1 = -1;
-                var bracePos2 = -1;
-
-                // Is there a brace to the left or right?
-                if (caretPos > 0 && IsBrace(txtSql.GetCharAt(caretPos - 1)))
-                    bracePos1 = (caretPos - 1);
-                else if (IsBrace(txtSql.GetCharAt(caretPos)))
-                    bracePos1 = caretPos;
-
-                if (bracePos1 >= 0)
-                {
-                    // Find the matching brace
-                    bracePos2 = txtSql.BraceMatch(bracePos1);
-                    if (bracePos2 == Scintilla.InvalidPosition)
-                        txtSql.BraceBadLight(bracePos1);
-                    else
-                        txtSql.BraceHighlight(bracePos1, bracePos2);
-                }
-                else
-                {
-                    // Turn off brace matching
-                    txtSql.BraceHighlight(Scintilla.InvalidPosition, Scintilla.InvalidPosition);
-                }
-            }
-
-            try
-            {
-                int line = txtSql.CurrentLine;
-                int column = txtSql.GetColumn(txtSql.CurrentPosition);
-
-                tssLaPos.Text = $"{StringComplete(string.Format("Fila: {0}", line + 1), 13)} {StringComplete(string.Format("Col: {0}", column + 1), 13)}";
-            }
-            catch
-            {
-                //Do Nothing
-            }
-
-        }
-
-        private void btIndentShow_Click(object sender, EventArgs e)
-        {
-            if (txtSql.IndentationGuides == IndentView.None)
-                txtSql.IndentationGuides = IndentView.LookBoth;
-            else
-                txtSql.IndentationGuides = IndentView.None;
-        }
-
-
-        private void buscarEnBDToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!hSql.ConnectionStatus)
-            {
-                MessageBox.Show("Debe establecer una conexión a Base de Datos", "Atención");
-                return;
-            }
-
-            frmObjects frm = new frmObjects(hSql);
-
-            frm.Show();
-            frm.Top = this.Top;
-            frm.Left = this.Left;
-        }
-
-        private void btBuscarEnBd_Click(object sender, EventArgs e)
-        {
-            buscarEnBDToolStripMenuItem_Click(sender, e);
-        }
-
         private void btConnectToBd_Click(object sender, EventArgs e)
         {
             ConnectToDatabase(sender, e);
         }
 
-
-        private void CutTrailingSpaces()
-        {
-            StringBuilder strB = new StringBuilder();
-
-            for (int i = 0; i < txtSql.Lines.Count; i++)
-            {
-                // Get the text of the current line
-                string lineText = txtSql.Lines[i].Text;
-                // Remove trailing spaces from the line
-                strB.AppendLine( lineText.TrimEnd());
-            }
-            txtSql.Text = strB.ToString();
-        }
-
-        private void mostrarEspaciosToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (txtSql.ViewWhitespace == WhitespaceMode.Invisible)
-                txtSql.ViewWhitespace = WhitespaceMode.VisibleAlways;
-            else
-                txtSql.ViewWhitespace = WhitespaceMode.Invisible;
-        }
-
-
-        private void guiaIndentacionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (txtSql.IndentationGuides == IndentView.None)
-                txtSql.IndentationGuides = IndentView.LookBoth;
-            else
-                txtSql.IndentationGuides = IndentView.None;
-        }
 
         private void eliminarEspaciosFinDeLíneaToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1793,51 +1972,13 @@ namespace SQLCrypt
             Lowercase();
         }
 
-        private void toolStripTextBox1_TextChanged(object sender, EventArgs e)
-        {
-            int outVal;
-            int.TryParse(toolStripTextBox1.Text, out outVal);
-            txtSql.TabWidth = (outVal ==0 )? 0:outVal;
-        }
 
         private void findReplaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _findReplace.Show();
         }
 
-
-        private void txtSql_TextChanged(object sender, EventArgs e)
-        {
-            if (txtSql.Modified && tssLaStat.Text != "Archivo Modificado...")
-                tssLaStat.Text = "Archivo Modificado...";
-
-            if (txtSql.Margins[0].Width == 3)
-                return;            
-
-            // Did the number of characters in the line number display change?
-            // i.e. nnn VS nn, or nnnn VS nn, etc...
-            var maxLineNumberCharLength = txtSql.Lines.Count.ToString().Length;
-            if (maxLineNumberCharLength == this.maxLineNumberCharLength)
-                return;
-
-            // Calculate the width required to display the last line number
-            // and include some padding for good measure.
-            const int padding = 2;
-            txtSql.Margins[0].Width = txtSql.TextWidth(Style.LineNumber, new string('9', maxLineNumberCharLength + 1)) + padding;
-            this.maxLineNumberCharLength = maxLineNumberCharLength;
-        }
-
-        private void numerosDeLíneaToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (txtSql.Margins[0].Width != 3)
-                txtSql.Margins[0].Width = 3;
-            else
-            {
-                const int padding = 2;
-                txtSql.Margins[0].Width = txtSql.TextWidth(Style.LineNumber, new string('9', maxLineNumberCharLength + 1)) + padding;
-            }
-        }
-
+        
         private void FrmSqlCrypt_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (AlCerrarElFormulario() == DialogResult.Cancel)
@@ -1845,48 +1986,6 @@ namespace SQLCrypt
 
         }
 
-
-        private void commentSelectionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (txtSql.SelectedText.Length > 0)
-            {
-                int f = txtSql.LineFromPosition(txtSql.SelectionStart);
-                int t = txtSql.LineFromPosition(txtSql.SelectionEnd);
-
-                for (int i = f; i <= t; i++)
-                {
-                    txtSql.InsertText(txtSql.Lines[i].Position, "--");
-                }
-                txtSql.SelectionStart = txtSql.Lines[f].Position;
-                txtSql.SelectionEnd = txtSql.Lines[t].EndPosition -1;
-            }
-        }
-
-        private void uncommentSelectionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (txtSql.SelectedText.Length > 0)
-            {
-                int f = txtSql.LineFromPosition(txtSql.SelectionStart);
-                int t = txtSql.LineFromPosition(txtSql.SelectionEnd);
-
-                for (int i = f; i <= t; i++)
-                {
-                    string s = txtSql.Lines[i].Text;
-                    if (s.TrimStart().StartsWith("--"))
-                    {
-                        var regex = new Regex(Regex.Escape("--"));
-                        var newText = regex.Replace(s, "", 1);
-                        int x = txtSql.Lines[i].Position;
-                        int y = txtSql.Lines[i].EndPosition;
-                        txtSql.SelectionStart = x;
-                        txtSql.SelectionEnd = y;
-                        txtSql.ReplaceSelection(newText);
-                    }
-                }
-                txtSql.SelectionStart = txtSql.Lines[f].Position;
-                txtSql.SelectionEnd = txtSql.Lines[t].EndPosition -1;
-            }
-        }
 
         private void findNextToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1912,38 +2011,13 @@ namespace SQLCrypt
             frm.Show();
         }
 
+
         private void tABAEspaciosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TAB_to_spaces();
         }
 
-        private void TAB_to_spaces()
-        {
-            string spaces = "";
-            try
-            {
-                int numSpaces = Convert.ToInt32(toolStripTextBox1.Text);
-                for (int i = 0; i < numSpaces; ++i)
-                    spaces += " ";
-            }
-            catch
-            {
-                MessageBox.Show("Por favor ingrese el número de espacios en 'Tab Size'");
-                return;
-            }
-            StringBuilder strB = new StringBuilder();
-
-            for (int i = 0; i < txtSql.Lines.Count; i++)
-            {
-                // Get the text of the current line
-                string lineText = txtSql.Lines[i].Text;
-                // Remove trailing spaces from the line
-                strB.AppendLine(lineText.TrimEnd().Replace("\t", spaces));
-            }
-            txtSql.Text = strB.ToString();
-        }
-
-
+        
         private void btRefreshType_Click(object sender, EventArgs e)
         {
             cbObjetos_SelectedValueChanged(sender, e);
@@ -1980,20 +2054,54 @@ namespace SQLCrypt
         }
 
 
-        //Autocompletar
-        private void txtSql_CharAdded(object sender, CharAddedEventArgs e)
+        /// <summary>
+        /// Habilita-Deshabilita Autocompletar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void autoCompleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Find the word start
-            var currentPos = txtSql.CurrentPosition;
-            var wordStartPos = txtSql.WordStartPosition(currentPos, true);
+            autoCompleteEnabled = !autoCompleteEnabled;
+            SetAutocompleteMenuItemText();
+        }
 
-            // Display the autocompletion list
-            var lenEntered = currentPos - wordStartPos;
-            if (lenEntered > 0)
+
+        private void txtSql_SelectionChanged(object sender, UpdateUIEventArgs e)
+        {
+            scintilla__SelectionChanged(sender, e);
+        }
+
+
+        private void btIndentShow_Click(object sender, EventArgs e)
+        {
+            scintilla__IndentationGuides();
+        }
+
+
+        private void buscarEnBDToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!hSql.ConnectionStatus)
             {
-                if (!txtSql.AutoCActive)
-                    txtSql.AutoCShow(lenEntered, "alter backup begin between break browse bulk cascade case check checkpoint close clustered coalesce collate column commit constraint continue convert create cross current getdate current_timestamp current_user cursor database dbcc deallocate declare default delete deny desc disable disk distinct distributed double drop dummy dump else enable errlvl errorexit escape except exec execute exists exit fetch file fillfactor foreign forward_only freetext from full function grant group having holdlock identity identity_insert identitycol index inner insert instead intersect into isolation join kill left level like load move nocheck nocount nonclustered norecovery null nullif isnull offsets once only open opendatasource openquery openrowset option order outer output over percent perm prepare primary print proc procedure public raiserror read readtext read_only reconfigure recovery references repeatable replication restore restrict return returns revoke right rollback rowcount rowguidcol rule save schema select serializable session_user setuser shutdown some statistics stats synonym system_user table tape temp then tran transaction trigger truncate uncommitted union unique update updatetext user values view waitfor when where while with work writetext");
+                MessageBox.Show("Debe establecer una conexión a Base de Datos", "Atención");
+                return;
             }
+
+            frmObjects frm = new frmObjects(hSql);
+
+            frm.Show();
+            frm.Top = this.Top;
+            frm.Left = this.Left;
+        }
+
+
+        private void btBuscarEnBd_Click(object sender, EventArgs e)
+        {
+            buscarEnBDToolStripMenuItem_Click(sender, e);
+        }
+
+        private void txtSql_TextChanged(object sender, EventArgs e)
+        {
+            scintilla__TextChanged();
         }
 
     }
