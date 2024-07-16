@@ -12,6 +12,24 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
 using SQLCrypt.frmUtiles;
+using OfficeOpenXml.Drawing.Chart;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using OfficeOpenXml.Packaging.Ionic.Zlib;
+using static OfficeOpenXml.ExcelErrorValue;
+using static ScintillaNET.Style;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+using System.ComponentModel;
+using System.Data;
+using System.Runtime.Serialization;
+using System.Security.Cryptography.Xml;
+using System.Security.Cryptography;
+using System.Threading;
+using System.Windows.Media.TextFormatting;
 
 
 namespace SQLCrypt
@@ -42,7 +60,7 @@ namespace SQLCrypt
         SearchManager FindMan = null;
         FindReplace _findReplace = null;
         private int maxLineNumberCharLength;
-
+        private int lastCaretPos = 0;
 
         public FrmSqlCrypt(MySql hSql, string fileName)
         {
@@ -305,7 +323,7 @@ namespace SQLCrypt
         {
             tssLaFile.Text = "";
             tssLaPath.Text = "";
-            WorkPath = Application.StartupPath;
+            WorkPath = System.Windows.Forms.Application.StartupPath;
         }
 
 
@@ -1437,7 +1455,7 @@ namespace SQLCrypt
                 if (refresh)
                 {
                     txtSql.Refresh();
-                    Application.DoEvents();
+                    System.Windows.Forms.Application.DoEvents();
                     refresh = false;
                 }
 
@@ -1580,6 +1598,25 @@ namespace SQLCrypt
             return Color.FromArgb(255, (byte)(rgb >> 16), (byte)(rgb >> 8), (byte)rgb);
         }
 
+        private static bool IsBrace(int c)
+        {
+            switch (c)
+            {
+                case '(':
+                case ')':
+                case '[':
+                case ']':
+                case '{':
+                case '}':
+                case '<':
+                case '>':
+                    return true;
+            }
+
+            return false;
+        }
+
+
         private void InitSyntaxColoring(ScintillaNET.Scintilla TextArea)
         {
 
@@ -1596,6 +1633,10 @@ namespace SQLCrypt
             TextArea.CaretWidth = 2;
             TextArea.SetSelectionBackColor(true, IntToColor(0x535353));
             TextArea.StyleClearAll();
+
+            //Resaltado de Parentesis (Braces)
+            TextArea.Styles[Style.BraceBad].ForeColor = IntToColor(0xFFFFFF);
+            TextArea.Styles[Style.BraceLight].ForeColor = IntToColor(0xFF00AA);
 
             TextArea.Styles[Style.Sql.Identifier].ForeColor = IntToColor(0xD0DAE2);
             TextArea.Styles[Style.Sql.Comment].ForeColor = IntToColor(0xBD758B);
@@ -1616,8 +1657,8 @@ namespace SQLCrypt
 
             TextArea.Lexer = Lexer.Sql;
 
-            TextArea.SetKeywords(0, "action add all alter and any as asc authorization backup begin between break browse bulk by cascade case check checkpoint close clustered coalesce collate column commit committed compute confirm constraint contains containstable continue controlrow convert create cross current current_date current_time current_timestamp current_user cursor database dbcc deallocate declare default delete deny desc disable disk distinct distributed double drop dummy dump else enable end errlvl errorexit escape except exec execute exists exit fetch file fillfactor floppy for foreign forward_only freetext freetexttable from full function go goto grant group having holdlock identity identity_insert identitycol if in index inner insert instead intersect into is isolation join key kill left level like lineno load mirrorexit move national no nocheck nocount nonclustered norecovery not nounload null nullif of off offsets on once only open opendatasource openquery openrowset option or order outer output over percent perm permanent pipe plan precision prepare primary print privileges proc procedure processexit public raiserror read readtext read_only reconfigure recovery references repeatable replication restore restrict return returns revoke right rollback rowcount rowguidcol rule save schema select serializable session_user set setuser shutdown some statistics stats synonym system_user table tape temp temporary textsize then to top tran transaction trigger truncate tsequal uncommitted union unique update updatetext use user values varying view waitfor when where while with work writetext");
-            TextArea.SetKeywords(1, "bigint binary bit char character date datetime dec decimal float image int integer money nchar ntext numeric nvarchar real smalldatetime smallint smallmoney sql_variant sysname text timestamp tinyint uniqueidentifier varbinary varchar");
+            TextArea.SetKeywords(0, "add all alter and any as asc backup begin between break browse bulk by cascade case check checkpoint close clustered coalesce collate column commit constraint continue convert create cross current getdate current_timestamp current_user cursor database dbcc deallocate declare default delete deny desc disable disk distinct distributed double drop dummy dump else enable end errlvl errorexit escape except exec execute exists exit fetch file fillfactor for foreign forward_only freetext from full function go grant group having holdlock identity identity_insert identitycol if in index inner insert instead intersect into is isolation join key kill left level like load move no nocheck nocount nonclustered norecovery not null nullif isnull of off offsets on once only open opendatasource openquery openrowset option or order outer output over percent perm prepare primary print proc procedure public raiserror read readtext read_only reconfigure recovery references repeatable replication restore restrict return returns revoke right rollback rowcount rowguidcol rule save schema select serializable session_user set setuser shutdown some statistics stats synonym system_user table tape temp then to top tran transaction trigger truncate uncommitted union unique update updatetext use user values view waitfor when where while with work writetext");
+            TextArea.SetKeywords(1, "bigint binary max bit char character date datetime dec decimal float image int integer money nchar ntext numeric nvarchar real smalldatetime smallint smallmoney sql_variant sysname text timestamp tinyint uniqueidentifier varbinary varchar");
             TextArea.Styles[Style.LineNumber].ForeColor = IntToColor(0x000000);
 
             TextArea.AdditionalSelectionTyping = true;
@@ -1626,17 +1667,49 @@ namespace SQLCrypt
 
         private void txtSql_SelectionChanged(object sender, UpdateUIEventArgs e)
         {
+
+            // Has the caret changed position?
+            var caretPos = txtSql.CurrentPosition;
+            if (lastCaretPos != caretPos)
+            {
+                lastCaretPos = caretPos;
+                var bracePos1 = -1;
+                var bracePos2 = -1;
+
+                // Is there a brace to the left or right?
+                if (caretPos > 0 && IsBrace(txtSql.GetCharAt(caretPos - 1)))
+                    bracePos1 = (caretPos - 1);
+                else if (IsBrace(txtSql.GetCharAt(caretPos)))
+                    bracePos1 = caretPos;
+
+                if (bracePos1 >= 0)
+                {
+                    // Find the matching brace
+                    bracePos2 = txtSql.BraceMatch(bracePos1);
+                    if (bracePos2 == Scintilla.InvalidPosition)
+                        txtSql.BraceBadLight(bracePos1);
+                    else
+                        txtSql.BraceHighlight(bracePos1, bracePos2);
+                }
+                else
+                {
+                    // Turn off brace matching
+                    txtSql.BraceHighlight(Scintilla.InvalidPosition, Scintilla.InvalidPosition);
+                }
+            }
+
             try
             {
                 int line = txtSql.CurrentLine;
                 int column = txtSql.GetColumn(txtSql.CurrentPosition);
 
-                tssLaPos.Text = $"{StringComplete(string.Format("Fila: {0}", line+1), 13)} {StringComplete(string.Format("Col: {0}", column+1), 13)}";
+                tssLaPos.Text = $"{StringComplete(string.Format("Fila: {0}", line + 1), 13)} {StringComplete(string.Format("Col: {0}", column + 1), 13)}";
             }
             catch
             {
                 //Do Nothing
             }
+
         }
 
         private void btIndentShow_Click(object sender, EventArgs e)
@@ -1896,17 +1969,32 @@ namespace SQLCrypt
                 LoadDatabaseList();
 
                 tssLaFile.Text = $"{hSql.GetServerName()}/{databasesToolStripMenuItem.Text}";
-
                 Objetos = new DbObjects(hSql);
                 Table = new TableDef(hSql);
                 Load_cbObjetos();
             }
-
             if (hSql.ConnectionStatus)
                 MessageBox.Show("Re-Conectado");
             else
                 MessageBox.Show("No Re-Conectado");
-
         }
+
+
+        //Autocompletar
+        private void txtSql_CharAdded(object sender, CharAddedEventArgs e)
+        {
+            // Find the word start
+            var currentPos = txtSql.CurrentPosition;
+            var wordStartPos = txtSql.WordStartPosition(currentPos, true);
+
+            // Display the autocompletion list
+            var lenEntered = currentPos - wordStartPos;
+            if (lenEntered > 0)
+            {
+                if (!txtSql.AutoCActive)
+                    txtSql.AutoCShow(lenEntered, "alter backup begin between break browse bulk cascade case check checkpoint close clustered coalesce collate column commit constraint continue convert create cross current getdate current_timestamp current_user cursor database dbcc deallocate declare default delete deny desc disable disk distinct distributed double drop dummy dump else enable errlvl errorexit escape except exec execute exists exit fetch file fillfactor foreign forward_only freetext from full function grant group having holdlock identity identity_insert identitycol index inner insert instead intersect into isolation join kill left level like load move nocheck nocount nonclustered norecovery null nullif isnull offsets once only open opendatasource openquery openrowset option order outer output over percent perm prepare primary print proc procedure public raiserror read readtext read_only reconfigure recovery references repeatable replication restore restrict return returns revoke right rollback rowcount rowguidcol rule save schema select serializable session_user setuser shutdown some statistics stats synonym system_user table tape temp then tran transaction trigger truncate uncommitted union unique update updatetext user values view waitfor when where while with work writetext");
+            }
+        }
+
     }
 }
