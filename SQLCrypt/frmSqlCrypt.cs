@@ -224,8 +224,9 @@ namespace SQLCrypt
             TextArea.Styles[Style.LineNumber].ForeColor = IntToColor(0x000000);
 
             TextArea.AdditionalSelectionTyping = true;
-
+            
         }
+
 
         private void scintilla__SelectionChanged(object sender, UpdateUIEventArgs e)
         {
@@ -432,19 +433,6 @@ namespace SQLCrypt
         private void txtSql_CharAdded(object sender, CharAddedEventArgs e)
         {
 
-            switch (e.Char)
-            {
-                case '(':
-                    txtSql.InsertText(txtSql.CurrentPosition, ")");
-                    break;
-                case '{':
-                    txtSql.InsertText(txtSql.CurrentPosition, "}");
-                    break;
-                case '[':
-                    txtSql.InsertText(txtSql.CurrentPosition, "]");
-                    break;
-            }
-            
             if (!autoCompleteEnabled)
                 return;
 
@@ -468,6 +456,73 @@ namespace SQLCrypt
         private void SetAutocompleteMenuItemText()
         {
             autoCompleteToolStripMenuItem.Text = "Auto Complete" + (autoCompleteEnabled ? "   - Deshabilitar" : "   - Habilitar");
+        }
+
+        private void txtSql_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (txtSql.SelectedText.Length > 0)
+            {
+                var selected = txtSql.SelectedText;
+                switch(e.KeyChar)
+                {
+                    case '"':
+                        txtSql.ReplaceSelection($"\"{selected}\"");
+                        e.Handled = true;
+                        break;
+                    case '\'':
+                        txtSql.ReplaceSelection($"'{selected}'");
+                        e.Handled = true;
+                        break;
+                    case '(':
+                        txtSql.ReplaceSelection($"({selected})");
+                        e.Handled = true;
+                        break;
+                    case '{':
+                        txtSql.ReplaceSelection("{" + selected + "}");
+                        e.Handled = true;
+                        break;
+                    case '[':
+                        txtSql.ReplaceSelection($"[{selected}]");
+                        e.Handled = true;
+                        break;
+                }
+            }
+            else
+            {
+                //switch (e.Char)
+                switch (e.KeyChar)
+                {
+                    case '"':
+                        txtSql.InsertText(txtSql.CurrentPosition, "\"");
+                        break;
+                    case '\'':
+                        txtSql.InsertText(txtSql.CurrentPosition, "'");
+                        break;
+                    case '(':
+                        txtSql.InsertText(txtSql.CurrentPosition, ")");
+                        break;
+                    case '{':
+                        txtSql.InsertText(txtSql.CurrentPosition, "}");
+                        break;
+                    case '[':
+                        txtSql.InsertText(txtSql.CurrentPosition, "]");
+                        break;
+                }
+            }
+        }
+
+
+        private void txtSql_InsertCheck(object sender, InsertCheckEventArgs e)
+        {
+            if ((e.Text.EndsWith("\r") || e.Text.EndsWith("\n")))
+            {
+                var curLine = txtSql.LineFromPosition(e.Position);
+                var curLineText = txtSql.Lines[curLine].Text;
+
+                var indent = Regex.Match(curLineText, @"^\s*");
+                e.Text += indent.Value; // Add indent following "\r\n"
+
+            }
         }
 
         #endregion
@@ -1366,10 +1421,11 @@ namespace SQLCrypt
         {
             Clipboard.Clear();
             string Elementos = "";
-            foreach (var a in lstObjetos.SelectedItems)
+            foreach (var item in lstObjetos.SelectedItems)
             {
-                Elementos += (Elementos != "" ? "\n" : "") + a.ToString();
+                Elementos += (Elementos != "" ? "\n" : "") + lstObjetos.GetItemText(item);
             }
+            
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
             else
@@ -2104,5 +2160,6 @@ namespace SQLCrypt
             scintilla__TextChanged();
         }
 
+        
     }
 }

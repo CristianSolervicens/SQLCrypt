@@ -579,7 +579,7 @@
             // 
             this.splitC.Panel2.BackColor = System.Drawing.SystemColors.Control;
             this.splitC.Panel2.Controls.Add(this.txtSql);
-            this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(3);
             this.splitC.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.splitC.Size = new System.Drawing.Size(1163, 569);
             this.splitC.SplitterDistance = 232;
@@ -619,7 +619,7 @@
             this.panObjetos.Controls.Add(this.lstObjetos);
             this.panObjetos.Dock = System.Windows.Forms.DockStyle.Top;
             this.panObjetos.Location = new System.Drawing.Point(0, 0);
-            this.panObjetos.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panObjetos.Margin = new System.Windows.Forms.Padding(2);
             this.panObjetos.Name = "panObjetos";
             this.panObjetos.Size = new System.Drawing.Size(232, 322);
             this.panObjetos.TabIndex = 21;
@@ -641,7 +641,7 @@
             this.cbObjetos.ForeColor = System.Drawing.Color.Black;
             this.cbObjetos.FormattingEnabled = true;
             this.cbObjetos.Location = new System.Drawing.Point(5, 253);
-            this.cbObjetos.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbObjetos.Margin = new System.Windows.Forms.Padding(2);
             this.cbObjetos.Name = "cbObjetos";
             this.cbObjetos.Size = new System.Drawing.Size(183, 21);
             this.cbObjetos.TabIndex = 13;
@@ -681,7 +681,7 @@
             this.panColumnas.BackColor = System.Drawing.SystemColors.Control;
             this.panColumnas.Controls.Add(this.lsColumnas);
             this.panColumnas.Location = new System.Drawing.Point(0, 326);
-            this.panColumnas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.panColumnas.Name = "panColumnas";
             this.panColumnas.Size = new System.Drawing.Size(232, 240);
             this.panColumnas.TabIndex = 0;
@@ -700,7 +700,7 @@
             this.lsColumnas.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lsColumnas.HideSelection = false;
             this.lsColumnas.Location = new System.Drawing.Point(0, 0);
-            this.lsColumnas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.lsColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.lsColumnas.Name = "lsColumnas";
             this.lsColumnas.ShowGroups = false;
             this.lsColumnas.Size = new System.Drawing.Size(232, 240);
@@ -733,10 +733,12 @@
             this.txtSql.Size = new System.Drawing.Size(921, 563);
             this.txtSql.TabIndex = 0;
             this.txtSql.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.txtSql_CharAdded);
+            this.txtSql.InsertCheck += new System.EventHandler<ScintillaNET.InsertCheckEventArgs>(this.txtSql_InsertCheck);
             this.txtSql.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.txtSql_SelectionChanged);
             this.txtSql.TextChanged += new System.EventHandler(this.txtSql_TextChanged);
             this.txtSql.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtSql_DragDrop);
             this.txtSql.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtSql_DragEnter);
+            this.txtSql.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSql_KeyPress);
             // 
             // btBuscarEnBd
             // 

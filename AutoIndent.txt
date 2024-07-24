@@ -1,0 +1,41 @@
+private void Scintilla_InsertCheck(object sender, InsertCheckEventArgs e)
+{
+	if ((e.Text.EndsWith("" + Constants.vbCr) || e.Text.EndsWith("" + Constants.vbLf))) {
+		int startPos = Scintilla.Lines(Scintilla.LineFromPosition(Scintilla.CurrentPosition)).Position;
+		int endPos = e.Position;
+		string curLineText = Scintilla.GetTextRange(startPos, (endPos - startPos)); //Text until the caret so that the whitespace is always equal in every line.
+		
+		Match indent = Regex.Match(curLineText, "^[ \\t]*");
+		e.Text = (e.Text + indent.Value);
+		if (Regex.IsMatch(curLineText, "{\\s*$")) {
+			e.Text = (e.Text + Constants.vbTab);
+		}
+	}
+}
+
+private void Scintilla_CharAdded(object sender, CharAddedEventArgs e)
+{
+	//The '}' char.
+	if (e.Char == 125) {
+		int curLine = Scintilla.LineFromPosition(Scintilla.CurrentPosition);
+		
+		if (Scintilla.Lines(curLine).Text.Trim() == "}") { //Check whether the bracket is the only thing on the line.. For cases like "if() { }".
+			SetIndent(Scintilla, curLine, GetIndent(Scintilla, curLine) - 4);
+		}
+	}
+}
+
+//Codes for the handling the Indention of the lines.
+//They are manually added here until they get officially added to the Scintilla control.
+#region "CodeIndent Handlers"
+	const int SCI_SETLINEINDENTATION = 2126;
+	const int SCI_GETLINEINDENTATION = 2127;
+	private void SetIndent(ScintillaNET.Scintilla scin, int line, int indent)
+	{
+		scin.DirectMessage(SCI_SETLINEINDENTATION, new IntPtr(line), new IntPtr(indent));
+	}
+	private int GetIndent(ScintillaNET.Scintilla scin, int line)
+	{
+		return (scin.DirectMessage(SCI_GETLINEINDENTATION, new IntPtr(line), null).ToInt32);
+	}
+
