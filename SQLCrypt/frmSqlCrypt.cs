@@ -518,10 +518,8 @@ namespace SQLCrypt
             {
                 var curLine = txtSql.LineFromPosition(e.Position);
                 var curLineText = txtSql.Lines[curLine].Text;
-
-                var indent = Regex.Match(curLineText, @"^\s*");
+                var indent = Regex.Match(curLineText, @"^[ ]*");
                 e.Text += indent.Value; // Add indent following "\r\n"
-
             }
         }
 

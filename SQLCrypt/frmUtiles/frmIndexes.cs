@@ -361,10 +361,11 @@ ORDER BY table_name, si.index_id
         private void btCreateIndex_Click(object sender, EventArgs e)
         {
             hSql.ExecuteSql(txtIndex.Text);
-            if (hSql.ErrorExiste)
+            if (hSql.ErrorExiste || hSql.Messages != "")
             {
-                MessageBox.Show($"Error Creando Índice:\n{hSql.ErrorString}");
+                MessageBox.Show($"Error Creando Índice:\n{hSql.ErrorString} {hSql.Messages}");
                 hSql.ErrorClear();
+                hSql.ClearMessages();
                 return;
             }
             MessageBox.Show("Index Created !");
