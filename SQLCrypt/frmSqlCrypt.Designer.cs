@@ -94,9 +94,9 @@
             this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colNullable = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.txtSql = new ScintillaNET.Scintilla();
-            this.btBuscarEnBd = new System.Windows.Forms.Button();
-            this.btConnectToBd = new System.Windows.Forms.Button();
             this.btReconnect = new System.Windows.Forms.Button();
+            this.btConnectToBd = new System.Windows.Forms.Button();
+            this.btBuscarEnBd = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).BeginInit();
@@ -582,7 +582,7 @@
             this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(3);
             this.splitC.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.splitC.Size = new System.Drawing.Size(1163, 569);
-            this.splitC.SplitterDistance = 232;
+            this.splitC.SplitterDistance = 231;
             this.splitC.TabIndex = 15;
             // 
             // laBuscarTablas
@@ -605,7 +605,7 @@
             this.txBuscaEnLista.ForeColor = System.Drawing.Color.Black;
             this.txBuscaEnLista.Location = new System.Drawing.Point(5, 298);
             this.txBuscaEnLista.Name = "txBuscaEnLista";
-            this.txBuscaEnLista.Size = new System.Drawing.Size(224, 20);
+            this.txBuscaEnLista.Size = new System.Drawing.Size(223, 20);
             this.txBuscaEnLista.TabIndex = 26;
             this.txBuscaEnLista.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txBuscaEnLista_KeyDown);
             // 
@@ -621,7 +621,7 @@
             this.panObjetos.Location = new System.Drawing.Point(0, 0);
             this.panObjetos.Margin = new System.Windows.Forms.Padding(2);
             this.panObjetos.Name = "panObjetos";
-            this.panObjetos.Size = new System.Drawing.Size(232, 322);
+            this.panObjetos.Size = new System.Drawing.Size(231, 322);
             this.panObjetos.TabIndex = 21;
             // 
             // btRefreshType
@@ -668,7 +668,7 @@
             this.lstObjetos.Name = "lstObjetos";
             this.lstObjetos.ScrollAlwaysVisible = true;
             this.lstObjetos.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstObjetos.Size = new System.Drawing.Size(232, 249);
+            this.lstObjetos.Size = new System.Drawing.Size(231, 249);
             this.lstObjetos.TabIndex = 12;
             this.lstObjetos.SelectedIndexChanged += new System.EventHandler(this.lstObjetos_SelectedIndexChanged);
             this.lstObjetos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstObjetos_MouseDown);
@@ -683,7 +683,7 @@
             this.panColumnas.Location = new System.Drawing.Point(0, 326);
             this.panColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.panColumnas.Name = "panColumnas";
-            this.panColumnas.Size = new System.Drawing.Size(232, 240);
+            this.panColumnas.Size = new System.Drawing.Size(231, 240);
             this.panColumnas.TabIndex = 0;
             // 
             // lsColumnas
@@ -703,7 +703,7 @@
             this.lsColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.lsColumnas.Name = "lsColumnas";
             this.lsColumnas.ShowGroups = false;
-            this.lsColumnas.Size = new System.Drawing.Size(232, 240);
+            this.lsColumnas.Size = new System.Drawing.Size(231, 240);
             this.lsColumnas.TabIndex = 33;
             this.lsColumnas.UseCompatibleStateImageBehavior = false;
             this.lsColumnas.View = System.Windows.Forms.View.Details;
@@ -730,7 +730,7 @@
             this.txtSql.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSql.Location = new System.Drawing.Point(3, 3);
             this.txtSql.Name = "txtSql";
-            this.txtSql.Size = new System.Drawing.Size(921, 563);
+            this.txtSql.Size = new System.Drawing.Size(922, 563);
             this.txtSql.TabIndex = 0;
             this.txtSql.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.txtSql_CharAdded);
             this.txtSql.InsertCheck += new System.EventHandler<ScintillaNET.InsertCheckEventArgs>(this.txtSql_InsertCheck);
@@ -738,11 +738,44 @@
             this.txtSql.TextChanged += new System.EventHandler(this.txtSql_TextChanged);
             this.txtSql.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtSql_DragDrop);
             this.txtSql.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtSql_DragEnter);
+            this.txtSql.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSql_KeyDown);
             this.txtSql.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSql_KeyPress);
+            this.txtSql.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSql_KeyUp);
+            // 
+            // btReconnect
+            // 
+            this.btReconnect.BackColor = System.Drawing.SystemColors.ButtonFace;
+            this.btReconnect.BackgroundImage = global::SQLCrypt.Properties.Resources.refresh;
+            this.btReconnect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.btReconnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btReconnect.ImageKey = "(none)";
+            this.btReconnect.Location = new System.Drawing.Point(714, 1);
+            this.btReconnect.Name = "btReconnect";
+            this.btReconnect.Size = new System.Drawing.Size(28, 24);
+            this.btReconnect.TabIndex = 29;
+            this.btReconnect.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btReconnect.UseVisualStyleBackColor = false;
+            this.btReconnect.Click += new System.EventHandler(this.btReconnect_Click);
+            // 
+            // btConnectToBd
+            // 
+            this.btConnectToBd.BackColor = System.Drawing.SystemColors.Control;
+            this.btConnectToBd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btConnectToBd.Image = global::SQLCrypt.Properties.Resources.Connect3;
+            this.btConnectToBd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btConnectToBd.Location = new System.Drawing.Point(593, 1);
+            this.btConnectToBd.Name = "btConnectToBd";
+            this.btConnectToBd.Size = new System.Drawing.Size(118, 24);
+            this.btConnectToBd.TabIndex = 19;
+            this.btConnectToBd.Text = "&Conectar a BD";
+            this.btConnectToBd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btConnectToBd.UseVisualStyleBackColor = false;
+            this.btConnectToBd.Click += new System.EventHandler(this.btConnectToBd_Click);
             // 
             // btBuscarEnBd
             // 
             this.btBuscarEnBd.BackColor = System.Drawing.SystemColors.Control;
+            this.btBuscarEnBd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btBuscarEnBd.Image = global::SQLCrypt.Properties.Resources.Lupa;
             this.btBuscarEnBd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btBuscarEnBd.Location = new System.Drawing.Point(756, 1);
@@ -753,31 +786,6 @@
             this.btBuscarEnBd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btBuscarEnBd.UseVisualStyleBackColor = false;
             this.btBuscarEnBd.Click += new System.EventHandler(this.btBuscarEnBd_Click);
-            // 
-            // btConnectToBd
-            // 
-            this.btConnectToBd.BackColor = System.Drawing.SystemColors.Control;
-            this.btConnectToBd.Image = global::SQLCrypt.Properties.Resources.Connect3;
-            this.btConnectToBd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btConnectToBd.Location = new System.Drawing.Point(593, 1);
-            this.btConnectToBd.Name = "btConnectToBd";
-            this.btConnectToBd.Size = new System.Drawing.Size(118, 25);
-            this.btConnectToBd.TabIndex = 19;
-            this.btConnectToBd.Text = "&Conectar a BD";
-            this.btConnectToBd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btConnectToBd.UseVisualStyleBackColor = false;
-            this.btConnectToBd.Click += new System.EventHandler(this.btConnectToBd_Click);
-            // 
-            // btReconnect
-            // 
-            this.btReconnect.Image = ((System.Drawing.Image)(resources.GetObject("btReconnect.Image")));
-            this.btReconnect.Location = new System.Drawing.Point(714, 1);
-            this.btReconnect.Name = "btReconnect";
-            this.btReconnect.Size = new System.Drawing.Size(26, 25);
-            this.btReconnect.TabIndex = 29;
-            this.btReconnect.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btReconnect.UseVisualStyleBackColor = true;
-            this.btReconnect.Click += new System.EventHandler(this.btReconnect_Click);
             // 
             // FrmSqlCrypt
             // 
@@ -794,7 +802,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(1130, 623);
+            this.MinimumSize = new System.Drawing.Size(1130, 622);
             this.Name = "FrmSqlCrypt";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sql Crypt";

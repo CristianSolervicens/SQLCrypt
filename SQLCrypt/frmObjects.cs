@@ -499,7 +499,6 @@ namespace SQLCrypt
                 int column = rchTxt.SelectionStart - rchTxt.GetFirstCharIndexFromLine(line);
 
                 laTextPosition.Text = StringComplete(string.Format("Fila: {0}", line), 13) + " " + StringComplete(string.Format("Col: {0}", column), 13);
-
             }
             catch
             {

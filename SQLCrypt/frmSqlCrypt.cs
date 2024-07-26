@@ -4,36 +4,20 @@ using System.Drawing;
 using System.Windows.Forms;
 using SQLCrypt.StructureClasses;
 using SQLCrypt.FunctionalClasses.MySql;
-using System.IO;
+// using System.IO;
 using ScintillaNET;
 using ScintillaFindReplaceControl;
 using SQLCrypt.FunctionalClasses;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Runtime.InteropServices;
+// using System.Runtime.InteropServices;
 using SQLCrypt.frmUtiles;
-using OfficeOpenXml.Drawing.Chart;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
-using OfficeOpenXml.Packaging.Ionic.Zlib;
-using static OfficeOpenXml.ExcelErrorValue;
-using static ScintillaNET.Style;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
-using System.ComponentModel;
-using System.Data;
-using System.Runtime.Serialization;
-using System.Security.Cryptography.Xml;
-using System.Security.Cryptography;
-using System.Threading;
-using System.Windows.Media.TextFormatting;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
-using System.Reflection;
-using System.Security.Principal;
-using System.Windows.Media.Media3D;
+using System.IO;
+// using static OfficeOpenXml.ExcelErrorValue;
+// using static ScintillaNET.Style;
+// using static System.Net.Mime.MediaTypeNames;
+// using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+
 
 
 namespace SQLCrypt
@@ -66,10 +50,12 @@ namespace SQLCrypt
         private int maxLineNumberCharLength;
         private int lastCaretPos = 0;
         private bool autoCompleteEnabled = true;
+
+        private bool scintilla_end_mode = false;
         
-        private string keyWords = "add all alter and any as asc " +
+        private string keyWords = "add all alter and any as asc avg" +
                                   "backup begin between break browse bulk by " +
-                                  "cascade case check checkpoint close clustered coalesce collate column commit constraint continue convert create cross current " +
+                                  "cascade case check checkpoint close clustered coalesce collate column commit constraint continue convert count create cross current " +
                                   "current_timestamp current_user cursor " +
                                   "database datediff datepart dbcc deallocate declare default delete deny desc disable disk distinct distributed double drop dummy dump " +
                                   "else enable end errlvl errorexit escape except exec execute exists exit " +
@@ -86,7 +72,7 @@ namespace SQLCrypt
                                   "percent perm prepare primary print proc procedure public " +
                                   "raiserror read readtext read_only reconfigure recovery references repeatable replication restore restrict return returns revoke right " +
                                   "rollback rowcount rowguidcol rule " +
-                                  "save schema select serializable session_user set setuser shutdown some statistics stats synonym system_user " +
+                                  "save schema select serializable session_user set setuser shutdown some statistics stats sum synonym system_user " +
                                   "table tape temp then to top tran transaction trigger truncate " +
                                   "uncommitted union unique update updatetext use user " +
                                   "values view " +
@@ -102,7 +88,21 @@ namespace SQLCrypt
         {
             InitializeComponent();
 
+            // =======   KEYWORDS Y AUTOCOMPLETAR   ========
+            var keywords_file = "keywords.cfg";
+            if (File.Exists(keywords_file))
+                keyWords = File.ReadAllText(keywords_file);
+
+            keyWords = keyWords.Replace('\n', ' ');
+
+            var keywords2_file = "keywords2.cfg";
+            if (File.Exists(keywords2_file))
+                keyWords2 = File.ReadAllText(keywords2_file);
+
+            keyWords2 = keyWords2.Replace('\n', ' ');
+
             autoCompleteKeywords = keyWords.ToUpper();
+            // ---------------------------------------------
 
             laTablas.Text = "";
             tssLaFile.Text = "";
@@ -146,6 +146,8 @@ namespace SQLCrypt
 
             if (fileName != "")
                 OpenFileInEditor(fileName);
+
+            txtSql.Select();
         }
 
 
@@ -186,14 +188,18 @@ namespace SQLCrypt
             TextArea.Margins[0].Width = 5;
 
             TextArea.StyleResetDefault();
+
             TextArea.Styles[Style.Default].Font = "Consolas";
             TextArea.Styles[Style.Default].Size = 10;
             TextArea.Styles[Style.Default].BackColor = IntToColor(0x212121);
             TextArea.Styles[Style.Default].ForeColor = IntToColor(0xFFFFFF);
+            
             TextArea.CaretLineBackColor = IntToColor(0x333333);
             TextArea.CaretForeColor = IntToColor(0xF0F0F0);
             TextArea.CaretWidth = 2;
-            TextArea.SetSelectionBackColor(true, IntToColor(0x535353));
+            
+            //TextArea.SetSelectionBackColor(true, IntToColor(0x000099));
+            TextArea.SetSelectionBackColor(true, IntToColor(0x004389));
             TextArea.StyleClearAll();
 
             //Resaltado de Parentesis (Braces)
@@ -207,24 +213,27 @@ namespace SQLCrypt
             TextArea.Styles[Style.Sql.Number].ForeColor = IntToColor(0xFFFF00);
             TextArea.Styles[Style.Sql.String].ForeColor = IntToColor(0xFFFF00);
             TextArea.Styles[Style.Sql.Character].ForeColor = IntToColor(0xE95454);
-            //TextArea.Styles[Style.Sql.Preprocessor].ForeColor = IntToColor(0x8AAFEE);
             TextArea.Styles[Style.Sql.Operator].ForeColor = IntToColor(0xE0E0E0);
-            //TextArea.Styles[Style.Sql.Regex].ForeColor = IntToColor(0xff00ff);
             TextArea.Styles[Style.Sql.CommentLineDoc].ForeColor = IntToColor(0x77A7DB);
             TextArea.Styles[Style.Sql.Word].ForeColor = IntToColor(0x48A8EE);
             TextArea.Styles[Style.Sql.Word2].ForeColor = IntToColor(0xF98906);
             TextArea.Styles[Style.Sql.CommentDocKeyword].ForeColor = IntToColor(0xB3D991);
             TextArea.Styles[Style.Sql.CommentDocKeywordError].ForeColor = IntToColor(0xFF0000);
-            //TextArea.Styles[Style.Sql.GlobalClass].ForeColor = IntToColor(0x48A8EE);
-
+            
             TextArea.Lexer = Lexer.Sql;
 
             TextArea.SetKeywords(0, keyWords);
             TextArea.SetKeywords(1, keyWords2);
-            TextArea.Styles[Style.LineNumber].ForeColor = IntToColor(0x000000);
+
+            TextArea.Styles[Style.LineNumber].ForeColor = IntToColor(0xAFAFAF);
+            TextArea.Styles[Style.LineNumber].BackColor = IntToColor(0x211021);
 
             TextArea.AdditionalSelectionTyping = true;
-            
+            TextArea.MultipleSelection = true;
+            TextArea.MouseSelectionRectangularSwitch = true;
+            TextArea.VirtualSpaceOptions = VirtualSpace.RectangularSelection;
+
+            scintilla__TextChanged();
         }
 
 
@@ -433,7 +442,7 @@ namespace SQLCrypt
         private void txtSql_CharAdded(object sender, CharAddedEventArgs e)
         {
 
-            if (!autoCompleteEnabled)
+            if (!autoCompleteEnabled || scintilla_end_mode)
                 return;
 
             // Find the word start
@@ -457,6 +466,7 @@ namespace SQLCrypt
         {
             autoCompleteToolStripMenuItem.Text = "Auto Complete" + (autoCompleteEnabled ? "   - Deshabilitar" : "   - Habilitar");
         }
+
 
         private void txtSql_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -523,7 +533,76 @@ namespace SQLCrypt
             }
         }
 
-        #endregion
+
+        private void txtSql_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.Text))
+            {
+                e.Effect = DragDropEffects.Copy;
+            }
+        }
+
+
+        private void txtSql_DragDrop(object sender, DragEventArgs e)
+        {
+
+            if (e.Data.GetDataPresent(DataFormats.Text))
+            {
+                var cadena = (string)e.Data.GetData(DataFormats.Text);
+                txtSql.InsertText(txtSql.CurrentPosition, cadena);
+                txtSql.CurrentPosition += cadena.Length;
+                txtSql.SelectionStart = txtSql.CurrentPosition;
+                txtSql.Focus();
+                return;
+            }
+
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            bool encriptado = false;
+
+            if (files.Length > 1)
+            {
+                MessageBox.Show("Sólo puede arrastrar un archivo.", "Atención");
+                return;
+            }
+
+            if (MessageBox.Show("Open as Encrypted File (yes/no)?", "Seleccione", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification) == DialogResult.Yes)
+                encriptado = true;
+
+            if (string.Compare(System.IO.Path.GetExtension(files[0]), ".sqc", true) == 0 || encriptado)
+                OpenCryptoFile(files[0]);
+            else
+            {
+                IsEncrypted = false;
+                CurrentFile = files[0];
+                WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
+                tssLaPath.Text = WorkPath;
+
+                this.Text = $"SQLCrypt - {CurrentFile}";
+                txtSql.Text = System.IO.File.ReadAllText(files[0]);
+                cerrarToolStripMenuItem.Enabled = true;
+            }
+
+            this.TopMost = true;
+            // System.Threading.Thread.Sleep(500);
+            this.TopMost = false;
+            this.BringToFront();
+            txtSql.SetSavePoint();
+            txtSql.EmptyUndoBuffer();
+        }
+
+
+        //Grabar archivo encriptado.
+        private void grabarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (CurrentFile == "")
+            {
+                SaveFileStd(true);
+            }
+            else
+            {
+                SaveFileStd(false);
+            }
+        }
 
 
         private void OpenFileInEditor(string fileName)
@@ -554,6 +633,65 @@ namespace SQLCrypt
             txtSql.SetSavePoint();
             txtSql.EmptyUndoBuffer();
         }
+
+
+        private void txtSql_KeyDown(object sender, KeyEventArgs e)
+        {
+
+            if (txtSql.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
+            {
+                foreach (var sel in txtSql.Selections)
+                {
+                    var l = txtSql.LineFromPosition(sel.Start);
+                    var end_pos = txtSql.Lines[l].EndPosition - 2;
+                    sel.Start = end_pos;
+                    sel.End = end_pos;
+                    sel.Caret = end_pos;
+                }
+            }
+
+
+            if (txtSql.Selections.Count > 1 && e.KeyCode == Keys.End)
+            {
+                scintilla_end_mode = true;
+                foreach (var sel in txtSql.Selections)
+                {
+                    var l = txtSql.LineFromPosition(sel.Start);
+                    var end_pos = txtSql.Lines[l].EndPosition - 2;
+                    sel.Start = end_pos;
+                    sel.End = end_pos;
+                    sel.Caret = end_pos;
+                }
+                e.Handled = true;
+            }
+            
+            if (scintilla_end_mode && txtSql.Selections.Count <= 1)
+                scintilla_end_mode = false;
+
+
+        }
+
+
+        private void txtSql_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (txtSql.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
+            {
+                foreach (var sel in txtSql.Selections)
+                {
+                    var l = txtSql.LineFromPosition(sel.Start);
+                    var end_pos = txtSql.Lines[l].EndPosition - 2;
+                    sel.Start = end_pos;
+                    sel.End = end_pos;
+                    sel.Caret = end_pos;
+                }
+            }
+        }
+
+
+
+        #endregion
+
+
 
 
         private void ObjectSelectCount(object sender, EventArgs e)
@@ -611,63 +749,6 @@ namespace SQLCrypt
             txtSql.SelectAll();
         }
 
-
-        // TODO: Change
-        private void txtSql_DragEnter(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
-            else if (e.Data.GetDataPresent(DataFormats.Text)) e.Effect = DragDropEffects.Move;
-            else if (e.Data.GetDataPresent(DataFormats.UnicodeText)) e.Effect = DragDropEffects.Move;
-            else e.Effect = DragDropEffects.None;
-
-        }
-
-
-        // TODO: Change
-        private void txtSql_DragDrop(object sender, DragEventArgs e)
-        {
-
-            if (e.Data.GetDataPresent(DataFormats.Text))
-            {
-                //txtSql.SelectedText = (string)e.Data.GetData(DataFormats.Text);
-                txtSql.InsertText(txtSql.CurrentPosition, (string)e.Data.GetData(DataFormats.Text));
-                txtSql.Focus();
-                return;
-            }
-
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            bool encriptado = false;
-
-            if (files.Length > 1)
-            {
-                MessageBox.Show("Sólo puede arrastrar un archivo.", "Atención");
-                return;
-            }
-
-            if (MessageBox.Show("Open as Encrypted File (yes/no)?", "Seleccione", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.ServiceNotification) == DialogResult.Yes)
-                encriptado = true;
-
-            if (string.Compare(System.IO.Path.GetExtension(files[0]), ".sqc", true) == 0 || encriptado)
-                OpenCryptoFile(files[0]);
-            else
-            {
-                IsEncrypted = false;
-                CurrentFile = files[0];
-                WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
-                tssLaPath.Text = WorkPath;
-
-                this.Text = $"SQLCrypt - {CurrentFile}";
-                txtSql.Text = System.IO.File.ReadAllText(files[0]);
-                cerrarToolStripMenuItem.Enabled = true;
-            }
-
-            this.TopMost = true;
-            System.Threading.Thread.Sleep(500);
-            this.TopMost = false;
-            this.BringToFront();
-            txtSql.SetSavePoint();
-            txtSql.EmptyUndoBuffer();
-        }
 
 
         private void OpenCryptoFile(string sFileName)
@@ -885,19 +966,6 @@ namespace SQLCrypt
         }
 
         
-        //Grabar archivo encriptado.
-        private void grabarToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (CurrentFile == "")
-            {
-                SaveFileStd(true);
-            }
-            else
-            {
-                SaveFileStd(false);
-            }
-        }
-
 
         private void cerrarToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1059,23 +1127,6 @@ namespace SQLCrypt
                 cbObjetosSelect("U");
             
             // databasesToolStripMenuItem.Text = databasesToolStripMenuItem.Text;
-        }
-
-
-        // TODO: Change
-        private void txtSql_KeyDown(object sender, KeyEventArgs e)
-        {
-
-            if (e.Control && e.KeyCode == Keys.V || e.Shift && e.KeyCode == Keys.Insert)
-            {
-                try
-                {
-                    Clipboard.SetText(Clipboard.GetText());
-                }
-                catch (Exception)
-                {
-                }
-            }
         }
 
 
@@ -1431,7 +1482,7 @@ namespace SQLCrypt
         }
 
 
-
+        // Copiar al Clipboard Fila Completa de las Columnas del Objeto
         private void colmSelectionToClipBoard( object sender, EventArgs e)
         {
             Clipboard.Clear();
@@ -1448,7 +1499,8 @@ namespace SQLCrypt
                 MessageBox.Show("No hay elementos Seleccionados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        
+
+        // Copiar al Clipboard Solo los NOMBRES de las Columnas del Objeto
         private void colmSelectionNameToClipBoard(object sender, EventArgs e)
         {
             Clipboard.Clear();
@@ -1927,10 +1979,10 @@ namespace SQLCrypt
                 lstObjetos.ContextMenu.Show(this, new Point(e.X, e.Y));
                 return;
             }
-            
+
             if (lstObjetos.SelectedItems.Count > 0)
             {
-                txtSql.DoDragDrop(lstObjetos.SelectedItem.ToString(), DragDropEffects.Move);
+                txtSql.DoDragDrop(lstObjetos.SelectedItem.ToString(), DragDropEffects.Copy);
                 lstObjetos_SelectedIndexChanged(sender, e);
             }
         }
@@ -1945,9 +1997,8 @@ namespace SQLCrypt
             }
 
             if (lsColumnas.SelectedItems.Count > 0)
-            { 
-                string elem = lsColumnas.SelectedItems[0].Text;
-                txtSql.DoDragDrop(elem, DragDropEffects.Move);
+            {
+                txtSql.DoDragDrop(lsColumnas.SelectedItems[0].Text, DragDropEffects.Copy);
             }
             
         }
