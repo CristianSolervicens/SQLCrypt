@@ -130,12 +130,6 @@
       <DependentUpon>frmPassWord.cs</DependentUpon>
     </Compile>
     <Compile Include="FunctionalClasses\Crypto.cs" />
-    <Compile Include="frmObjects.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmObjects.Designer.cs">
-      <DependentUpon>frmObjects.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmUtiles\frmConexion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -191,9 +185,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmUtiles\frmExtendedProperties.resx">
       <DependentUpon>frmExtendedProperties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmObjects.resx">
-      <DependentUpon>frmObjects.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmUtiles\frmConexion.resx">
       <DependentUpon>frmConexion.cs</DependentUpon>

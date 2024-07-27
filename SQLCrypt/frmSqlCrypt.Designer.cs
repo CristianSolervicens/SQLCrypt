@@ -38,7 +38,6 @@
             this.verPanelDeObjetosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buscaPaginaSQLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extendedPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.buscarEnBDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.abrirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -94,7 +93,6 @@
             this.txtSql = new ScintillaNET.Scintilla();
             this.btReconnect = new System.Windows.Forms.Button();
             this.btConnectToBd = new System.Windows.Forms.Button();
-            this.btBuscarEnBd = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).BeginInit();
@@ -134,7 +132,6 @@
             this.verPanelDeObjetosToolStripMenuItem,
             this.buscaPaginaSQLToolStripMenuItem,
             this.extendedPropertiesToolStripMenuItem,
-            this.buscarEnBDToolStripMenuItem,
             this.indicesToolStripMenuItem,
             this.toolStripSeparator1,
             this.abrirToolStripMenuItem,
@@ -202,14 +199,6 @@
             this.extendedPropertiesToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.extendedPropertiesToolStripMenuItem.Text = "Extended Properties";
             this.extendedPropertiesToolStripMenuItem.Click += new System.EventHandler(this.extendedPropertiesToolStripMenuItem_Click);
-            // 
-            // buscarEnBDToolStripMenuItem
-            // 
-            this.buscarEnBDToolStripMenuItem.Name = "buscarEnBDToolStripMenuItem";
-            this.buscarEnBDToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
-            this.buscarEnBDToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
-            this.buscarEnBDToolStripMenuItem.Text = "Buscar en BD";
-            this.buscarEnBDToolStripMenuItem.Click += new System.EventHandler(this.buscarEnBDToolStripMenuItem_Click);
             // 
             // indicesToolStripMenuItem
             // 
@@ -608,10 +597,11 @@
             // 
             // btRefreshType
             // 
+            this.btRefreshType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btRefreshType.Image = ((System.Drawing.Image)(resources.GetObject("btRefreshType.Image")));
-            this.btRefreshType.Location = new System.Drawing.Point(192, 252);
+            this.btRefreshType.Location = new System.Drawing.Point(193, 253);
             this.btRefreshType.Name = "btRefreshType";
-            this.btRefreshType.Size = new System.Drawing.Size(27, 25);
+            this.btRefreshType.Size = new System.Drawing.Size(27, 22);
             this.btRefreshType.TabIndex = 28;
             this.btRefreshType.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btRefreshType.UseVisualStyleBackColor = true;
@@ -731,7 +721,7 @@
             this.btReconnect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btReconnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btReconnect.ImageKey = "(none)";
-            this.btReconnect.Location = new System.Drawing.Point(714, 1);
+            this.btReconnect.Location = new System.Drawing.Point(719, 1);
             this.btReconnect.Name = "btReconnect";
             this.btReconnect.Size = new System.Drawing.Size(28, 24);
             this.btReconnect.TabIndex = 29;
@@ -745,7 +735,7 @@
             this.btConnectToBd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btConnectToBd.Image = global::SQLCrypt.Properties.Resources.Connect3;
             this.btConnectToBd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btConnectToBd.Location = new System.Drawing.Point(593, 1);
+            this.btConnectToBd.Location = new System.Drawing.Point(598, 1);
             this.btConnectToBd.Name = "btConnectToBd";
             this.btConnectToBd.Size = new System.Drawing.Size(118, 24);
             this.btConnectToBd.TabIndex = 19;
@@ -753,21 +743,6 @@
             this.btConnectToBd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btConnectToBd.UseVisualStyleBackColor = false;
             this.btConnectToBd.Click += new System.EventHandler(this.btConnectToBd_Click);
-            // 
-            // btBuscarEnBd
-            // 
-            this.btBuscarEnBd.BackColor = System.Drawing.SystemColors.Control;
-            this.btBuscarEnBd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btBuscarEnBd.Image = global::SQLCrypt.Properties.Resources.Lupa;
-            this.btBuscarEnBd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btBuscarEnBd.Location = new System.Drawing.Point(756, 1);
-            this.btBuscarEnBd.Name = "btBuscarEnBd";
-            this.btBuscarEnBd.Size = new System.Drawing.Size(98, 25);
-            this.btBuscarEnBd.TabIndex = 18;
-            this.btBuscarEnBd.Text = "&Buscar en BD";
-            this.btBuscarEnBd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.btBuscarEnBd.UseVisualStyleBackColor = false;
-            this.btBuscarEnBd.Click += new System.EventHandler(this.btBuscarEnBd_Click);
             // 
             // FrmSqlCrypt
             // 
@@ -777,7 +752,6 @@
             this.ClientSize = new System.Drawing.Size(1163, 625);
             this.Controls.Add(this.btReconnect);
             this.Controls.Add(this.btConnectToBd);
-            this.Controls.Add(this.btBuscarEnBd);
             this.Controls.Add(this.splitC);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.chkToText);
@@ -849,8 +823,6 @@
         private System.Windows.Forms.ComboBox cbObjetos;
         private System.Windows.Forms.ToolStripMenuItem extendedPropertiesToolStripMenuItem;
         private ScintillaNET.Scintilla txtSql;
-        private System.Windows.Forms.ToolStripMenuItem buscarEnBDToolStripMenuItem;
-        private System.Windows.Forms.Button btBuscarEnBd;
         private System.Windows.Forms.Button btConnectToBd;
         private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mostrarEspaciosToolStripMenuItem;

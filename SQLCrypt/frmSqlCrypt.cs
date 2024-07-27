@@ -2097,27 +2097,7 @@ namespace SQLCrypt
         }
 
 
-        private void buscarEnBDToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (!hSql.ConnectionStatus)
-            {
-                MessageBox.Show("Debe establecer una conexión a Base de Datos", "Atención");
-                return;
-            }
-
-            frmObjects frm = new frmObjects(hSql);
-
-            frm.Show();
-            frm.Top = this.Top;
-            frm.Left = this.Left;
-        }
-
-
-        private void btBuscarEnBd_Click(object sender, EventArgs e)
-        {
-            buscarEnBDToolStripMenuItem_Click(sender, e);
-        }
-
+        
         private void txtSql_TextChanged(object sender, EventArgs e)
         {
             scintilla__TextChanged();
