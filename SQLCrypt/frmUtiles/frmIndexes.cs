@@ -26,14 +26,21 @@ namespace SQLCrypt.frmUtiles
         public frmIndexes(MySql hSql)
         {
             InitializeComponent();
+            
+            lsExistingIndexes.MouseWheel += new System.Windows.Forms.MouseEventHandler(LsExistingIndexes_MouseWheel);
+            
             this.hSql = hSql;
             laStatus.Text = "";
             lsExistingIndexesContextMenu();
         }
 
+
         public frmIndexes(MySql hSql, string tableName) 
         {
             InitializeComponent();
+            
+            lsExistingIndexes.MouseWheel += new System.Windows.Forms.MouseEventHandler(LsExistingIndexes_MouseWheel);
+
             this.hSql = hSql;
             laStatus.Text = "";
             txtTableName.Text = tableName;
@@ -48,9 +55,7 @@ namespace SQLCrypt.frmUtiles
 
             LoadExistingIndexes(txtTableName.Text);
         }
-
-
-
+        
 
         private void lsExistingIndexesContextMenu()
         {
@@ -362,7 +367,10 @@ namespace SQLCrypt.frmUtiles
             while(hSql.Data.Read())
             {
                 lsExistingIndexes.Items.Add(hSql.Data.GetString(4));
-                drop_indexes_statements.Add($"DROP INDEX {table_name}.{hSql.Data.GetString(6)};");
+                if (!hSql.Data.IsDBNull(6))
+                    drop_indexes_statements.Add($"DROP INDEX {table_name}.{hSql.Data.GetString(6)};");
+                else
+                    drop_indexes_statements.Add("--NOTHING TO DO");
             }
 
         }
@@ -443,5 +451,26 @@ namespace SQLCrypt.frmUtiles
         {
             this.Close();
         }
+
+
+        private void LsExistingIndexes_MouseWheel(object sender, System.Windows.Forms.MouseEventArgs e )
+        {
+            if (Control.ModifierKeys == Keys.Control)
+            {
+                var currFontSize = lsExistingIndexes.Font.Size;
+
+                int delta = (e.Delta) / 120;
+
+                var newFontSize = currFontSize + delta;
+
+                if (newFontSize <= 9.5 || newFontSize > 15)
+                    return;
+
+                lsExistingIndexes.Font = new Font(lsExistingIndexes.Font.FontFamily, newFontSize);
+
+                lsExistingIndexes.ResumeLayout(false);
+            }
+        }
+
     }
 }

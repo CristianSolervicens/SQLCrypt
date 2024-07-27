@@ -37,8 +37,6 @@
             this.encriptarClavesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.verPanelDeObjetosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buscaPaginaSQLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.analizarDeadlocksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ejecutarArchivosEnBatchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extendedPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buscarEnBDToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -135,8 +133,6 @@
             this.encriptarClavesToolStripMenuItem,
             this.verPanelDeObjetosToolStripMenuItem,
             this.buscaPaginaSQLToolStripMenuItem,
-            this.analizarDeadlocksToolStripMenuItem,
-            this.ejecutarArchivosEnBatchToolStripMenuItem,
             this.extendedPropertiesToolStripMenuItem,
             this.buscarEnBDToolStripMenuItem,
             this.indicesToolStripMenuItem,
@@ -198,20 +194,6 @@
             this.buscaPaginaSQLToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.buscaPaginaSQLToolStripMenuItem.Text = "Busca Pagina SQL";
             this.buscaPaginaSQLToolStripMenuItem.Click += new System.EventHandler(this.buscaPaginaSQLToolStripMenuItem_Click);
-            // 
-            // analizarDeadlocksToolStripMenuItem
-            // 
-            this.analizarDeadlocksToolStripMenuItem.Name = "analizarDeadlocksToolStripMenuItem";
-            this.analizarDeadlocksToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
-            this.analizarDeadlocksToolStripMenuItem.Text = "Analizar Deadlocks";
-            this.analizarDeadlocksToolStripMenuItem.Click += new System.EventHandler(this.analizarDeadlocksToolStripMenuItem_Click);
-            // 
-            // ejecutarArchivosEnBatchToolStripMenuItem
-            // 
-            this.ejecutarArchivosEnBatchToolStripMenuItem.Name = "ejecutarArchivosEnBatchToolStripMenuItem";
-            this.ejecutarArchivosEnBatchToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
-            this.ejecutarArchivosEnBatchToolStripMenuItem.Text = "Ejecutar Archivos en Batch";
-            this.ejecutarArchivosEnBatchToolStripMenuItem.Click += new System.EventHandler(this.ejecutarArchivosEnBatchToolStripMenuItem_Click);
             // 
             // extendedPropertiesToolStripMenuItem
             // 
@@ -853,9 +835,7 @@
         private System.Windows.Forms.ToolStripMenuItem salidaATextoGrillaToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitC;
         private System.Windows.Forms.ToolStripMenuItem verPanelDeObjetosToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem analizarDeadlocksToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem buscaPaginaSQLToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ejecutarArchivosEnBatchToolStripMenuItem;
         private System.Windows.Forms.Panel panColumnas;
         private System.Windows.Forms.Label laBuscarTablas;
         private System.Windows.Forms.Label laTablas;
