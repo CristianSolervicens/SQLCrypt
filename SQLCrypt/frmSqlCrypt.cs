@@ -4,20 +4,26 @@ using System.Drawing;
 using System.Windows.Forms;
 using SQLCrypt.StructureClasses;
 using SQLCrypt.FunctionalClasses.MySql;
-// using System.IO;
 using ScintillaNET;
 using ScintillaFindReplaceControl;
 using SQLCrypt.FunctionalClasses;
 using System.Text;
 using System.Text.RegularExpressions;
-// using System.Runtime.InteropServices;
 using SQLCrypt.frmUtiles;
 using System.IO;
-// using static OfficeOpenXml.ExcelErrorValue;
-// using static ScintillaNET.Style;
-// using static System.Net.Mime.MediaTypeNames;
-// using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
+using System.Media;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using System.Windows.Media.Media3D;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
+
+//TODO: Agregar Ventana de Snippets
+//TODO: Ejecución Asíncrona de Scripts
+//TODO: Ejecutar con múltiples Result-Sets
+//TODO: Parsear scripts respetando GO
+//TODO: Buscar Errores de Sintáxis en el Documento Actual o Selección ??
 
 
 namespace SQLCrypt
@@ -25,7 +31,7 @@ namespace SQLCrypt
     public partial class FrmSqlCrypt : Form
     {
         private DbObjects Objetos;
-        private ToolTip MytoolTip = new ToolTip();
+        private System.Windows.Forms.ToolTip MytoolTip = new System.Windows.Forms.ToolTip();
         public string ConnectionFile = "";
 
         string CurrentFile = "";
@@ -52,7 +58,9 @@ namespace SQLCrypt
         private bool autoCompleteEnabled = true;
 
         private bool scintilla_end_mode = false;
-        
+        private const int BOOKMARK_MARGIN = 1; // Conventionally the symbol margin
+        private const int BOOKMARK_MARKER = 3; // Arbitrary. Any valid index would work.
+
         private string keyWords = "add all alter and any as asc avg" +
                                   "backup begin between break browse bulk by " +
                                   "cascade case check checkpoint close clustered coalesce collate column commit constraint continue convert count create cross current " +
@@ -154,7 +162,7 @@ namespace SQLCrypt
         /// <summary>
         /// SCINTILLA REGION
         /// </summary>
-         
+
         #region Scintilla
 
         public static Color IntToColor(int rgb)
@@ -193,11 +201,11 @@ namespace SQLCrypt
             TextArea.Styles[Style.Default].Size = 10;
             TextArea.Styles[Style.Default].BackColor = IntToColor(0x212121);
             TextArea.Styles[Style.Default].ForeColor = IntToColor(0xFFFFFF);
-            
+
             TextArea.CaretLineBackColor = IntToColor(0x333333);
             TextArea.CaretForeColor = IntToColor(0xF0F0F0);
             TextArea.CaretWidth = 2;
-            
+
             //TextArea.SetSelectionBackColor(true, IntToColor(0x000099));
             TextArea.SetSelectionBackColor(true, IntToColor(0x004389));
             TextArea.StyleClearAll();
@@ -219,7 +227,7 @@ namespace SQLCrypt
             TextArea.Styles[Style.Sql.Word2].ForeColor = IntToColor(0xF98906);
             TextArea.Styles[Style.Sql.CommentDocKeyword].ForeColor = IntToColor(0xB3D991);
             TextArea.Styles[Style.Sql.CommentDocKeywordError].ForeColor = IntToColor(0xFF0000);
-            
+
             TextArea.Lexer = Lexer.Sql;
 
             TextArea.SetKeywords(0, keyWords);
@@ -233,7 +241,43 @@ namespace SQLCrypt
             TextArea.MouseSelectionRectangularSwitch = true;
             TextArea.VirtualSpaceOptions = VirtualSpace.RectangularSelection;
 
+            //Barra de Book-Marks
+            TextArea.Margins[BOOKMARK_MARGIN].Width = 16;
+            TextArea.Margins[BOOKMARK_MARGIN].Sensitive = true;
+            TextArea.Margins[BOOKMARK_MARGIN].Type = MarginType.Symbol;
+            //TextArea.Margins[BOOKMARK_MARGIN].Mask = Marker.MaskAll;
+            TextArea.Margins[BOOKMARK_MARGIN].Cursor = MarginCursor.Arrow;
+            TextArea.Margins[BOOKMARK_MARGIN].BackColor = IntToColor(0x211021);
+            
+            TextArea.Markers[BOOKMARK_MARKER].Symbol = MarkerSymbol.Bookmark;
+            TextArea.Markers[BOOKMARK_MARKER].SetBackColor(Color.Bisque);
+            TextArea.Markers[BOOKMARK_MARKER].SetForeColor(Color.Black);
+
+            TextArea.MarginClick += txtSql_MarginClick;
+            //------------------
+
             scintilla__TextChanged();
+        }
+
+
+        private void txtSql_MarginClick(object sender, MarginClickEventArgs e)
+        {
+            if (e.Margin == BOOKMARK_MARGIN)
+            {
+                // Do we have a marker for this line?
+                const uint mask = (1 << BOOKMARK_MARKER);
+                var line = txtSql.Lines[txtSql.LineFromPosition(e.Position)];
+                if ((line.MarkerGet() & mask) > 0)
+                {
+                    // Remove existing bookmark
+                    line.MarkerDelete(BOOKMARK_MARKER);
+                }
+                else
+                {
+                    // Add bookmark
+                    line.MarkerAdd(BOOKMARK_MARKER);
+                }
+            }
         }
 
 
@@ -473,7 +517,7 @@ namespace SQLCrypt
             if (txtSql.SelectedText.Length > 0)
             {
                 var selected = txtSql.SelectedText;
-                switch(e.KeyChar)
+                switch (e.KeyChar)
                 {
                     case '"':
                         txtSql.ReplaceSelection($"\"{selected}\"");
@@ -549,9 +593,31 @@ namespace SQLCrypt
             if (e.Data.GetDataPresent(DataFormats.Text))
             {
                 var cadena = (string)e.Data.GetData(DataFormats.Text);
-                txtSql.InsertText(txtSql.CurrentPosition, cadena);
-                txtSql.CurrentPosition += cadena.Length;
-                txtSql.SelectionStart = txtSql.CurrentPosition;
+                if (cadena.Contains("\n"))
+                {
+                    var space_num = txtSql.GetColumn(Math.Min(txtSql.SelectionStart, txtSql.SelectionEnd));
+                    var fill = new string(' ', space_num);
+
+                    //Split
+                    string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(cadena, "\r\n");
+                    for (int i = 0; i < snippet_spaced.Length; i++)
+                    {
+                        snippet_spaced[i] = $"{(i != 0 ? fill : "")}{snippet_spaced[i]}";
+                    }
+
+                    cadena = "";
+                    for (int i = 0; i < snippet_spaced.Length; i++)
+                        cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : "\r\n")}";
+                }
+
+                if (txtSql.SelectionStart != txtSql.SelectionEnd)
+                    txtSql.ReplaceSelection(cadena);
+                else
+                {
+                    txtSql.InsertText(txtSql.CurrentPosition, cadena);
+                    txtSql.CurrentPosition += cadena.Length;
+                    txtSql.SelectionStart = txtSql.CurrentPosition;
+                }
                 txtSql.Focus();
                 return;
             }
@@ -638,6 +704,14 @@ namespace SQLCrypt
         private void txtSql_KeyDown(object sender, KeyEventArgs e)
         {
 
+            //Completar Snippets
+            if (e.KeyCode == Keys.F2)
+            {
+                complete_snippet();
+                return;
+            }
+
+            // Modo Fin de Linea para Bloques
             if (txtSql.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
             {
                 foreach (var sel in txtSql.Selections)
@@ -650,7 +724,7 @@ namespace SQLCrypt
                 }
             }
 
-
+            // Modo Fin de Linea para Bloques
             if (txtSql.Selections.Count > 1 && e.KeyCode == Keys.End)
             {
                 scintilla_end_mode = true;
@@ -664,11 +738,45 @@ namespace SQLCrypt
                 }
                 e.Handled = true;
             }
-            
+
+            // Salir de Modo Fin de Linea para Bloques
             if (scintilla_end_mode && txtSql.Selections.Count <= 1)
                 scintilla_end_mode = false;
+        }
 
 
+        private void txtSql_PreviousBookmark()
+        {
+            var line = txtSql.LineFromPosition(txtSql.CurrentPosition);
+            var prevLine = txtSql.Lines[--line].MarkerPrevious(1 << BOOKMARK_MARKER);
+            if (prevLine != -1)
+                txtSql.Lines[prevLine].Goto();
+        }
+
+
+        private void txtSql_NextBookmark()
+        {
+            var line = txtSql.LineFromPosition(txtSql.CurrentPosition);
+            var nextLine = txtSql.Lines[++line].MarkerNext(1 << BOOKMARK_MARKER);
+            if (nextLine != -1)
+                txtSql.Lines[nextLine].Goto();
+        }
+
+
+        private void txtSql_ToogleBookmark()
+        {
+            const uint mask = (1 << BOOKMARK_MARKER);
+            var line = txtSql.Lines[txtSql.LineFromPosition(txtSql.CurrentPosition)];
+            if ((line.MarkerGet() & mask) > 0)
+            {
+                // Remove existing bookmark
+                line.MarkerDelete(BOOKMARK_MARKER);
+            }
+            else
+            {
+                // Add bookmark
+                line.MarkerAdd(BOOKMARK_MARKER);
+            }
         }
 
 
@@ -687,9 +795,70 @@ namespace SQLCrypt
             }
         }
 
+        private int beginning_spaces(string texto)
+        {
+            int count = 0;
+            for (int i = 0; i < texto.Length; i++)
+            {
+                if (texto[i] == ' ') count++;
+                if (texto[i]  != ' ') break;
+            }
+            return count;
+        }
+
+        private void Load_Snippet(string snippet)
+        {
+            var l = txtSql.LineFromPosition(txtSql.SelectionStart);
+            var space_num = txtSql.GetColumn(Math.Min(txtSql.SelectionStart, txtSql.SelectionEnd));
+
+            var fill = new string(' ', space_num);
+            if (fill == null)
+                fill = "";
+
+            //Split
+            string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(snippet, "\r\n");
+            for (int i = 1; i < snippet_spaced.Length; i++)
+            {
+                snippet_spaced[i] = $"{(i !=0? fill: "")}{snippet_spaced[i]}";
+            }
+
+            var cadena = "";
+            for (int i = 0; i < snippet_spaced.Length; i++)
+                cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : "\r\n")}";
+
+            txtSql.ReplaceSelection(cadena);
+            
+            if (snippet.Contains("<"))
+                MessageBox.Show("Presione F2 para completar el Snippet", "Atención");
+        }
+
+
+        private void complete_snippet()
+        {
+            SearchFlags flags = new SearchFlags();
+            flags |= SearchFlags.Regex;
+            txtSql.SearchFlags = flags;
+            txtSql.TargetStart = 0;
+            txtSql.TargetEnd = txtSql.TextLength;
+
+            var pos = txtSql.SearchInTarget("[<][a-zA-Z0-9_]+[>]");
+
+            if (pos == -1)
+            {
+                SystemSounds.Beep.Play();
+            }
+
+            if (pos >= 0)
+                txtSql.SetSel(txtSql.TargetStart, txtSql.TargetEnd);
+        }
 
 
         #endregion
+
+
+
+
+
 
 
 
@@ -1332,7 +1501,7 @@ namespace SQLCrypt
                 lstObjetos.Items.Add(n);
             }
 
-            laTablas.Text = $"({lstObjetos.Items.Count})";
+            laTablas.Text = $"Objetos: {lstObjetos.Items.Count}";
         }
 
 
@@ -1896,7 +2065,15 @@ namespace SQLCrypt
 
             if (lstObjetos.SelectedItems.Count > 0)
             {
-                txtSql.DoDragDrop(lstObjetos.SelectedItem.ToString(), DragDropEffects.Copy);
+                string Elementos = "";
+                for (int i = 0; i < lstObjetos.SelectedItems.Count; ++i)
+                {
+                    Elementos += (Elementos != "" ? "\r\n" : "") + lstObjetos.SelectedItems[i].ToString();
+                }
+                if (Elementos != "")
+                    txtSql.DoDragDrop(Elementos, DragDropEffects.Copy);
+
+
                 lstObjetos_SelectedIndexChanged(sender, e);
             }
         }
@@ -1912,7 +2089,15 @@ namespace SQLCrypt
 
             if (lsColumnas.SelectedItems.Count > 0)
             {
-                txtSql.DoDragDrop(lsColumnas.SelectedItems[0].Text, DragDropEffects.Copy);
+                string Elementos = "";
+
+                for (int x = 0; x < lsColumnas.Items.Count; ++x)
+                {
+                    if (lsColumnas.Items[x].Selected)
+                        Elementos += (Elementos != "" ? "\r\n" : "") + $"{lsColumnas.Items[x].Text}";
+                }
+                if (Elementos != "")
+                    txtSql.DoDragDrop(Elementos, DragDropEffects.Copy);
             }
             
         }
@@ -2096,13 +2281,42 @@ namespace SQLCrypt
             scintilla__IndentationGuides();
         }
 
-
         
         private void txtSql_TextChanged(object sender, EventArgs e)
         {
             scintilla__TextChanged();
         }
 
-        
+
+        private void sToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var frm = new frmSnippets();
+            try
+            {
+                frm.Parent = Parent;
+                frm.StartPosition = FormStartPosition.CenterParent;
+                frm.ShowDialog();
+                var snippet = frm.snippet;
+                Load_Snippet(snippet);
+            }
+            catch { }
+        }
+
+
+        private void previousBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtSql_PreviousBookmark();
+        }
+
+        private void toggleBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtSql_ToogleBookmark();
+        }
+
+        private void goToNextBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            txtSql_NextBookmark();
+        }
+
     }
 }

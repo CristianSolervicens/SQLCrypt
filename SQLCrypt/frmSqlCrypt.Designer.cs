@@ -33,13 +33,15 @@
             this.archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ejecutarComandoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ejecutarTodasLasBasesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.comandosInmediatosToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.encriptarClavesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.verPanelDeObjetosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.buscaPaginaSQLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extendedPropertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.indicesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.sToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
             this.abrirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grabarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grabarComoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,6 +57,10 @@
             this.mostrarEspaciosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.guiaIndentacionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.numerosDeLíneaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.toggleBookmarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.goToNextBookmarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.previousBookmarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.selecciónAMayúsculasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selecciónAMinúsculasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -127,13 +133,15 @@
             this.archivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ejecutarComandoToolStripMenuItem,
             this.ejecutarTodasLasBasesToolStripMenuItem,
+            this.toolStripSeparator6,
             this.comandosInmediatosToolStripMenuItem1,
             this.encriptarClavesToolStripMenuItem,
             this.verPanelDeObjetosToolStripMenuItem,
             this.buscaPaginaSQLToolStripMenuItem,
             this.extendedPropertiesToolStripMenuItem,
             this.indicesToolStripMenuItem,
-            this.toolStripSeparator1,
+            this.sToolStripMenuItem,
+            this.toolStripSeparator7,
             this.abrirToolStripMenuItem,
             this.grabarToolStripMenuItem,
             this.grabarComoToolStripMenuItem,
@@ -160,6 +168,11 @@
             this.ejecutarTodasLasBasesToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
             this.ejecutarTodasLasBasesToolStripMenuItem.Text = "Ejecutar En Todas Las Bases";
             this.ejecutarTodasLasBasesToolStripMenuItem.Click += new System.EventHandler(this.ejecutarTodasLasBasesToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator6
+            // 
+            this.toolStripSeparator6.Name = "toolStripSeparator6";
+            this.toolStripSeparator6.Size = new System.Drawing.Size(264, 6);
             // 
             // comandosInmediatosToolStripMenuItem1
             // 
@@ -208,10 +221,18 @@
             this.indicesToolStripMenuItem.Text = "Indices";
             this.indicesToolStripMenuItem.Click += new System.EventHandler(this.indicesToolStripMenuItem_Click);
             // 
-            // toolStripSeparator1
+            // sToolStripMenuItem
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(264, 6);
+            this.sToolStripMenuItem.Name = "sToolStripMenuItem";
+            this.sToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.OemPeriod)));
+            this.sToolStripMenuItem.Size = new System.Drawing.Size(267, 22);
+            this.sToolStripMenuItem.Text = "Snippets";
+            this.sToolStripMenuItem.Click += new System.EventHandler(this.sToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(264, 6);
             // 
             // abrirToolStripMenuItem
             // 
@@ -277,6 +298,10 @@
             this.mostrarEspaciosToolStripMenuItem,
             this.guiaIndentacionToolStripMenuItem,
             this.numerosDeLíneaToolStripMenuItem,
+            this.toolStripSeparator8,
+            this.toggleBookmarkToolStripMenuItem,
+            this.goToNextBookmarkToolStripMenuItem,
+            this.previousBookmarkToolStripMenuItem,
             this.toolStripSeparator4,
             this.selecciónAMayúsculasToolStripMenuItem,
             this.selecciónAMinúsculasToolStripMenuItem,
@@ -339,6 +364,35 @@
             this.numerosDeLíneaToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
             this.numerosDeLíneaToolStripMenuItem.Text = "Numeros de Línea";
             this.numerosDeLíneaToolStripMenuItem.Click += new System.EventHandler(this.numerosDeLíneaToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator8
+            // 
+            this.toolStripSeparator8.Name = "toolStripSeparator8";
+            this.toolStripSeparator8.Size = new System.Drawing.Size(267, 6);
+            // 
+            // toggleBookmarkToolStripMenuItem
+            // 
+            this.toggleBookmarkToolStripMenuItem.Name = "toggleBookmarkToolStripMenuItem";
+            this.toggleBookmarkToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F4)));
+            this.toggleBookmarkToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+            this.toggleBookmarkToolStripMenuItem.Text = "Toggle Bookmark";
+            this.toggleBookmarkToolStripMenuItem.Click += new System.EventHandler(this.toggleBookmarkToolStripMenuItem_Click);
+            // 
+            // goToNextBookmarkToolStripMenuItem
+            // 
+            this.goToNextBookmarkToolStripMenuItem.Name = "goToNextBookmarkToolStripMenuItem";
+            this.goToNextBookmarkToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F4;
+            this.goToNextBookmarkToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+            this.goToNextBookmarkToolStripMenuItem.Text = "Next Bookmark";
+            this.goToNextBookmarkToolStripMenuItem.Click += new System.EventHandler(this.goToNextBookmarkToolStripMenuItem_Click);
+            // 
+            // previousBookmarkToolStripMenuItem
+            // 
+            this.previousBookmarkToolStripMenuItem.Name = "previousBookmarkToolStripMenuItem";
+            this.previousBookmarkToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Shift | System.Windows.Forms.Keys.F4)));
+            this.previousBookmarkToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+            this.previousBookmarkToolStripMenuItem.Text = "Previous Bookmark";
+            this.previousBookmarkToolStripMenuItem.Click += new System.EventHandler(this.previousBookmarkToolStripMenuItem_Click);
             // 
             // toolStripSeparator4
             // 
@@ -790,7 +844,6 @@
       private System.Windows.Forms.ToolStripMenuItem acercaDeToolStripMenuItem;
       private System.Windows.Forms.ToolStripMenuItem cerrarToolStripMenuItem;
       private System.Windows.Forms.ToolStripMenuItem ejecutarComandoToolStripMenuItem;
-      private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
       private System.Windows.Forms.ToolStripMenuItem grabarComoToolStripMenuItem;
       private System.Windows.Forms.ToolStripMenuItem abrirToolStripMenuItem;
       private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
@@ -847,6 +900,13 @@
         private System.Windows.Forms.Button btRefreshType;
         private System.Windows.Forms.Button btReconnect;
         private System.Windows.Forms.ToolStripMenuItem autoCompleteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem toggleBookmarkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem goToNextBookmarkToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem previousBookmarkToolStripMenuItem;
     }
 }
 
