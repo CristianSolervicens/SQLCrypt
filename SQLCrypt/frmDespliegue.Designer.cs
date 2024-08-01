@@ -38,6 +38,9 @@
             this.siguienteResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previoResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.grabarJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -87,7 +90,10 @@
             // 
             this.archivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.salirToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.grabarJSONToolStripMenuItem,
             this.grabarExcellToolStripMenuItem,
+            this.toolStripSeparator1,
             this.verMensajesToolStripMenuItem,
             this.siguienteResultSetToolStripMenuItem,
             this.previoResultSetToolStripMenuItem});
@@ -139,6 +145,23 @@
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(500, 23);
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(219, 6);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(219, 6);
+            // 
+            // grabarJSONToolStripMenuItem
+            // 
+            this.grabarJSONToolStripMenuItem.Name = "grabarJSONToolStripMenuItem";
+            this.grabarJSONToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.grabarJSONToolStripMenuItem.Text = "Grabar JSON";
+            this.grabarJSONToolStripMenuItem.Click += new System.EventHandler(this.grabarJSONToolStripMenuItem_Click);
+            // 
             // frmDespliegue
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -174,6 +197,9 @@
         private System.Windows.Forms.ToolStripMenuItem verMensajesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem siguienteResultSetToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem previoResultSetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem grabarJSONToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
     }
    
 }

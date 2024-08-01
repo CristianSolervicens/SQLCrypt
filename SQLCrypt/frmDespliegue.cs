@@ -7,6 +7,7 @@ using System.Globalization;
 using OfficeOpenXml.Style;
 using System.Drawing;
 using System.Collections.Generic;
+using SQLCrypt.FunctionalClasses;
 
 
 namespace SQLCrypt
@@ -115,6 +116,35 @@ namespace SQLCrypt
         }
 
 
+        private void saveCurrentToJson()
+        {
+            // Selección del Archivo de Salida
+            SaveFileDialog saveForm = new SaveFileDialog();
+            saveForm.RestoreDirectory = true;
+            saveForm.Filter = "Json File|*.json";
+            saveForm.Title = "Save As Json File";
+            saveForm.ShowDialog();
+
+            if (saveForm.FileName == "")
+                return;
+
+            if (File.Exists(saveForm.FileName))
+            {
+                try
+                {
+                    File.Delete(saveForm.FileName);
+                }
+                catch
+                {
+                    MessageBox.Show("No fue posible eliminar el Archivo existente.\nVerifique que no esté en uso.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+            }
+
+            ds.Tables[current_ds].SaveToFile(saveForm.FileName);
+
+        }
+
 
         //-------------------------------
         // Grabación de la Salida a Excel
@@ -153,7 +183,7 @@ namespace SQLCrypt
             //string dateFormat = "MM-dd-yyyy HH:MM:SS";
 
             // Salida a Excel
-            var dt = (DataTable)dataGridView.DataSource;
+            var dt = ds.Tables[current_ds];
             using (ExcelPackage pck = new ExcelPackage(newFile))
             {
                 ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Reporte");
@@ -271,10 +301,12 @@ namespace SQLCrypt
             nextResultSet();
         }
 
+
         private void previoResultSetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             previousResultSet();
         }
+
 
         private void nextResultSet()
         {
@@ -285,6 +317,7 @@ namespace SQLCrypt
             toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds+1}/{ds.Tables.Count}");
         }
 
+
         private void previousResultSet()
         {
             if (current_ds > 0)
@@ -294,6 +327,10 @@ namespace SQLCrypt
             toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds+1}/{ds.Tables.Count}");
         }
 
+        private void grabarJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveCurrentToJson();
+        }
 
     }
 
