@@ -57,6 +57,7 @@
             this.dataGridView.Size = new System.Drawing.Size(1139, 594);
             this.dataGridView.TabIndex = 0;
             this.dataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
+            this.dataGridView.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dataGridView_RowPostPaint);
             // 
             // btSalir
             // 

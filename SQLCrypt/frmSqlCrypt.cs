@@ -19,7 +19,6 @@ using System.Windows.Media.Media3D;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
-//TODO: Agregar Ventana de Snippets
 //TODO: Ejecución Asíncrona de Scripts
 //TODO: Ejecutar con múltiples Result-Sets
 //TODO: Parsear scripts respetando GO
@@ -101,13 +100,13 @@ namespace SQLCrypt
             if (File.Exists(keywords_file))
                 keyWords = File.ReadAllText(keywords_file);
 
-            keyWords = keyWords.Replace('\n', ' ');
+            keyWords = keyWords.Replace("\r\n", " ");
 
             var keywords2_file = "keywords2.cfg";
             if (File.Exists(keywords2_file))
                 keyWords2 = File.ReadAllText(keywords2_file);
 
-            keyWords2 = keyWords2.Replace('\n', ' ');
+            keyWords2 = keyWords2.Replace("\r\n", " ");
 
             autoCompleteKeywords = keyWords.ToUpper();
             // ---------------------------------------------
@@ -189,6 +188,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Seteo del control "scintilla"
+        /// con todas las opciones de color y otras, esperadas para el control
+        /// </summary>
+        /// <param name="TextArea"></param>
         private void InitSyntaxColoring(ScintillaNET.Scintilla TextArea)
         {
 
@@ -512,6 +516,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Brace matching en modo INSERT
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtSql_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (txtSql.SelectedText.Length > 0)
@@ -539,6 +548,10 @@ namespace SQLCrypt
                         txtSql.ReplaceSelection($"[{selected}]");
                         e.Handled = true;
                         break;
+                    case '<':
+                        txtSql.ReplaceSelection($"<{selected}>");
+                        e.Handled = true;
+                        break;
                 }
             }
             else
@@ -561,11 +574,19 @@ namespace SQLCrypt
                     case '[':
                         txtSql.InsertText(txtSql.CurrentPosition, "]");
                         break;
+                    case '<':
+                        txtSql.InsertText(txtSql.CurrentPosition, ">");
+                        break;
                 }
             }
         }
 
 
+        /// <summary>
+        /// Auto Indentación "scintilla"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtSql_InsertCheck(object sender, InsertCheckEventArgs e)
         {
             if ((e.Text.EndsWith("\r") || e.Text.EndsWith("\n")))
@@ -587,6 +608,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// "scintilla" DragDrop de Archivos, Tablas y Columnas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtSql_DragDrop(object sender, DragEventArgs e)
         {
 
@@ -657,7 +683,11 @@ namespace SQLCrypt
         }
 
 
-        //Grabar archivo encriptado.
+        /// <summary>
+        /// Grabación del Archivo "scintilla"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void grabarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (CurrentFile == "")
@@ -671,16 +701,29 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Apertura y carga de archivo en "scintilla"
+        /// </summary>
+        /// <param name="fileName"></param>
         private void OpenFileInEditor(string fileName)
         {
             txtSql.Text = "";
 
-            if (string.Compare(System.IO.Path.GetExtension(fileName), ".sqc", true) == 0 || string.Compare(System.IO.Path.GetExtension(fileName), ".cfg", true) == 0)
+            if (string.Compare(System.IO.Path.GetExtension(fileName).ToLower(), ".sqc", true) == 0 
+                || string.Compare(System.IO.Path.GetExtension(fileName).ToLower(), ".cfg", true) == 0)
             {
                 CurrentFile = fileName;
                 IsEncrypted = true;
-                OpenCryptoFile(CurrentFile);
-                this.Text = $"SQLCrypt - {CurrentFile}";
+                try
+                {
+                    OpenCryptoFile(CurrentFile);
+                    this.Text = $"SQLCrypt - {CurrentFile}";
+                }
+                catch {
+                    txtSql.Text = System.IO.File.ReadAllText(CurrentFile);
+                    this.Text = CurrentFile;
+                    this.Text = $"SQLCrypt - {CurrentFile}";
+                }
                 grabarComoToolStripMenuItem.Enabled = true;
                 WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
             }
@@ -701,6 +744,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// txtSql_KeyDown
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtSql_KeyDown(object sender, KeyEventArgs e)
         {
 
@@ -745,6 +793,9 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// txtSql_PreviousBookmark
+        /// </summary>
         private void txtSql_PreviousBookmark()
         {
             var line = txtSql.LineFromPosition(txtSql.CurrentPosition);
@@ -754,6 +805,9 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// txtSql_NextBookmark
+        /// </summary>
         private void txtSql_NextBookmark()
         {
             var line = txtSql.LineFromPosition(txtSql.CurrentPosition);
@@ -763,6 +817,9 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// txtSql_ToogleBookmark
+        /// </summary>
         private void txtSql_ToogleBookmark()
         {
             const uint mask = (1 << BOOKMARK_MARKER);
@@ -780,6 +837,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Control para permitir Edición en modo Fin de Línea
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtSql_KeyUp(object sender, KeyEventArgs e)
         {
             if (txtSql.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
@@ -795,6 +857,12 @@ namespace SQLCrypt
             }
         }
 
+
+        /// <summary>
+        /// HELPER - retorna el número de Espacios al inicio de la línea actual en "scintilla"
+        /// </summary>
+        /// <param name="texto"></param>
+        /// <returns></returns>
         private int beginning_spaces(string texto)
         {
             int count = 0;
@@ -806,6 +874,11 @@ namespace SQLCrypt
             return count;
         }
 
+
+        /// <summary>
+        /// Carga snippet seleccionado en la selección actual en "scintilla"
+        /// </summary>
+        /// <param name="snippet"></param>
         private void Load_Snippet(string snippet)
         {
             var l = txtSql.LineFromPosition(txtSql.SelectionStart);
@@ -833,6 +906,10 @@ namespace SQLCrypt
         }
 
 
+
+        /// <summary>
+        /// Helper para buscar los campos a llenar para un snippet
+        /// </summary>
         private void complete_snippet()
         {
             SearchFlags flags = new SearchFlags();
@@ -892,6 +969,7 @@ namespace SQLCrypt
             txtSql.SetSelection(0, 0);  //Scintilla
         }
 
+
         private void txmCopy(object sender, EventArgs e)
         {
             Clipboard.Clear();
@@ -901,10 +979,12 @@ namespace SQLCrypt
             Clipboard.SetText(txtSql.SelectedText);
         }
 
+
         private void txmPaste(object sender, EventArgs e)
         {
             txtSql.Paste();  //Scintilla
         }
+
 
         private void txmDeSelAll(object sender, EventArgs e)
         {
@@ -919,7 +999,10 @@ namespace SQLCrypt
         }
 
 
-
+        /// <summary>
+        /// Abre archivo .sqc "encriptado"
+        /// </summary>
+        /// <param name="sFileName"></param>
         private void OpenCryptoFile(string sFileName)
         {
             CurrentFile = sFileName;
@@ -1105,6 +1188,9 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Selección "scintilla" a LOWERCASE
+        /// </summary>
         private void Lowercase()
         {
 
@@ -1120,6 +1206,9 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Selección "scintilla" a UPPERCASE
+        /// </summary>
         private void Uppercase()
         {
 
@@ -1135,9 +1224,25 @@ namespace SQLCrypt
         }
 
         
-
+        /// <summary>
+        /// Cierre del Documento en curso.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cerrarToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (txtSql.Modified)
+            {
+                var res = MessageBox.Show("El Documento ha sido Modificado.\nDesea Grabar antes de Cerrarlo?", "Atención", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (res == DialogResult.Yes)
+                {
+                    if (CurrentFile == "")
+                        SaveFileStd(true);
+                    else
+                        SaveFileStd(false);
+                }
+            }
+
             CurrentFile = "";
             IsEncrypted = false;
             txtSql.Text = "";
@@ -1160,7 +1265,7 @@ namespace SQLCrypt
 
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.InitialDirectory = WorkPath;
-            ofd.Filter = "Sql Files (*.sql;*.sqc)|*.sql;*.sqc|Text Files (*.txt)|*.txt|Config Files (*.cfg)|*.cfg";
+            ofd.Filter = "Sql Files (*.sql;*.sqc)|*.sql;*.sqc|Text Files (*.txt)|*.txt|Config Files (*.cfg)|*.cfg|Any File (*.*)|*.*";
             ofd.FilterIndex = 1;
             ofd.FileName = CurrentFile;
 
@@ -1211,6 +1316,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Establecer Conexión a la BD
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ConnectToDatabase(object sender, EventArgs e)
         {
             if (hSql.ConnectionStatus)
@@ -1248,6 +1358,9 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Carga Lista de Bases de Dato en Combo
+        /// </summary>
         private void LoadDatabaseList()
         {
             string OriginalDB = databasesToolStripMenuItem.Text;
@@ -1277,6 +1390,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Cambio (Selección) de la Base de Datos de Trabajo
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void databasesToolStripMenuItem_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (databasesToolStripMenuItem.SelectedIndex == -1)
@@ -1430,6 +1548,7 @@ namespace SQLCrypt
         }
 
 
+
         private void SaveFileStd(bool bSaveAs)
         {
             string sqlString;
@@ -1458,8 +1577,7 @@ namespace SQLCrypt
 
             if (IsEncrypted)
             {
-                sqlString = txtSql.Text.ToString();
-                hSql.EncryptStringtoFile(sqlString, CurrentFile);
+                hSql.EncryptStringtoFile(txtSql.Text.ToString(), CurrentFile);
             }
             else
             {
@@ -1470,7 +1588,7 @@ namespace SQLCrypt
             txtSql.EmptyUndoBuffer();
             tssLaStat.Text = "Archivo Grabado...";
 
-        } //SaveFileStd
+        }
 
 
         private void txtSql_SaveFile()
@@ -1505,6 +1623,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Busca los Objetos que contienen el Texto ingresado en txBuscaEnLista
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txBuscaEnLista_KeyDown(object sender, KeyEventArgs e)
         {
             if (txBuscaEnLista.Text.Trim() == "")
@@ -1590,6 +1713,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Busca Todas las tablas que tienen el la Columna indicada
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FindTableByColumnName(object sender, EventArgs e)
         {
             if (txBuscaEnLista.Text == "")
@@ -1609,6 +1737,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Toggle de Panel de Objetos
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void verPanelDeObjetosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if(hSql.ConnectionStatus == false)
@@ -1634,7 +1767,11 @@ namespace SQLCrypt
         }
 
 
-
+        /// <summary>
+        /// Objetos seleccionados al Clipboard
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ObjSelectedToClipboard(object sender, EventArgs e)
         {
             Clipboard.Clear();
@@ -1651,7 +1788,7 @@ namespace SQLCrypt
         }
 
 
-        // Copiar al Clipboard Fila Completa de las Columnas del Objeto
+        // Copiar al Clipboard Fila Completa de las Columnas Seleccionadas del Objeto
         private void colmSelectionToClipBoard( object sender, EventArgs e)
         {
             Clipboard.Clear();
@@ -1771,9 +1908,13 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Información adicional del Objeto
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ObjGetMoreInfo(object sender, EventArgs e)
         {
-            string sSalida = string.Empty;
 
             if (lstObjetos.SelectedIndex == -1)
                 return;
@@ -1782,18 +1923,20 @@ namespace SQLCrypt
 
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
-            sSalida += $"\nSchema    : {DBObj.schema_name}\n";
-            sSalida += $"Nombre    : {DBObj.name}\n";
-            sSalida += $"Id        : {DBObj.object_id}\n";
-            sSalida += $"Type      : {DBObj.type}\n";
-            sSalida += $"Type Desc : {DBObj.type_desc}\n";
-            sSalida += $"Creado    : {DBObj.create_date}\n";
-            sSalida += $"Modificado: {DBObj.modify_date}\n";
-            sSalida += $"Schema Id : {DBObj.schema_id}\n";
-            sSalida += $"Parrent Id: {DBObj.parent_object_id}\n";
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append($"\nSchema    : {DBObj.schema_name}\n");
+            sb.Append($"Nombre    : {DBObj.name}\n");
+            sb.Append($"Id        : {DBObj.object_id}\n");
+            sb.Append($"Type      : {DBObj.type}\n")    ;
+            sb.Append($"Type Desc : {DBObj.type_desc}\n")   ;
+            sb.Append($"Creado    : {DBObj.create_date}\n");
+            sb.Append($"Modificado: {DBObj.modify_date}\n");
+            sb.Append($"Schema Id : {DBObj.schema_id}\n");
+            sb.Append($"Parrent Id: {DBObj.parent_object_id}\n");
 
             Clipboard.Clear();
-            Clipboard.SetText(sSalida);
+            Clipboard.SetText(sb.ToString());
 
             MessageBox.Show("Información en Clipboard", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
 

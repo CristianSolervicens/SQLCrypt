@@ -33,8 +33,13 @@
             // 
             // lsSnippets
             // 
+            this.lsSnippets.BackColor = System.Drawing.SystemColors.WindowFrame;
+            this.lsSnippets.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.lsSnippets.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lsSnippets.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lsSnippets.ForeColor = System.Drawing.SystemColors.ButtonFace;
             this.lsSnippets.FormattingEnabled = true;
+            this.lsSnippets.ItemHeight = 16;
             this.lsSnippets.Location = new System.Drawing.Point(0, 0);
             this.lsSnippets.Name = "lsSnippets";
             this.lsSnippets.Size = new System.Drawing.Size(343, 498);
@@ -47,6 +52,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.ClientSize = new System.Drawing.Size(343, 498);
             this.Controls.Add(this.lsSnippets);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;

@@ -483,7 +483,7 @@
             this.databasesToolStripMenuItem.AutoSize = false;
             this.databasesToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
             this.databasesToolStripMenuItem.Name = "databasesToolStripMenuItem";
-            this.databasesToolStripMenuItem.Size = new System.Drawing.Size(210, 23);
+            this.databasesToolStripMenuItem.Size = new System.Drawing.Size(250, 23);
             this.databasesToolStripMenuItem.SelectedIndexChanged += new System.EventHandler(this.databasesToolStripMenuItem_SelectedIndexChanged);
             // 
             // ayudToolStripMenuItem
@@ -775,7 +775,7 @@
             this.btReconnect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btReconnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btReconnect.ImageKey = "(none)";
-            this.btReconnect.Location = new System.Drawing.Point(719, 1);
+            this.btReconnect.Location = new System.Drawing.Point(781, 1);
             this.btReconnect.Name = "btReconnect";
             this.btReconnect.Size = new System.Drawing.Size(28, 24);
             this.btReconnect.TabIndex = 29;
@@ -789,7 +789,7 @@
             this.btConnectToBd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btConnectToBd.Image = global::SQLCrypt.Properties.Resources.Connect3;
             this.btConnectToBd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btConnectToBd.Location = new System.Drawing.Point(598, 1);
+            this.btConnectToBd.Location = new System.Drawing.Point(660, 1);
             this.btConnectToBd.Name = "btConnectToBd";
             this.btConnectToBd.Size = new System.Drawing.Size(118, 24);
             this.btConnectToBd.TabIndex = 19;
