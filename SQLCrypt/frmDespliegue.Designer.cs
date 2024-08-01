@@ -35,6 +35,8 @@
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grabarExcellToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.verMensajesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.siguienteResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.previoResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -86,7 +88,9 @@
             this.archivoToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.salirToolStripMenuItem,
             this.grabarExcellToolStripMenuItem,
-            this.verMensajesToolStripMenuItem});
+            this.verMensajesToolStripMenuItem,
+            this.siguienteResultSetToolStripMenuItem,
+            this.previoResultSetToolStripMenuItem});
             this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
             this.archivoToolStripMenuItem.Size = new System.Drawing.Size(60, 23);
             this.archivoToolStripMenuItem.Text = "Archivo";
@@ -94,29 +98,46 @@
             // salirToolStripMenuItem
             // 
             this.salirToolStripMenuItem.Name = "salirToolStripMenuItem";
-            this.salirToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.salirToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.salirToolStripMenuItem.Text = "Salir";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
             // 
             // grabarExcellToolStripMenuItem
             // 
             this.grabarExcellToolStripMenuItem.Name = "grabarExcellToolStripMenuItem";
-            this.grabarExcellToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.grabarExcellToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.grabarExcellToolStripMenuItem.Text = "Grabar Excell";
             this.grabarExcellToolStripMenuItem.Click += new System.EventHandler(this.grabarExcellToolStripMenuItem_Click);
             // 
             // verMensajesToolStripMenuItem
             // 
             this.verMensajesToolStripMenuItem.Name = "verMensajesToolStripMenuItem";
-            this.verMensajesToolStripMenuItem.Size = new System.Drawing.Size(142, 22);
+            this.verMensajesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
+            this.verMensajesToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.verMensajesToolStripMenuItem.Text = "Ver Mensajes";
             this.verMensajesToolStripMenuItem.Click += new System.EventHandler(this.verMensajesToolStripMenuItem_Click);
+            // 
+            // siguienteResultSetToolStripMenuItem
+            // 
+            this.siguienteResultSetToolStripMenuItem.Name = "siguienteResultSetToolStripMenuItem";
+            this.siguienteResultSetToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.siguienteResultSetToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.siguienteResultSetToolStripMenuItem.Text = "Siguiente Result-Set";
+            this.siguienteResultSetToolStripMenuItem.Click += new System.EventHandler(this.siguienteResultSetToolStripMenuItem_Click);
+            // 
+            // previoResultSetToolStripMenuItem
+            // 
+            this.previoResultSetToolStripMenuItem.Name = "previoResultSetToolStripMenuItem";
+            this.previoResultSetToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
+            this.previoResultSetToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.previoResultSetToolStripMenuItem.Text = "Previo Result-Set";
+            this.previoResultSetToolStripMenuItem.Click += new System.EventHandler(this.previoResultSetToolStripMenuItem_Click);
             // 
             // toolStripTextBox1
             // 
             this.toolStripTextBox1.Enabled = false;
             this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(100, 23);
+            this.toolStripTextBox1.Size = new System.Drawing.Size(500, 23);
             // 
             // frmDespliegue
             // 
@@ -151,6 +172,8 @@
       private System.Windows.Forms.ToolStripMenuItem grabarExcellToolStripMenuItem;
       private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
         private System.Windows.Forms.ToolStripMenuItem verMensajesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem siguienteResultSetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem previoResultSetToolStripMenuItem;
     }
    
 }

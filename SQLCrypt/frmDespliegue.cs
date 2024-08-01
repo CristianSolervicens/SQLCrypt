@@ -6,12 +6,16 @@ using OfficeOpenXml;
 using System.Globalization;
 using OfficeOpenXml.Style;
 using System.Drawing;
+using System.Collections.Generic;
 
 
 namespace SQLCrypt
 {
     public partial class frmDespliegue:Form
     {
+
+        private DataSet ds = new DataSet();
+        int current_ds = -1;
 
         public frmDespliegue()
         {
@@ -72,20 +76,25 @@ namespace SQLCrypt
             }
 
             //Carga de Filas en la Grilla.
-            DataTable dt = new DataTable();
-            try
+            do
             {
-                dt.Load(Program.hSql.Data);
-            }
-            catch
-            {
-                MessageBox.Show("La tabla tiene tipos de datos No soportados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                dataGridView.DataSource = dt;
-                toolStripTextBox1.Text = string.Format("Filas: {0}", dataGridView.Rows.Count);
-            }
+                try
+                {
+                    DataTable dt = new DataTable();
+                    dt.Load(Program.hSql.Data);
+                    ds.Tables.Add(dt);
+                }
+                catch
+                {
+                    MessageBox.Show("La consulta tiene tipos de datos No soportados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            } while (!Program.hSql.Data.IsClosed);
+
+            current_ds = 0;
+            if (ds.Tables.Count > 0)
+                dataGridView.DataSource = ds.Tables[current_ds];
+            toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds + 1}/{ds.Tables.Count}");
+
         }
 
 
@@ -105,15 +114,6 @@ namespace SQLCrypt
             e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
         }
 
-
-        private void SetRowLines()
-        {
-            for (int x = 0; x < dataGridView.Rows.Count; ++x)
-            {
-                dataGridView.Rows[x].HeaderCell.Value = x;
-            }
-            dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
-        }
 
 
         //-------------------------------
@@ -263,6 +263,38 @@ namespace SQLCrypt
         {
             e.ThrowException = false;
         }
+
+
+
+        private void siguienteResultSetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            nextResultSet();
+        }
+
+        private void previoResultSetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            previousResultSet();
+        }
+
+        private void nextResultSet()
+        {
+            if (ds.Tables.Count > current_ds+1)
+                current_ds++;
+
+            dataGridView.DataSource = ds.Tables[current_ds];
+            toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds+1}/{ds.Tables.Count}");
+        }
+
+        private void previousResultSet()
+        {
+            if (current_ds > 0)
+                current_ds--;
+            
+            dataGridView.DataSource = ds.Tables[current_ds];
+            toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds+1}/{ds.Tables.Count}");
+        }
+
+
     }
 
 }
