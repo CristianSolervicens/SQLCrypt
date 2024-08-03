@@ -28,19 +28,21 @@
       /// </summary>
       private void InitializeComponent()
       {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDespliegue));
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.btSalir = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.grabarJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grabarExcellToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.verMensajesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.siguienteResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previoResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.grabarJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -79,7 +81,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoToolStripMenuItem,
-            this.toolStripTextBox1});
+            this.toolStripTextBox1,
+            this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1139, 27);
@@ -108,12 +111,29 @@
             this.salirToolStripMenuItem.Text = "Salir";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
             // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(219, 6);
+            // 
+            // grabarJSONToolStripMenuItem
+            // 
+            this.grabarJSONToolStripMenuItem.Name = "grabarJSONToolStripMenuItem";
+            this.grabarJSONToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
+            this.grabarJSONToolStripMenuItem.Text = "Grabar JSON";
+            this.grabarJSONToolStripMenuItem.Click += new System.EventHandler(this.grabarJSONToolStripMenuItem_Click);
+            // 
             // grabarExcellToolStripMenuItem
             // 
             this.grabarExcellToolStripMenuItem.Name = "grabarExcellToolStripMenuItem";
             this.grabarExcellToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
             this.grabarExcellToolStripMenuItem.Text = "Grabar Excell";
             this.grabarExcellToolStripMenuItem.Click += new System.EventHandler(this.grabarExcellToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(219, 6);
             // 
             // verMensajesToolStripMenuItem
             // 
@@ -145,22 +165,11 @@
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(500, 23);
             // 
-            // toolStripSeparator1
+            // ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(219, 6);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(219, 6);
-            // 
-            // grabarJSONToolStripMenuItem
-            // 
-            this.grabarJSONToolStripMenuItem.Name = "grabarJSONToolStripMenuItem";
-            this.grabarJSONToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.grabarJSONToolStripMenuItem.Text = "Grabar JSON";
-            this.grabarJSONToolStripMenuItem.Click += new System.EventHandler(this.grabarJSONToolStripMenuItem_Click);
+            this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem.Name = "ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem";
+            this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem.Size = new System.Drawing.Size(328, 23);
+            this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem.Text = "[Ctrl] [N] Siguiente Result Set       [Ctrl] [P] Previo Result Set";
             // 
             // frmDespliegue
             // 
@@ -171,6 +180,7 @@
             this.Controls.Add(this.btSalir);
             this.Controls.Add(this.dataGridView);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "frmDespliegue";
             this.Text = "Despliegue de resultados";
@@ -200,6 +210,7 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem grabarJSONToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem;
     }
    
 }

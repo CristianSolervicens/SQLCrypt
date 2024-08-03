@@ -697,6 +697,7 @@
             this.lstObjetos.Size = new System.Drawing.Size(231, 249);
             this.lstObjetos.TabIndex = 12;
             this.lstObjetos.SelectedIndexChanged += new System.EventHandler(this.lstObjetos_SelectedIndexChanged);
+            this.lstObjetos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstObjetos_KeyDown);
             this.lstObjetos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstObjetos_MouseDown);
             // 
             // panColumnas
@@ -733,6 +734,7 @@
             this.lsColumnas.TabIndex = 33;
             this.lsColumnas.UseCompatibleStateImageBehavior = false;
             this.lsColumnas.View = System.Windows.Forms.View.Details;
+            this.lsColumnas.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lsColumnas_KeyDown);
             this.lsColumnas.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lsColumnas_MouseDown);
             // 
             // colName
@@ -849,7 +851,6 @@
       private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
       private System.Windows.Forms.ToolStripComboBox databasesToolStripMenuItem;
       private System.Windows.Forms.CheckBox chkToText;
-      private System.Windows.Forms.MyTextBox txTextLimit;
       private System.Windows.Forms.ToolStripMenuItem encriptarClavesToolStripMenuItem;
       private System.Windows.Forms.ToolStripMenuItem comandosInmediatosToolStripMenuItem1;
       private System.Windows.Forms.StatusStrip statusStrip1;

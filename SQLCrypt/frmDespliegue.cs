@@ -18,11 +18,11 @@ namespace SQLCrypt
         private DataSet ds = new DataSet();
         int current_ds = -1;
 
+
         public frmDespliegue()
         {
             InitializeComponent();
-
-            btSalir.Top = -20;
+            btSalir.Top = -200;
         }
 
         private void frmDespliegue_Load(object sender, EventArgs e)
@@ -94,11 +94,21 @@ namespace SQLCrypt
             current_ds = 0;
             if (ds.Tables.Count > 0)
                 dataGridView.DataSource = ds.Tables[current_ds];
+            
             toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds + 1}/{ds.Tables.Count}");
+
+            this.Show();
+            this.Activate();
+            this.BringToFront();
 
         }
 
 
+        /// <summary>
+        /// Número de Fila en El Header de Las Filas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dataGridView_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
             var grid = sender as DataGridView;
@@ -116,6 +126,9 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Grabar el Contenido del la Tabla Actual a archivo JSON
+        /// </summary>
         private void saveCurrentToJson()
         {
             // Selección del Archivo de Salida
@@ -234,6 +247,12 @@ namespace SQLCrypt
             }
         }
 
+
+        /// <summary>
+        /// Helper para la Salida a Excel
+        /// </summary>
+        /// <param name="range"></param>
+        /// <param name="color"></param>
         static void ApplyBorders(ExcelRange range, Color color)
         {
             range.Style.Border.Top.Style = ExcelBorderStyle.Thin;
@@ -251,7 +270,7 @@ namespace SQLCrypt
         //------------------------
         private void frmDespliegue_Closing(object sender, FormClosingEventArgs e)
         {
-            Program.hSql.DataClose();
+            // Program.hSql.DataClose();
         }
 
         //------------------------
@@ -259,7 +278,14 @@ namespace SQLCrypt
         //------------------------
         private void frmDespliegue_Closed(object sender, FormClosedEventArgs e)
         {
-            Program.hSql.DataClose();
+            // Program.hSql.DataClose();
+            foreach (DataTable dt in ds.Tables)
+                dt.Clear();
+
+            ds.Clear();
+            ds = null;
+            dataGridView = null;
+            System.GC.Collect();
         }
 
         private void btSalir_Click(object sender, EventArgs e)
@@ -270,6 +296,7 @@ namespace SQLCrypt
         private void grabarExcellToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveToExcel();
+            System.GC.Collect();
         }
 
         private void salirToolStripMenuItem_Click(object sender, EventArgs e)
@@ -330,6 +357,7 @@ namespace SQLCrypt
         private void grabarJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveCurrentToJson();
+            System.GC.Collect();
         }
 
     }

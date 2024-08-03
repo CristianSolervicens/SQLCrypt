@@ -115,8 +115,7 @@ namespace SQLCrypt.FunctionalClasses
                         return false;
                     if (Conn.State == ConnectionState.Closed)
                         return false;
-
-                    if (Conn.State == ConnectionState.Open);
+                    if (Conn.State == ConnectionState.Open)
                         return true;
                     
                     return false;

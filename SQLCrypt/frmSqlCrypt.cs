@@ -20,7 +20,6 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 
 //TODO: Ejecución Asíncrona de Scripts
-//TODO: Ejecutar con múltiples Result-Sets
 //TODO: Parsear scripts respetando GO
 //TODO: Buscar Errores de Sintáxis en el Documento Actual o Selección ??
 
@@ -38,8 +37,6 @@ namespace SQLCrypt
         public string WorkPath = "";
         private string Server = "";
         private int TextLimit = 0;
-
-        private string PanelTipoObjetos = "";
 
         private string sTabla;
         private TableDef Table;
@@ -59,6 +56,8 @@ namespace SQLCrypt
         private bool scintilla_end_mode = false;
         private const int BOOKMARK_MARGIN = 1; // Conventionally the symbol margin
         private const int BOOKMARK_MARKER = 3; // Arbitrary. Any valid index would work.
+
+        private bool omit_key = false;
 
         private string keyWords = "add all alter and any as asc avg" +
                                   "backup begin between break browse bulk by " +
@@ -523,6 +522,12 @@ namespace SQLCrypt
         /// <param name="e"></param>
         private void txtSql_KeyPress(object sender, KeyPressEventArgs e)
         {
+            if (omit_key)
+            {
+                e.Handled = true;
+                return;
+            }
+
             if (txtSql.SelectedText.Length > 0)
             {
                 var selected = txtSql.SelectedText;
@@ -548,10 +553,6 @@ namespace SQLCrypt
                         txtSql.ReplaceSelection($"[{selected}]");
                         e.Handled = true;
                         break;
-                    case '<':
-                        txtSql.ReplaceSelection($"<{selected}>");
-                        e.Handled = true;
-                        break;
                 }
             }
             else
@@ -573,9 +574,6 @@ namespace SQLCrypt
                         break;
                     case '[':
                         txtSql.InsertText(txtSql.CurrentPosition, "]");
-                        break;
-                    case '<':
-                        txtSql.InsertText(txtSql.CurrentPosition, ">");
                         break;
                 }
             }
@@ -751,10 +749,13 @@ namespace SQLCrypt
         /// <param name="e"></param>
         private void txtSql_KeyDown(object sender, KeyEventArgs e)
         {
+            omit_key = false;
 
             //Completar Snippets
-            if (e.KeyCode == Keys.F2)
+            if (e.Control && (e.KeyCode == Keys.Tab || e.KeyCode == Keys.OemMinus) )
             {
+                omit_key = true;
+                e.Handled = true;
                 complete_snippet();
                 return;
             }
@@ -844,6 +845,12 @@ namespace SQLCrypt
         /// <param name="e"></param>
         private void txtSql_KeyUp(object sender, KeyEventArgs e)
         {
+            if (omit_key)
+            {
+                e.Handled = true;
+                return;
+            }
+
             if (txtSql.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
             {
                 foreach (var sel in txtSql.Selections)
@@ -901,8 +908,8 @@ namespace SQLCrypt
 
             txtSql.ReplaceSelection(cadena);
             
-            if (snippet.Contains("<"))
-                MessageBox.Show("Presione F2 para completar el Snippet", "Atención");
+            //if (snippet.Contains("<"))
+            //    MessageBox.Show("Presione [Ctrl][-] o [Ctrl][Tab] para completar el Snippet", "Atención");
         }
 
 
@@ -1551,7 +1558,6 @@ namespace SQLCrypt
 
         private void SaveFileStd(bool bSaveAs)
         {
-            string sqlString;
 
             if (CurrentFile == "" || bSaveAs)
             {
@@ -2184,20 +2190,6 @@ namespace SQLCrypt
         }
 
 
-        private void ejecutarArchivosEnBatchToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Por implementar");
-            return;
-
-            hSql.ErrorClear();
-            if (hSql.ConnectionStatus == false)
-            {
-                MessageBox.Show(this, "Debe estar conectado(a) a una Base de Datos.", "Atención", MessageBoxButtons.OK);
-                return;
-            }
-        }
-
-
         private void lstObjetos_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -2215,7 +2207,6 @@ namespace SQLCrypt
                 }
                 if (Elementos != "")
                     txtSql.DoDragDrop(Elementos, DragDropEffects.Copy);
-
 
                 lstObjetos_SelectedIndexChanged(sender, e);
             }
@@ -2242,8 +2233,8 @@ namespace SQLCrypt
                 if (Elementos != "")
                     txtSql.DoDragDrop(Elementos, DragDropEffects.Copy);
             }
-            
         }
+
 
         private void Load_cbObjetos()
         {
@@ -2459,6 +2450,42 @@ namespace SQLCrypt
         private void goToNextBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtSql_NextBookmark();
+        }
+
+        private void completarSnippetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            complete_snippet();
+        }
+
+  
+        private void lstObjetos_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Enter)
+                return;
+            if (lstObjetos.SelectedIndex != -1)
+                txtSql.ReplaceSelection(lstObjetos.Items[lstObjetos.SelectedIndex].ToString());
+            txtSql.Select();
+        }
+
+
+        private void lsColumnas_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode != Keys.Enter)
+                return;
+
+            if (lsColumnas.SelectedIndices.Count == 0) return;
+
+            string Elementos = "";
+            var space_num = txtSql.GetColumn(Math.Min(txtSql.SelectionStart, txtSql.SelectionEnd));
+            var fill = new string(' ', space_num-1);
+
+            for (int x = 0; x < lsColumnas.Items.Count; ++x)
+            {
+                if (lsColumnas.Items[x].Selected)
+                    Elementos += (Elementos != "" ? $"\n{fill}," : "") + $"{lsColumnas.Items[x].Text}";
+            }
+            txtSql.ReplaceSelection(Elementos);
+            txtSql.Select();
         }
 
     }

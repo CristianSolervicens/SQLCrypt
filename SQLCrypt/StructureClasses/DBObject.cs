@@ -559,7 +559,7 @@ ORDER  BY CAST(OBJECT_SCHEMA_NAME(c.[TableId]) + '.' + c.[TableName] as Varchar(
                 hSql.Data.Read();
                 Count = (int)hSql.Data[0];
             }
-            catch( Exception ex)
+            catch
             {
                 return -1;
             }

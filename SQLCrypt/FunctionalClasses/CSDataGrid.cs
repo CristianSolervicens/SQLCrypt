@@ -268,19 +268,19 @@ namespace SQLCrypt
         }
 
 
-        public class CSDataGrid:DataGridView
-        {
-            private string _TableName;
+        //public class CSDataGrid:DataGridView
+        //{
+        //    private string _TableName;
 
-            public HSql hSql { get; set; }
-            public string TableName
-            {
-                get { return _TableName; }
-                set
-                {
-                }
-            }
-        }
+        //    public HSql hSql { get; set; }
+        //    public string TableName
+        //    {
+        //        get { return _TableName; }
+        //        set
+        //        {
+        //        }
+        //    }
+        //}
 
 
     }
