@@ -258,19 +258,19 @@ namespace SQLCrypt.StructureClasses
             string CreateTable = "CREATE TABLE " + sObjName + "\n(\n";
 
             sCommand = @"select sc.name,
-       st.name,
-       sc.is_nullable,
-       sc.is_identity,
-       sc.is_rowguidcol,
-       sc.max_length,
-       sc.precision,
-       sc.scale
-       collation_name = ISNULL(st.collation_name, '')
-from  sys.columns  sc
- JOIN sys.types    st
-   On st.user_type_id = sc.user_type_id
-where object_id = OBJECT_ID('" + sObjName + @"')
-Order by column_id";
+                           st.name,
+                           sc.is_nullable,
+                           sc.is_identity,
+                           sc.is_rowguidcol,
+                           sc.max_length,
+                           sc.precision,
+                           sc.scale
+                           collation_name = ISNULL(st.collation_name, '')
+                    from  sys.columns  sc
+                     JOIN sys.types    st
+                       On st.user_type_id = sc.user_type_id
+                    where object_id = OBJECT_ID('" + sObjName + @"')
+                    Order by column_id";
             hSql.ExecuteSqlData(sCommand);
 
             string DataType;

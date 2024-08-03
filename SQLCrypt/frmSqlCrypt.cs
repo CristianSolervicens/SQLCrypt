@@ -2055,7 +2055,9 @@ namespace SQLCrypt
                 
                 ListViewItem Item = new ListViewItem(sColName);
                 Item.SubItems.Add(sColDataType);
-                Item.SubItems.Add(sColNullable);
+                Item.SubItems.Add(t.Nullable? "X": "");
+                Item.SubItems.Add(t.IsIdentity? "X": "");
+                Item.SubItems.Add(t.IsPrimaryKey? "X": "");
                 lsColumnas.Items.Add(Item);
             }
             lsColumnas.Columns[0].Width = -1;
@@ -2477,7 +2479,7 @@ namespace SQLCrypt
 
             string Elementos = "";
             var space_num = txtSql.GetColumn(Math.Min(txtSql.SelectionStart, txtSql.SelectionEnd));
-            var fill = new string(' ', space_num-1);
+            var fill = new string(' ', space_num-1 < 0? 0: space_num-1);
 
             for (int x = 0; x < lsColumnas.Items.Count; ++x)
             {
@@ -2488,5 +2490,9 @@ namespace SQLCrypt
             txtSql.Select();
         }
 
+        private void txtSql_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

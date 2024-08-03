@@ -96,6 +96,8 @@
             this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colNullable = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colIsIdentity = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colIsPK = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.txtSql = new ScintillaNET.Scintilla();
             this.btReconnect = new System.Windows.Forms.Button();
             this.btConnectToBd = new System.Windows.Forms.Button();
@@ -111,7 +113,7 @@
             // 
             // menuStrip1
             // 
-            this.menuStrip1.BackColor = System.Drawing.SystemColors.Control;
+            this.menuStrip1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoToolStripMenuItem,
@@ -467,6 +469,7 @@
             // 
             // toolStripTextBox1
             // 
+            this.toolStripTextBox1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(20, 23);
             this.toolStripTextBox1.Text = "4";
@@ -481,7 +484,7 @@
             // databasesToolStripMenuItem
             // 
             this.databasesToolStripMenuItem.AutoSize = false;
-            this.databasesToolStripMenuItem.BackColor = System.Drawing.SystemColors.Control;
+            this.databasesToolStripMenuItem.BackColor = System.Drawing.SystemColors.ControlLight;
             this.databasesToolStripMenuItem.Name = "databasesToolStripMenuItem";
             this.databasesToolStripMenuItem.Size = new System.Drawing.Size(250, 23);
             this.databasesToolStripMenuItem.SelectedIndexChanged += new System.EventHandler(this.databasesToolStripMenuItem_SelectedIndexChanged);
@@ -545,6 +548,7 @@
             // tssLaFile
             // 
             this.tssLaFile.AutoSize = false;
+            this.tssLaFile.BackColor = System.Drawing.SystemColors.ControlLight;
             this.tssLaFile.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
@@ -555,6 +559,7 @@
             // tssLaPath
             // 
             this.tssLaPath.AutoSize = false;
+            this.tssLaPath.BackColor = System.Drawing.SystemColors.ControlLight;
             this.tssLaPath.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
@@ -565,6 +570,7 @@
             // tssLaPos
             // 
             this.tssLaPos.AutoSize = false;
+            this.tssLaPos.BackColor = System.Drawing.SystemColors.ControlLight;
             this.tssLaPos.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
@@ -575,7 +581,7 @@
             // tssLaStat
             // 
             this.tssLaStat.AutoSize = false;
-            this.tssLaStat.BackColor = System.Drawing.SystemColors.Control;
+            this.tssLaStat.BackColor = System.Drawing.SystemColors.ControlLight;
             this.tssLaStat.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
@@ -607,7 +613,7 @@
             this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(3);
             this.splitC.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.splitC.Size = new System.Drawing.Size(1163, 569);
-            this.splitC.SplitterDistance = 231;
+            this.splitC.SplitterDistance = 286;
             this.splitC.TabIndex = 15;
             // 
             // laBuscarTablas
@@ -630,7 +636,7 @@
             this.txBuscaEnLista.ForeColor = System.Drawing.Color.Black;
             this.txBuscaEnLista.Location = new System.Drawing.Point(5, 298);
             this.txBuscaEnLista.Name = "txBuscaEnLista";
-            this.txBuscaEnLista.Size = new System.Drawing.Size(223, 20);
+            this.txBuscaEnLista.Size = new System.Drawing.Size(278, 20);
             this.txBuscaEnLista.TabIndex = 26;
             this.txBuscaEnLista.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txBuscaEnLista_KeyDown);
             // 
@@ -646,7 +652,7 @@
             this.panObjetos.Location = new System.Drawing.Point(0, 0);
             this.panObjetos.Margin = new System.Windows.Forms.Padding(2);
             this.panObjetos.Name = "panObjetos";
-            this.panObjetos.Size = new System.Drawing.Size(231, 322);
+            this.panObjetos.Size = new System.Drawing.Size(286, 322);
             this.panObjetos.TabIndex = 21;
             // 
             // btRefreshType
@@ -684,7 +690,7 @@
             // 
             // lstObjetos
             // 
-            this.lstObjetos.BackColor = System.Drawing.SystemColors.Control;
+            this.lstObjetos.BackColor = System.Drawing.SystemColors.ControlLight;
             this.lstObjetos.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lstObjetos.Dock = System.Windows.Forms.DockStyle.Top;
             this.lstObjetos.ForeColor = System.Drawing.Color.Black;
@@ -694,7 +700,7 @@
             this.lstObjetos.Name = "lstObjetos";
             this.lstObjetos.ScrollAlwaysVisible = true;
             this.lstObjetos.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstObjetos.Size = new System.Drawing.Size(231, 249);
+            this.lstObjetos.Size = new System.Drawing.Size(286, 249);
             this.lstObjetos.TabIndex = 12;
             this.lstObjetos.SelectedIndexChanged += new System.EventHandler(this.lstObjetos_SelectedIndexChanged);
             this.lstObjetos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstObjetos_KeyDown);
@@ -710,7 +716,7 @@
             this.panColumnas.Location = new System.Drawing.Point(0, 326);
             this.panColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.panColumnas.Name = "panColumnas";
-            this.panColumnas.Size = new System.Drawing.Size(231, 240);
+            this.panColumnas.Size = new System.Drawing.Size(286, 240);
             this.panColumnas.TabIndex = 0;
             // 
             // lsColumnas
@@ -718,19 +724,22 @@
             this.lsColumnas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lsColumnas.BackColor = System.Drawing.SystemColors.Control;
+            this.lsColumnas.BackColor = System.Drawing.SystemColors.ControlLight;
             this.lsColumnas.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colName,
             this.colType,
-            this.colNullable});
+            this.colNullable,
+            this.colIsIdentity,
+            this.colIsPK});
             this.lsColumnas.ForeColor = System.Drawing.Color.Black;
+            this.lsColumnas.GridLines = true;
             this.lsColumnas.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lsColumnas.HideSelection = false;
             this.lsColumnas.Location = new System.Drawing.Point(0, 0);
             this.lsColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.lsColumnas.Name = "lsColumnas";
             this.lsColumnas.ShowGroups = false;
-            this.lsColumnas.Size = new System.Drawing.Size(231, 240);
+            this.lsColumnas.Size = new System.Drawing.Size(286, 240);
             this.lsColumnas.TabIndex = 33;
             this.lsColumnas.UseCompatibleStateImageBehavior = false;
             this.lsColumnas.View = System.Windows.Forms.View.Details;
@@ -752,18 +761,27 @@
             this.colNullable.Text = "Nullable";
             this.colNullable.Width = 80;
             // 
+            // colIsIdentity
+            // 
+            this.colIsIdentity.Text = "Identity";
+            // 
+            // colIsPK
+            // 
+            this.colIsPK.Text = "PK";
+            // 
             // txtSql
             // 
             this.txtSql.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtSql.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSql.Location = new System.Drawing.Point(3, 3);
             this.txtSql.Name = "txtSql";
-            this.txtSql.Size = new System.Drawing.Size(922, 563);
+            this.txtSql.Size = new System.Drawing.Size(867, 563);
             this.txtSql.TabIndex = 0;
             this.txtSql.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.txtSql_CharAdded);
             this.txtSql.InsertCheck += new System.EventHandler<ScintillaNET.InsertCheckEventArgs>(this.txtSql_InsertCheck);
             this.txtSql.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.txtSql_SelectionChanged);
             this.txtSql.TextChanged += new System.EventHandler(this.txtSql_TextChanged);
+            this.txtSql.Click += new System.EventHandler(this.txtSql_Click);
             this.txtSql.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtSql_DragDrop);
             this.txtSql.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtSql_DragEnter);
             this.txtSql.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSql_KeyDown);
@@ -908,6 +926,8 @@
         private System.Windows.Forms.ToolStripMenuItem toggleBookmarkToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem goToNextBookmarkToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem previousBookmarkToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader colIsIdentity;
+        private System.Windows.Forms.ColumnHeader colIsPK;
     }
 }
 
