@@ -17,6 +17,12 @@ using System.Media;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using System.Windows.Media.Media3D;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Threading.Tasks;
+using System.ComponentModel;
+using static ScintillaNET.Style;
+using static SQLCrypt.Program;
+using System.Threading;
+using System.Timers;
 
 
 //TODO: Ejecución Asíncrona de Scripts
@@ -28,6 +34,9 @@ namespace SQLCrypt
 {
     public partial class FrmSqlCrypt : Form
     {
+        Thread threadQuery = null;
+        private System.Timers.Timer queryTimer;
+
         private DbObjects Objetos;
         private System.Windows.Forms.ToolTip MytoolTip = new System.Windows.Forms.ToolTip();
         public string ConnectionFile = "";
@@ -251,7 +260,7 @@ namespace SQLCrypt
             //TextArea.Margins[BOOKMARK_MARGIN].Mask = Marker.MaskAll;
             TextArea.Margins[BOOKMARK_MARGIN].Cursor = MarginCursor.Arrow;
             TextArea.Margins[BOOKMARK_MARGIN].BackColor = IntToColor(0x211021);
-            
+
             TextArea.Markers[BOOKMARK_MARKER].Symbol = MarkerSymbol.Bookmark;
             TextArea.Markers[BOOKMARK_MARKER].SetBackColor(Color.Bisque);
             TextArea.Markers[BOOKMARK_MARKER].SetForeColor(Color.Black);
@@ -707,7 +716,7 @@ namespace SQLCrypt
         {
             txtSql.Text = "";
 
-            if (string.Compare(System.IO.Path.GetExtension(fileName).ToLower(), ".sqc", true) == 0 
+            if (string.Compare(System.IO.Path.GetExtension(fileName).ToLower(), ".sqc", true) == 0
                 || string.Compare(System.IO.Path.GetExtension(fileName).ToLower(), ".cfg", true) == 0)
             {
                 CurrentFile = fileName;
@@ -752,7 +761,7 @@ namespace SQLCrypt
             omit_key = false;
 
             //Completar Snippets
-            if (e.Control && (e.KeyCode == Keys.Tab || e.KeyCode == Keys.OemMinus) )
+            if (e.Control && (e.KeyCode == Keys.Tab || e.KeyCode == Keys.OemMinus))
             {
                 omit_key = true;
                 e.Handled = true;
@@ -876,7 +885,7 @@ namespace SQLCrypt
             for (int i = 0; i < texto.Length; i++)
             {
                 if (texto[i] == ' ') count++;
-                if (texto[i]  != ' ') break;
+                if (texto[i] != ' ') break;
             }
             return count;
         }
@@ -899,7 +908,7 @@ namespace SQLCrypt
             string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(snippet, "\r\n");
             for (int i = 1; i < snippet_spaced.Length; i++)
             {
-                snippet_spaced[i] = $"{(i !=0? fill: "")}{snippet_spaced[i]}";
+                snippet_spaced[i] = $"{(i != 0 ? fill : "")}{snippet_spaced[i]}";
             }
 
             var cadena = "";
@@ -907,7 +916,7 @@ namespace SQLCrypt
                 cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : "\r\n")}";
 
             txtSql.ReplaceSelection(cadena);
-            
+
             //if (snippet.Contains("<"))
             //    MessageBox.Show("Presione [Ctrl][-] o [Ctrl][Tab] para completar el Snippet", "Atención");
         }
@@ -1086,10 +1095,7 @@ namespace SQLCrypt
         //Ejecutar !!! ejecutarComandoToolStripMenuItem_Click
         private void ejecutarComandoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int nParam = 0;
-            hSql.ErrorClear();
-            string sSqlCommand = "";
-
+            
             if (txtSql.Text.Trim().ToString() == "")
             {
                 MessageBox.Show(this, "No hay sentencia SQL para ejecutar", "Atención", MessageBoxButtons.OK);
@@ -1102,48 +1108,46 @@ namespace SQLCrypt
                 return;
             }
 
-            if (chkToText.Checked)
+            ExecuteAlternative();
+
+        }
+
+
+        private void ExecuteAlternative()
+        {
+            if (hSql.ConnectionStatus == false)
             {
-                frmDespliegueTxt frm = new frmDespliegueTxt(hSql);
-                frm.Text = $"Resultados : {databasesToolStripMenuItem.Text}";
-                frm.Show();
-
-                frm.Top = this.Top;
-                frm.Left = this.Left;
-
-                if (txtSql.SelectedText != "")
-                    frm.ExecuteSQLStatement(txtSql.SelectedText, TextLimit);
-                else
-                    frm.ExecuteSQLStatement(txtSql.Text, TextLimit);
-
-                LoadDatabaseList();
-
+                MessageBox.Show(this, "Debe estar conectado(a) a una Base de Datos.", "Atención", MessageBoxButtons.OK);
                 return;
             }
 
-            //PARAMETROS DE EJECUCION DEL SCRIPT.....
-            //MessageBox.Show( this, "Parámetros # = " + paramCount().ToString(), "Atención", MessageBoxButtons.OK);
+            if (hSql.ErrorExiste)
+            {
+                MessageBox.Show($"Conexión a SQL con Error:\r\n{hSql.ErrorString}\r\n{hSql.Messages}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            string sSqlCommand = "";
+
+            if (txtSql.Text.Trim().ToString() == "")
+            {
+                MessageBox.Show(this, "No hay sentencia SQL para ejecutar", "Atención", MessageBoxButtons.OK);
+                return;
+            }
+
+            if (txtSql.SelectedText != "")
+                sSqlCommand = txtSql.SelectedText.ToString();
+            else
+                sSqlCommand = txtSql.Text.ToString();
 
             MySql.strList param = new MySql.strList();
             Dictionary<string, string> DictParam = null;
 
-            if (txtSql.SelectedText != "")
-                param = hSql.GetParameters(txtSql.SelectedText.ToString());
-            else
-                param = hSql.GetParameters(txtSql.Text.ToString());
+            param = hSql.GetParameters(sSqlCommand);
 
-            nParam = param.Count;
-
-            if (nParam != 0)
+            if (param.Count != 0)
             {
-                if (CurrentFile == "")
-                {
-                    MessageBox.Show(this, "Debe grabar el Archivo para ejecutar este tipo de comando", "Comando con Parámetros", MessageBoxButtons.OK);
-                    return;
-                }
-
                 frmParam fmp = new frmParam();
-                fmp.numValues = nParam;
                 fmp.Parametros = param;
                 fmp.ShowDialog();
                 if (fmp.OutParameters.Count == 0)
@@ -1152,15 +1156,142 @@ namespace SQLCrypt
                 DictParam = fmp.OutParameters;
             }
 
+            SetTimer();
+            threadQuery = new Thread(() =>
+            {
+                Program.CancelQuery = false;
+                frmDespliegue Despliegue = new frmDespliegue(hSql.ConnectionString, hSql.GetCurrentDatabase(), sSqlCommand, DictParam);
+                Despliegue.Top = this.Top;
+                Despliegue.Left = this.Left;
+                Despliegue.ShowDialog();
+                if (Despliegue.hSql.ConnectionStatus)
+                {
+                    string curr_db = Despliegue.hSql.GetCurrentDatabase();
+                    if (curr_db !="")
+                        hSql.SetDatabase(curr_db);
+
+                    Despliegue.hSql.CloseDBConn();
+                    //LoadDatabaseList();
+                }
+                Despliegue.Dispose();
+                System.GC.Collect();
+                DisposeTimer();
+            });
+            threadQuery.Start();
+            
+        }
+
+        private void SetTimer()
+        {
+            queryTimer = new System.Timers.Timer(300);
+            queryTimer.Elapsed += OnQueryTimeEvent;
+            queryTimer.AutoReset = true;
+            queryTimer.Enabled = true;
+            queryTimer.Start();
+        }
+
+        private void DisposeTimer()
+        {
+            if (Program.sql_spid != 0 || Program.hSqlQuery != null)
+                return;
+            queryTimer.Stop();
+            queryTimer.Dispose();
+            pgBarQuery.Value = 0;
+        }
+
+
+        private void OnQueryTimeEvent(Object source, ElapsedEventArgs e)
+        {
+            if (Program.sql_spid != 0)
+            {
+                if (pgBarQuery.Value < pgBarQuery.Maximum)
+                    pgBarQuery.Value += 10;
+                else
+                    pgBarQuery.Value = 0;
+            }
+
+            if (Program.sql_spid == 0 && Program.hSqlQuery != null)
+            {
+                pgBarQuery.Value = pgBarQuery.Maximum;        
+            }
+
+            if (Program.sql_spid == 0 && Program.hSqlQuery == null)
+            {
+                DisposeTimer();
+            }
+        }
+
+
+        /// <summary>
+        /// DEPRECADO, POR ELIMINAR !!!!
+        /// </summary>
+        private void ExecuteSQLCommand()
+        {
+
+            if (hSql.ConnectionStatus == false)
+            {
+                MessageBox.Show(this, "Debe estar conectado(a) a una Base de Datos.", "Atención", MessageBoxButtons.OK);
+                return;
+            }
+
+            if (hSql.ErrorExiste)
+            {
+                MessageBox.Show($"Conexión a SQL con Error:\r\n{hSql.ErrorString}\r\n{hSql.Messages}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            string sSqlCommand = "";
+
+            if (txtSql.Text.Trim().ToString() == "")
+            {
+                MessageBox.Show(this, "No hay sentencia SQL para ejecutar", "Atención", MessageBoxButtons.OK);
+                return;
+            }
+
+            //if (chkToText.Checked)
+            //{
+            //    frmDespliegueTxt frm = new frmDespliegueTxt(sql);
+            //    frm.Text = $"Resultados : {databasesToolStripMenuItem.Text}";
+            //    frm.Show();
+
+            //    frm.Top = this.Top;
+            //    frm.Left = this.Left;
+
+            //    if (txtSql.SelectedText != "")
+            //        frm.ExecuteSQLStatement(txtSql.SelectedText.ToString(), TextLimit);
+            //    else
+            //        frm.ExecuteSQLStatement(txtSql.Text.ToString(), TextLimit);
+
+            //    LoadDatabaseList();
+
+            //    return;
+            //}
+
+            //PARAMETROS DE EJECUCION DEL SCRIPT.....
+            //MessageBox.Show( this, "Parámetros # = " + paramCount().ToString(), "Atención", MessageBoxButtons.OK);
+
+            MySql.strList param = new MySql.strList();
+
             if (txtSql.SelectedText != "")
                 sSqlCommand = txtSql.SelectedText.ToString();
             else
                 sSqlCommand = txtSql.Text.ToString();
 
-            if (nParam != 0)
+            //Evaluacion de Parametros, si los hubiere
+            param = hSql.GetParameters(sSqlCommand);
+
+            if (param.Count != 0)
             {
-                hSql.sPathToCommands = "";
-                hSql.ExecStoredCmdData(CurrentFile, DictParam);
+                Dictionary<string, string> DictParam = null;
+                
+                frmParam fmp = new frmParam();
+                fmp.Parametros = param;
+                fmp.ShowDialog();
+                if (fmp.OutParameters.Count == 0)
+                    return;
+
+                DictParam = fmp.OutParameters;
+                hSql.ExecCmdDataWithParam(sSqlCommand, DictParam);
             }
             else
                 hSql.ExecuteSqlData(sSqlCommand);
@@ -1169,7 +1300,7 @@ namespace SQLCrypt
             {
                 if (hSql.ErrorExiste)
                 {
-                    MessageBox.Show(this, $"Error SQL {hSql.ErrorString}", "Atención", MessageBoxButtons.OK);
+                    MessageBox.Show(this, $"Error SQL {hSql.ErrorString}\r\n{hSql.Messages}", "Atención", MessageBoxButtons.OK);
                     hSql.ErrorClear();
                     return;
                 }
@@ -1184,15 +1315,15 @@ namespace SQLCrypt
                 return;
             }
 
-            frmDespliegue Despliegue = new frmDespliegue();
+            frmDespliegue Despliegue = new frmDespliegue(hSql);
             Despliegue.Text = $"Resultados : {databasesToolStripMenuItem.Text}";
             Despliegue.Show();
             Despliegue.Top = this.Top;
             Despliegue.Left = this.Left;
 
             LoadDatabaseList();
-
         }
+
 
 
         /// <summary>
@@ -1368,7 +1499,7 @@ namespace SQLCrypt
         /// <summary>
         /// Carga Lista de Bases de Dato en Combo
         /// </summary>
-        private void LoadDatabaseList()
+        public void LoadDatabaseList()
         {
             string OriginalDB = databasesToolStripMenuItem.Text;
             string DBName = hSql.GetCurrentDatabase();
@@ -1440,7 +1571,6 @@ namespace SQLCrypt
         /// <param name="e"></param>
         private void btConsultas_Click(object sender, EventArgs e)
         {
-            int nParam = 0;
             hSql.ErrorClear();
 
             if (!hSql.ConnectionStatus)
@@ -1463,16 +1593,11 @@ namespace SQLCrypt
             Dictionary<string, string> DictParam = null;
 
             string sSqlCommand = hSql.DecryptFiletoString(ArchivoComando);
-
             param = hSql.GetParameters(sSqlCommand);
 
-            nParam = param.Count;
-
-            if (nParam != 0)
+            if (param.Count != 0)
             {
-
                 frmParam fmp = new frmParam();
-                fmp.numValues = nParam;
                 fmp.Parametros = param;
                 fmp.ShowDialog();
                 if (fmp.OutParameters.Count == 0)
@@ -1487,7 +1612,7 @@ namespace SQLCrypt
                 return;
             }
 
-            if (nParam != 0)
+            if (param.Count != 0)
             {
                 List<string> keys = new List<string>(DictParam.Keys);
                 for (int x = 0; x < DictParam.Count; ++x)
@@ -1514,7 +1639,7 @@ namespace SQLCrypt
                         return;
                     }
 
-                frmDespliegue Despliegue = new frmDespliegue();
+                frmDespliegue Despliegue = new frmDespliegue(hSql);
                 Despliegue.Show();
             }
 
@@ -1846,7 +1971,7 @@ namespace SQLCrypt
 
             string sAux = DBObj.GetData(true);
 
-            frmDespliegue Despliegue = new frmDespliegue();
+            frmDespliegue Despliegue = new frmDespliegue(hSql);
             Despliegue.Text = sAux;
             Despliegue.Show();
         }
@@ -1869,10 +1994,11 @@ namespace SQLCrypt
 
             string sAux = DBObj.GetData(false);
 
-            frmDespliegue Despliegue = new frmDespliegue();
+            frmDespliegue Despliegue = new frmDespliegue(hSql);
             Despliegue.Text = sAux;
             Despliegue.Show();
         }
+
 
 
         private void GetIndexes(object sender, EventArgs e)
@@ -2490,9 +2616,40 @@ namespace SQLCrypt
             txtSql.Select();
         }
 
-        private void txtSql_Click(object sender, EventArgs e)
-        {
 
+        private void btCancell_Click(object sender, EventArgs e)
+        {
+            if (Program.sql_spid == 0 && Program.hSqlQuery != null)
+            {
+                Program.CancelQuery = true;
+                MessageBox.Show("Query finalizada, la data está en proceso de Carga, ya no es posible Cancelar...", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (Program.sql_spid != 0)
+            {
+                int mySpid = hSql.GetCurrent_SPID();
+                hSql.Kill_SPID(Program.sql_spid);
+                Program.CancelQuery = true;
+                if (hSql.ErrorExiste || hSql.Messages != "")
+                {
+                    MessageBox.Show($"Error\r\n{hSql.ErrorString}\r\n{hSql.Messages}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                DisposeTimer();
+                MessageBox.Show($"No existe un proceso de Consulta activo", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
+            if (threadQuery != null)
+                if (!threadQuery.IsAlive)
+                    threadQuery = null;
+
+            System.GC.Collect();
+            
         }
+
+
     }
 }

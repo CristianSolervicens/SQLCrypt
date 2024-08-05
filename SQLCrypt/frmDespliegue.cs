@@ -8,6 +8,9 @@ using OfficeOpenXml.Style;
 using System.Drawing;
 using System.Collections.Generic;
 using SQLCrypt.FunctionalClasses;
+using SQLCrypt.FunctionalClasses.MySql;
+using static ScintillaNET.Style;
+using System.Data.SqlClient;
 
 
 namespace SQLCrypt
@@ -17,53 +20,79 @@ namespace SQLCrypt
 
         private DataSet ds = new DataSet();
         int current_ds = -1;
+        public MySql hSql = null;
+        Dictionary<string, string> DictParam = null;
+        
 
-
-        public frmDespliegue()
+        public frmDespliegue(MySql _hSql)
         {
+            this.hSql = _hSql;
             InitializeComponent();
             btSalir.Top = -200;
         }
 
+
+        public frmDespliegue(string connectionString, string Database, string commandString, Dictionary<string,string> DictParam)
+        {
+            hSql = new MySql();
+            hSql.ConnectionString = connectionString;
+            hSql.ConnectToDB();
+            hSql.SetDatabase(Database);
+            
+            InitializeComponent();
+
+            btSalir.Top = -200;
+
+            Program.hSqlQuery = hSql;
+            int spid = hSql.GetCurrent_SPID();
+            Program.sql_spid = spid;
+
+
+            if (DictParam == null)
+                hSql.ExecuteSqlData(commandString);
+            else
+                hSql.ExecCmdDataWithParam(commandString, DictParam);
+
+            if (hSql.Data == null)
+            {
+                if (hSql.ErrorExiste)
+                {
+                    MessageBox.Show(this, $"Error SQL {hSql.ErrorString}\r\n{hSql.Messages}", "Atención", MessageBoxButtons.OK);
+                    hSql.ErrorClear();
+                    this.Close();
+                    return;
+                }
+
+                MessageBox.Show("No hay resultados para su consulta\r\nMensajes\r\n" + hSql.Messages);
+                Clipboard.Clear();
+                Clipboard.SetText(hSql.Messages, TextDataFormat.Text);
+                this.Close();
+                return;
+            }
+
+        }
+
+
         private void frmDespliegue_Load(object sender, EventArgs e)
         {
 
-            if (Program.hSql.Data == null)
-            {
-                if (Program.hSql != null && Program.hSql.ErrorExiste)
-                {
-                    MessageBox.Show($"Error SQL en consulta\n\n{Program.hSql.ErrorString}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Program.hSql.ErrorClear();
-                }
-                this.Close();
-                return;
-            }
-
-            if (Program.hSql.ErrorExiste)
-            {
-                MessageBox.Show($"Error SQL\n\n{Program.hSql.ErrorString}" , "Error SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Program.hSql.ErrorClear();
-                this.Close();
-                return;
-            }
-
             try
             {
-                if (!Program.hSql.Data.HasRows)
+                if (!hSql.Data.HasRows)
                 {
-                    if (Program.hSql.Messages != "")
+                    if (hSql.Messages != "")
                     {
-                        MessageBox.Show(String.Format("No hay resultdos para su consulta\n\n{0}", Program.hSql.Messages),
+                        MessageBox.Show(String.Format("No hay resultdos para su consulta\n\n{0}", hSql.Messages),
                             "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        Program.hSql.ErrorClear();
-                        Program.hSql.ClearMessages();
+                        hSql.ErrorClear();
+                        hSql.ClearMessages();
                         this.Close();
                         return;
                     }
                     else 
                     {
                         MessageBox.Show("No hay resultados para su consulta\n\n", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        Program.hSql.ErrorClear();
+                        hSql.ErrorClear();
                         this.Close();
                         return;
                     }
@@ -77,30 +106,57 @@ namespace SQLCrypt
             }
 
             //Carga de Filas en la Grilla.
-            do
+            try
             {
-                try
+                do
                 {
-                    DataTable dt = new DataTable();
-                    dt.Load(Program.hSql.Data);
-                    ds.Tables.Add(dt);
-                }
-                catch
-                {
-                    MessageBox.Show("La consulta tiene tipos de datos No soportados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            } while (!Program.hSql.Data.IsClosed);
+                    try
+                    {
+                        if (Program.CancelQuery)
+                        {
+                            this.Close();
+                            return;
+                        }
+                        DataTable dt = new DataTable();
+                        if (Program.CancelQuery)
+                        {
+                            this.Close();
+                            return;
+                        }
+                        dt.Load(hSql.Data);
+                        if (Program.CancelQuery)
+                        {
+                            this.Close();
+                            return;
+                        }
+                        ds.Tables.Add(dt);
 
-            current_ds = 0;
-            if (ds.Tables.Count > 0)
-                dataGridView.DataSource = ds.Tables[current_ds];
-            
-            toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds + 1}/{ds.Tables.Count}");
+                        if (Program.sql_spid != 0 )
+                            Program.sql_spid = 0;
+                    }
+                    catch( Exception ex)
+                    {
+                        MessageBox.Show($"Error\r\n{ex.Message}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        this.Close();
+                        return;
+                    }
+                } while (!hSql.Data.IsClosed);
 
-            this.Show();
-            this.Activate();
-            this.BringToFront();
+                current_ds = 0;
+                if (ds.Tables.Count > 0)
+                    dataGridView.DataSource = ds.Tables[current_ds];
 
+                toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds + 1}/{ds.Tables.Count}");
+                
+                Program.hSqlQuery = null;
+
+                this.Show();
+                this.Activate();
+                this.BringToFront();
+            }
+            catch {
+                this.Close();
+            }
         }
 
 
@@ -271,6 +327,8 @@ namespace SQLCrypt
         private void frmDespliegue_Closing(object sender, FormClosingEventArgs e)
         {
             // Program.hSql.DataClose();
+            // Parent.LoadDatabaseList();
+            Program.sql_spid = 0;
         }
 
         //------------------------
@@ -283,10 +341,14 @@ namespace SQLCrypt
                 dt.Clear();
 
             ds.Clear();
-            ds = null;
-            dataGridView = null;
+            ds.Dispose();
+            this.dataGridView.Dispose();
+            Program.hSqlQuery = null;
+            Program.sql_spid = 0;
+            Program.CancelQuery = false;
             System.GC.Collect();
         }
+
 
         private void btSalir_Click(object sender, EventArgs e)
         {
@@ -306,13 +368,13 @@ namespace SQLCrypt
 
         private void verMensajesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (Program.hSql.Messages == "" || string.IsNullOrEmpty(Program.hSql.Messages))
+            if (hSql.Messages == "" || string.IsNullOrEmpty(hSql.Messages))
                 MessageBox.Show("No hay mensajes");
             else
             {
-                MessageBox.Show(Program.hSql.Messages);
+                MessageBox.Show(hSql.Messages);
                 Clipboard.Clear();
-                Clipboard.SetText( Program.hSql.Messages, TextDataFormat.Text);
+                Clipboard.SetText( hSql.Messages, TextDataFormat.Text);
             }
         }
 

@@ -101,6 +101,8 @@
             this.txtSql = new ScintillaNET.Scintilla();
             this.btReconnect = new System.Windows.Forms.Button();
             this.btConnectToBd = new System.Windows.Forms.Button();
+            this.btCancell = new System.Windows.Forms.Button();
+            this.pgBarQuery = new System.Windows.Forms.ProgressBar();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).BeginInit();
@@ -518,6 +520,7 @@
             this.chkToText.TabIndex = 8;
             this.chkToText.Text = "Out to Text";
             this.chkToText.UseVisualStyleBackColor = false;
+            this.chkToText.Visible = false;
             // 
             // statusStrip1
             // 
@@ -781,7 +784,6 @@
             this.txtSql.InsertCheck += new System.EventHandler<ScintillaNET.InsertCheckEventArgs>(this.txtSql_InsertCheck);
             this.txtSql.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.txtSql_SelectionChanged);
             this.txtSql.TextChanged += new System.EventHandler(this.txtSql_TextChanged);
-            this.txtSql.Click += new System.EventHandler(this.txtSql_Click);
             this.txtSql.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtSql_DragDrop);
             this.txtSql.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtSql_DragEnter);
             this.txtSql.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSql_KeyDown);
@@ -795,7 +797,7 @@
             this.btReconnect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btReconnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btReconnect.ImageKey = "(none)";
-            this.btReconnect.Location = new System.Drawing.Point(781, 1);
+            this.btReconnect.Location = new System.Drawing.Point(703, 1);
             this.btReconnect.Name = "btReconnect";
             this.btReconnect.Size = new System.Drawing.Size(28, 24);
             this.btReconnect.TabIndex = 29;
@@ -807,16 +809,34 @@
             // 
             this.btConnectToBd.BackColor = System.Drawing.SystemColors.Control;
             this.btConnectToBd.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btConnectToBd.Image = global::SQLCrypt.Properties.Resources.Connect3;
             this.btConnectToBd.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btConnectToBd.Location = new System.Drawing.Point(660, 1);
+            this.btConnectToBd.Location = new System.Drawing.Point(597, 1);
             this.btConnectToBd.Name = "btConnectToBd";
-            this.btConnectToBd.Size = new System.Drawing.Size(118, 24);
+            this.btConnectToBd.Size = new System.Drawing.Size(100, 24);
             this.btConnectToBd.TabIndex = 19;
             this.btConnectToBd.Text = "&Conectar a BD";
-            this.btConnectToBd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.btConnectToBd.UseVisualStyleBackColor = false;
             this.btConnectToBd.Click += new System.EventHandler(this.btConnectToBd_Click);
+            // 
+            // btCancell
+            // 
+            this.btCancell.BackColor = System.Drawing.SystemColors.Control;
+            this.btCancell.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btCancell.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btCancell.Location = new System.Drawing.Point(758, 2);
+            this.btCancell.Name = "btCancell";
+            this.btCancell.Size = new System.Drawing.Size(113, 24);
+            this.btCancell.TabIndex = 30;
+            this.btCancell.Text = "Cancelar Consulta";
+            this.btCancell.UseVisualStyleBackColor = false;
+            this.btCancell.Click += new System.EventHandler(this.btCancell_Click);
+            // 
+            // pgBarQuery
+            // 
+            this.pgBarQuery.Location = new System.Drawing.Point(880, 5);
+            this.pgBarQuery.Name = "pgBarQuery";
+            this.pgBarQuery.Size = new System.Drawing.Size(161, 18);
+            this.pgBarQuery.TabIndex = 31;
             // 
             // FrmSqlCrypt
             // 
@@ -824,6 +844,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::SQLCrypt.Properties.Settings.Default.AppBackColor;
             this.ClientSize = new System.Drawing.Size(1163, 625);
+            this.Controls.Add(this.pgBarQuery);
+            this.Controls.Add(this.btCancell);
             this.Controls.Add(this.btReconnect);
             this.Controls.Add(this.btConnectToBd);
             this.Controls.Add(this.splitC);
@@ -928,6 +950,8 @@
         private System.Windows.Forms.ToolStripMenuItem previousBookmarkToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader colIsIdentity;
         private System.Windows.Forms.ColumnHeader colIsPK;
+        private System.Windows.Forms.Button btCancell;
+        private System.Windows.Forms.ProgressBar pgBarQuery;
     }
 }
 

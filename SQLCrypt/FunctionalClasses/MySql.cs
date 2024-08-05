@@ -43,6 +43,9 @@ namespace SQLCrypt.FunctionalClasses
             //ResultSet para las consultas con datos
             public SqlDataReader Data = null;
 
+            private SqlCommand Command = null;
+
+
             void conn_InfoMessage(object sender, SqlInfoMessageEventArgs e)
             {
                 sMensajes += e.Message;
@@ -123,6 +126,7 @@ namespace SQLCrypt.FunctionalClasses
             }
 
 
+
             //DataExiste (Solo lectura)
             public bool DataExiste
             {
@@ -143,6 +147,23 @@ namespace SQLCrypt.FunctionalClasses
             #endregion
 
             #region "METODOS"
+
+
+            public void CancellExecution()
+            {
+                if (Command != null)
+                {
+                    try { Command.EndExecuteReader(null); }
+                    catch { }
+                    
+                    try { Command.EndExecuteNonQuery(null); }
+                    catch { }
+                    Command.Cancel();
+                    // Command.Dispose();
+                    // Command = null;
+                }
+            }
+
 
             /// <summary>
             /// Arma String de Conexión a Base de Datos
@@ -299,33 +320,36 @@ namespace SQLCrypt.FunctionalClasses
             /// <returns></returns>
             public int ExecuteSql(String sComand)
             {
-                int raf;
+                int rows_affected;
 
                 DataClose();
                 ErrorClear();
                 ClearMessages();
 
-                SqlCommand Cmd = Conn.CreateCommand();
-                Cmd.CommandText = sComand;
-                Cmd.CommandType = System.Data.CommandType.Text;
-                Cmd.CommandTimeout = 0;
+                Command = Conn.CreateCommand();
+                Command.CommandText = sComand;
+                Command.CommandType = System.Data.CommandType.Text;
+                Command.CommandTimeout = 0;
 
                 try
                 {
-                    raf = Cmd.ExecuteNonQuery();
+                    rows_affected = Command.ExecuteNonQuery();
                 }
                 catch (SqlException e)
                 {
                     sError = $"Error: {e.Message}";
+                    Command = null;
                     return -1;
                 }
                 catch (Exception e)
                 {
                     sError = $"Error: {e.Message}";
+                    Command = null;
                     return -1;
                 }
 
-                return raf;
+                Command = null;
+                return rows_affected;
             }
 
 
@@ -341,25 +365,27 @@ namespace SQLCrypt.FunctionalClasses
                 ErrorClear();
                 ClearMessages();
 
-                SqlCommand Cmd = Conn.CreateCommand();
-                Cmd.CommandText = sCommand;
-                Cmd.CommandType = System.Data.CommandType.Text;
-                Cmd.CommandTimeout = 0;
-
+                Command = Conn.CreateCommand();
+                Command.CommandText = sCommand;
+                Command.CommandType = System.Data.CommandType.Text;
+                Command.CommandTimeout = 0;
+                
                 try
-                 {
-                    Data = Cmd.ExecuteReader();
+                {
+                    Data = Command.ExecuteReader();
                 }
                 catch (System.Data.Odbc.OdbcException e)
                 {
                     sError = $"Error: {e.Message}";
+                    Command = null;
                     return false;
                 }
                 catch (Exception exw)
                 {
                     sError = $"Error: {exw.Message}";
                     this.CloseDBConn();
-                    Cmd.Dispose();
+                    Command.Dispose();
+                    Command = null;
                     return false;
                 }
 
@@ -370,11 +396,13 @@ namespace SQLCrypt.FunctionalClasses
                 catch (System.Data.Odbc.OdbcException e)
                 {
                     sError = $"Error: {e.Message}";
-                    Cmd.Dispose();
+                    Command.Dispose();
+                    Command = null;
                     return false;
                 }
 
-                Cmd.Dispose();
+                Command.Dispose();
+                Command = null;
                 return true;
             }
 
@@ -553,39 +581,33 @@ namespace SQLCrypt.FunctionalClasses
                     }
                 }
 
-                SqlCommand Cmd = Conn.CreateCommand();
-                Cmd.CommandText = sComando;
-                Cmd.CommandType = System.Data.CommandType.Text;
-                Cmd.CommandTimeout = 0;
+                Command = Conn.CreateCommand();
+                Command.CommandText = sComando;
+                Command.CommandType = System.Data.CommandType.Text;
+                Command.CommandTimeout = 0;
 
                 try
                 {
-                    raf = Cmd.ExecuteNonQuery();
+                    raf = Command.ExecuteNonQuery();
                 }
                 catch (SqlException e)
                 {
                     sError = $"Error: {e.Message}";
+                    Command.Dispose();
+                    Command = null;
                     return -1;
                 }
 
+                Command = null;
                 return raf;
             }
 
 
-            /// <summary>
-            /// Ejecuta una Sentencia SQL y retorna el ResultSet asociado.
-            /// </summary>
-            /// <param name="sCommand"></param>
-            /// <returns></returns>
-            public bool ExecStoredCmdData(String sCommandFile, Dictionary<string, string> Params)
+            public bool ExecCmdDataWithParam(string sComando, Dictionary<string, string> Params)
             {
-                string sComando = "";
-
                 DataClose();
                 ErrorClear();
                 ClearMessages();
-
-                sComando = DecryptFiletoString(sPathToCommands + sCommandFile);
 
                 if (sComando == "")
                 {
@@ -602,22 +624,40 @@ namespace SQLCrypt.FunctionalClasses
                     }
                 }
 
-                SqlCommand Cmd = Conn.CreateCommand();
-                Cmd.CommandText = sComando;
-                Cmd.CommandType = System.Data.CommandType.Text;
-                Cmd.CommandTimeout = 0;
+                Command = Conn.CreateCommand();
+                Command.CommandText = sComando;
+                Command.CommandType = System.Data.CommandType.Text;
+                Command.CommandTimeout = 0;
 
                 try
                 {
-                    Data = Cmd.ExecuteReader();
+                    Data = Command.ExecuteReader();
                 }
                 catch (SqlException e)
                 {
                     sError = $"Error: {e.Message}";
+                    Command.Dispose();
+                    Command = null;
                     return false;
                 }
 
+                Command.Dispose();
+                Command = null;
                 return true;
+            }
+
+
+            /// <summary>
+            /// Ejecuta una Sentencia SQL y retorna el ResultSet asociado.
+            /// </summary>
+            /// <param name="sCommand"></param>
+            /// <returns></returns>
+            public bool ExecStoredCmdData(String sCommandFile, Dictionary<string, string> Params)
+            {
+
+                string sComando = DecryptFiletoString( $"{sPathToCommands}{sCommandFile}");
+
+                return ExecCmdDataWithParam(sComando, Params);
             }
 
 
@@ -872,6 +912,29 @@ namespace SQLCrypt.FunctionalClasses
 
             }
 
+
+            public int GetCurrent_SPID()
+            {
+                int SPID = 0;
+                string comando = "SELECT @@SPID";
+                ExecuteSqlData(comando);
+                if (Data != null)
+                {
+                    Data.Read();
+                    SPID = Data.GetInt16(0);
+                }
+                DataClose();
+                return SPID;
+            }
+
+
+            public void Kill_SPID(int SPID)
+            {
+                string comando = $"KILL {SPID};";
+                ExecuteSql(comando);
+            }
+
+
             public bool SetDatabase(string Database)
             {
                 this.ErrorClear();
@@ -907,15 +970,23 @@ namespace SQLCrypt.FunctionalClasses
 
             public string GetCurrentDatabase()
             {
+                if (!ConnectionStatus)
+                    return "";
+
                 string Comando = "SELECT db_name = DB_NAME()";
                 string db_name = "";
                 ExecuteSqlData(Comando);
-                if (Data != null)
+                try
                 {
-                    Data.Read();
-                    db_name = Data.GetString(0);
+                    if (Data != null && Data.HasRows)
+                    {
+
+                        Data.Read();
+                        db_name = Data.GetString(0);
+                    }
+                    DataClose();
                 }
-                DataClose();
+                catch { }
                 return db_name;
             }
 
@@ -965,19 +1036,23 @@ namespace SQLCrypt.FunctionalClasses
                 try
                 {
                     string ComandoSQL = $"UPDATE {Tabla} SET {FieldName} = ? WHERE {WhereConditions}";
-                    SqlCommand command = new SqlCommand(ComandoSQL);
-                    SqlParameterCollection parameters = command.Parameters;
+                    Command = new SqlCommand(ComandoSQL);
+                    SqlParameterCollection parameters = Command.Parameters;
                     parameters.Add(FieldName, SqlDbType.Image);
                     parameters[FieldName].Value = GetPhoto(File);
-                    command.Connection = Conn;
-                    command.ExecuteNonQuery();
+                    Command.Connection = Conn;
+                    Command.ExecuteNonQuery();
                 }
                 catch (SqlException e)
                 {
                     this.sError = $"Error grabando BLOB\n{e.ErrorCode}-{e.Message}";
+                    Command.Dispose();
+                    Command = null;
                     return false;
                 }
 
+                Command.Dispose();
+                Command = null;
                 return true;
             }
 
@@ -995,19 +1070,23 @@ namespace SQLCrypt.FunctionalClasses
                 try
                 {
                     string ComandoSQL = $"UPDATE {Tabla} SET {FieldName} = ? WHERE {WhereConditions}";
-                    SqlCommand command = new SqlCommand(ComandoSQL);
-                    SqlParameterCollection parameters = command.Parameters;
+                    Command = new SqlCommand(ComandoSQL);
+                    SqlParameterCollection parameters = Command.Parameters;
                     parameters.Add(FieldName, SqlDbType.Image);
                     parameters[FieldName].Value = Image;
-                    command.Connection = Conn;
-                    command.ExecuteNonQuery();
+                    Command.Connection = Conn;
+                    Command.ExecuteNonQuery();
                 }
                 catch (SqlException e)
                 {
                     this.sError = $"Error grabando BLOB\n{e.ErrorCode}-{e.Message}";
+                    Command.Dispose();
+                    Command = null;
                     return false;
                 }
 
+                Command.Dispose();
+                Command = null;
                 return true;
             }
 
@@ -1024,17 +1103,21 @@ namespace SQLCrypt.FunctionalClasses
                 try
                 {
                     string ComandoSQL = $"UPDATE {Tabla} SET {FieldName} = NULL WHERE {WhereConditions}";
-                    SqlCommand command = new SqlCommand(ComandoSQL);
-                    SqlParameterCollection parameters = command.Parameters;
-                    command.Connection = Conn;
-                    command.ExecuteNonQuery();
+                    Command = new SqlCommand(ComandoSQL);
+                    SqlParameterCollection parameters = Command.Parameters;
+                    Command.Connection = Conn;
+                    Command.ExecuteNonQuery();
                 }
                 catch (SqlException e)
                 {
                     this.sError = $"Error grabando BLOB\n{e.ErrorCode}-{e.Message}";
+                    Command.Dispose();
+                    Command = null;
                     return false;
                 }
 
+                Command.Dispose();
+                Command = null;
                 return true;
             }
 
@@ -1052,12 +1135,12 @@ namespace SQLCrypt.FunctionalClasses
                 string query = $"SELECT {FieldName} FROM {Tabla} WHERE {WhereConditions}";
 
                 // create ODBC command, execute the query and get the reader for it
-                SqlCommand command = new SqlCommand(query);
-                command.Connection = Conn;
+                Command = new SqlCommand(query);
+                Command.Connection = Conn;
 
                 try
                 {
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = Command.ExecuteReader();
 
                     // check whether there is at least one record
                     if (reader.Read())
@@ -1067,6 +1150,8 @@ namespace SQLCrypt.FunctionalClasses
                         {
                             reader.Close();
                             reader.Dispose();
+                            Command.Dispose();
+                            Command = null;
                             return true;
                         }
 
@@ -1075,17 +1160,23 @@ namespace SQLCrypt.FunctionalClasses
                         {
                             reader.Close();
                             reader.Dispose();
+                            Command.Dispose();
+                            Command = null;
                             return true;
                         }
                     }
 
                     reader.Close();
                     this.sError = $"Error grabando Archivo: \n{File}";
+                    Command.Dispose();
+                    Command = null;
                     return false;
                 }
                 catch (SqlException e)
                 {
                     this.sError = $"Error Leyendo BLOB\n{e.ErrorCode}-{e.Message}";
+                    Command.Dispose();
+                    Command = null;
                     return false;
                 }
             }
@@ -1103,12 +1194,12 @@ namespace SQLCrypt.FunctionalClasses
                 string query = $"SELECT {FieldName} FROM {Tabla} WHERE {WhereConditions}";
 
                 // create ODBC command, execute the query and get the reader for it
-                SqlCommand command = new SqlCommand(query);
-                command.Connection = Conn;
+                Command = new SqlCommand(query);
+                Command.Connection = Conn;
 
                 try
                 {
-                    SqlDataReader reader = command.ExecuteReader();
+                    SqlDataReader reader = Command.ExecuteReader();
 
                     // check whether there is at least one record
                     if (reader.Read())
@@ -1116,14 +1207,20 @@ namespace SQLCrypt.FunctionalClasses
                         // matching record found, read first column as string instance
                         byte[] value = (byte[])reader.GetValue(0);
                         reader.Close();
+                        Command.Dispose();
+                        Command = null;
                         return value;
                     }
                     reader.Close();
+                    Command.Dispose();
+                    Command = null;
                     return null;
                 }
                 catch (SqlException e)
                 {
                     this.sError = $"Error Leyendo BLOB\n{e.ErrorCode}-{e.Message}";
+                    Command.Dispose();
+                    Command = null;
                     return null;
                 }
             }

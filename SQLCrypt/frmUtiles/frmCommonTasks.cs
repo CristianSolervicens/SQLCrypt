@@ -69,6 +69,19 @@ namespace SQLCrypt
         {
             sPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath) + "\\CommonTasks\\";
 
+            if (!Directory.Exists(sPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(sPath);
+                }
+                catch 
+                {
+                    MessageBox.Show($"No se ha podido crear el Directorio:\n  {sPath}", "Aención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    this.Close();
+                }
+            }
+
             string[] fileEntries = Directory.GetFiles(sPath );
             foreach (string fileName in fileEntries)
             {

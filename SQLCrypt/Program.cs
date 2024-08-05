@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Configuration;
 using System.Windows.Forms;
 using SQLCrypt.FunctionalClasses.MySql;
 
@@ -10,6 +11,13 @@ namespace SQLCrypt
     {
 
         public static MySql hSql = new MySql();
+
+        //Para manejar Cancelación de Procesos.
+        public static MySql hSqlQuery = null;
+        public static int sql_spid = 0;
+        public static bool CancelQuery = false;
+
+
         /// <summary>
         /// Punto de entrada principal para la aplicación.
         /// </summary>

@@ -83,6 +83,16 @@ namespace SQLCrypt.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CANCEL {
+            get {
+                object obj = ResourceManager.GetObject("CANCEL", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Connect3 {
             get {
                 object obj = ResourceManager.GetObject("Connect3", resourceCulture);

@@ -11,10 +11,7 @@ namespace SQLCrypt
 {
     public partial class frmParam : Form
     {
-        public int numValues;
-
-        //public String[] arrValues;
-
+        
         public Dictionary<string, string> OutParameters {get; set;}
         public MySql.strList Parametros {get; set;}
 
@@ -35,7 +32,7 @@ namespace SQLCrypt
         {
             int x;
 
-            for (x = 1; x <= numValues; ++x)
+            for (x = 1; x <= Parametros.Count; ++x)
             {
 
                 mLabel.Add(new System.Windows.Forms.Label());
@@ -63,18 +60,16 @@ namespace SQLCrypt
 
             this.Height = mTextBox[x - 2].Top + 115;
             panel.Top = mTextBox[x-2].Top  + 36;
-            //btAceptar.Top = mTextBox[x - 2].Top + 40;
-            //btCancelar.Top = mTextBox[x - 2].Top + 40;
 
             Application.DoEvents();
 
-            if (numValues > 0)
+            if (Parametros.Count > 0)
                 mTextBox[0].Focus();
         }
 
         private void btAceptar_Click(object sender, EventArgs e)
         {
-            for (int x = 0; x < numValues; ++x)
+            for (int x = 0; x < Parametros.Count; ++x)
             {
                 OutParameters.Add(Parametros[x], mTextBox[x].Text);
             }
@@ -89,7 +84,7 @@ namespace SQLCrypt
 
         private void frmParam_Activated(object sender, EventArgs e)
         {
-            if (numValues > 0)
+            if (Parametros.Count > 0)
                 mTextBox[0].Focus();
         }
     }
