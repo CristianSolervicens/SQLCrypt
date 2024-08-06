@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Configuration;
 using System.Windows.Forms;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Database;
 using SQLCrypt.FunctionalClasses.MySql;
 
 
@@ -16,6 +17,7 @@ namespace SQLCrypt
         public static MySql hSqlQuery = null;
         public static int sql_spid = 0;
         public static bool CancelQuery = false;
+        public static string DataBase = "";
 
 
         /// <summary>

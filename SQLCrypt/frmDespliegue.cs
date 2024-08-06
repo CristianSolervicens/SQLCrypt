@@ -346,6 +346,7 @@ namespace SQLCrypt
             Program.hSqlQuery = null;
             Program.sql_spid = 0;
             Program.CancelQuery = false;
+            Program.DataBase = hSql.GetCurrentDatabase();
             System.GC.Collect();
         }
 
@@ -421,7 +422,6 @@ namespace SQLCrypt
             saveCurrentToJson();
             System.GC.Collect();
         }
-
     }
 
 }

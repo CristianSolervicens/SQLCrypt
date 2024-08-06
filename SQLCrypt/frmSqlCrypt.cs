@@ -118,6 +118,7 @@ namespace SQLCrypt
 
             autoCompleteKeywords = keyWords.ToUpper();
             // ---------------------------------------------
+            laDataLoadStatus.Text = "";
 
             laTablas.Text = "";
             tssLaFile.Text = "";
@@ -152,6 +153,10 @@ namespace SQLCrypt
             _findReplace = new FindReplace();
             _findReplace.SetTarget(txtSql);
             _findReplace.SetFind(txtSql);
+
+            MytoolTip.SetToolTip(btReconnect, "Reconectarse a la Base de Datos...");
+            MytoolTip.SetToolTip(btRefreshType, "Refrescar la lista de objetos...");
+            MytoolTip.SetToolTip(btConnectToBd, "Conectarse a un Servidor de Base de Datos");
 
             FindMan = new SearchManager();
             FindMan.TextArea = txtSql;
@@ -1115,6 +1120,13 @@ namespace SQLCrypt
 
         private void ExecuteAlternative()
         {
+            if (threadQuery != null)
+                if (threadQuery.IsAlive)
+                {
+                    MessageBox.Show("Hay una consulta en curso", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
             if (hSql.ConnectionStatus == false)
             {
                 MessageBox.Show(this, "Debe estar conectado(a) a una Base de Datos.", "Atención", MessageBoxButtons.OK);
@@ -1157,6 +1169,7 @@ namespace SQLCrypt
             }
 
             SetTimer();
+
             threadQuery = new Thread(() =>
             {
                 Program.CancelQuery = false;
@@ -1164,6 +1177,7 @@ namespace SQLCrypt
                 Despliegue.Top = this.Top;
                 Despliegue.Left = this.Left;
                 Despliegue.ShowDialog();
+                //Despliegue.Show();
                 if (Despliegue.hSql.ConnectionStatus)
                 {
                     string curr_db = Despliegue.hSql.GetCurrentDatabase();
@@ -1171,14 +1185,15 @@ namespace SQLCrypt
                         hSql.SetDatabase(curr_db);
 
                     Despliegue.hSql.CloseDBConn();
-                    //LoadDatabaseList();
                 }
                 Despliegue.Dispose();
                 System.GC.Collect();
                 DisposeTimer();
             });
+            threadQuery.SetApartmentState(ApartmentState.STA);
+            threadQuery.Priority = ThreadPriority.Highest;
             threadQuery.Start();
-            
+
         }
 
         private void SetTimer()
@@ -1190,13 +1205,29 @@ namespace SQLCrypt
             queryTimer.Start();
         }
 
+
         private void DisposeTimer()
         {
             if (Program.sql_spid != 0 || Program.hSqlQuery != null)
                 return;
-            queryTimer.Stop();
-            queryTimer.Dispose();
+
+            try
+            {
+                queryTimer.Stop();
+                queryTimer.Dispose();
+            }
+            catch { }
+
             pgBarQuery.Value = 0;
+            laDataLoadStatus.Text = "";
+
+            if (Program.DataBase != "")
+            {
+                hSql.SetDatabase(Program.DataBase);
+                Program.DataBase = "";
+            }
+            threadQuery = null;
+            LoadDatabaseList();
         }
 
 
@@ -1212,7 +1243,14 @@ namespace SQLCrypt
 
             if (Program.sql_spid == 0 && Program.hSqlQuery != null)
             {
-                pgBarQuery.Value = pgBarQuery.Maximum;        
+                pgBarQuery.Value = pgBarQuery.Maximum;
+                
+                if (laDataLoadStatus.Text == "")
+                    laDataLoadStatus.Text = "Cargando Data...";
+                else
+                    laDataLoadStatus.Text = "";
+
+                laDataLoadStatus.Refresh();
             }
 
             if (Program.sql_spid == 0 && Program.hSqlQuery == null)
