@@ -24,8 +24,6 @@ using static SQLCrypt.Program;
 using System.Threading;
 using System.Timers;
 
-
-//TODO: Ejecución Asíncrona de Scripts
 //TODO: Parsear scripts respetando GO
 //TODO: Buscar Errores de Sintáxis en el Documento Actual o Selección ??
 
@@ -157,6 +155,14 @@ namespace SQLCrypt
             MytoolTip.SetToolTip(btReconnect, "Reconectarse a la Base de Datos...");
             MytoolTip.SetToolTip(btRefreshType, "Refrescar la lista de objetos...");
             MytoolTip.SetToolTip(btConnectToBd, "Conectarse a un Servidor de Base de Datos");
+            MytoolTip.SetToolTip(btCancell, "Cancelar una consulta en ejecución");
+            
+            string msg = @"Busca objeto en lista de Objetos presionando [Enter]
+También se usa con el menú contextual de la Lista de Objetos
+Para buscar por contenido";
+            
+            MytoolTip.SetToolTip(txBuscaEnLista, msg);
+            
 
             FindMan = new SearchManager();
             FindMan.TextArea = txtSql;
@@ -1121,13 +1127,15 @@ namespace SQLCrypt
         private void ExecuteAlternative()
         {
             if (threadQuery != null)
+            {
                 if (threadQuery.IsAlive)
                 {
-                    MessageBox.Show("Hay una consulta en curso", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Hay una consulta en curso...", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
+            }
 
-            if (hSql.ConnectionStatus == false)
+            if (!hSql.ConnectionStatus)
             {
                 MessageBox.Show(this, "Debe estar conectado(a) a una Base de Datos.", "Atención", MessageBoxButtons.OK);
                 return;
@@ -1196,6 +1204,10 @@ namespace SQLCrypt
 
         }
 
+
+        /// <summary>
+        /// Timer para Indicar Consulta en Ejecución
+        /// </summary>
         private void SetTimer()
         {
             queryTimer = new System.Timers.Timer(300);
@@ -1206,6 +1218,9 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Finaliza el Timer de Consulta en Ejecución
+        /// </summary>
         private void DisposeTimer()
         {
             if (Program.sql_spid != 0 || Program.hSqlQuery != null)
@@ -1231,6 +1246,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Evento del Timer de Consulta en Ejecución
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="e"></param>
         private void OnQueryTimeEvent(Object source, ElapsedEventArgs e)
         {
             if (Program.sql_spid != 0)
@@ -1266,26 +1286,6 @@ namespace SQLCrypt
         private void ExecuteSQLCommand()
         {
 
-            if (hSql.ConnectionStatus == false)
-            {
-                MessageBox.Show(this, "Debe estar conectado(a) a una Base de Datos.", "Atención", MessageBoxButtons.OK);
-                return;
-            }
-
-            if (hSql.ErrorExiste)
-            {
-                MessageBox.Show($"Conexión a SQL con Error:\r\n{hSql.ErrorString}\r\n{hSql.Messages}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
-            }
-
-            string sSqlCommand = "";
-
-            if (txtSql.Text.Trim().ToString() == "")
-            {
-                MessageBox.Show(this, "No hay sentencia SQL para ejecutar", "Atención", MessageBoxButtons.OK);
-                return;
-            }
-
             //if (chkToText.Checked)
             //{
             //    frmDespliegueTxt frm = new frmDespliegueTxt(sql);
@@ -1305,61 +1305,6 @@ namespace SQLCrypt
             //    return;
             //}
 
-            //PARAMETROS DE EJECUCION DEL SCRIPT.....
-            //MessageBox.Show( this, "Parámetros # = " + paramCount().ToString(), "Atención", MessageBoxButtons.OK);
-
-            MySql.strList param = new MySql.strList();
-
-            if (txtSql.SelectedText != "")
-                sSqlCommand = txtSql.SelectedText.ToString();
-            else
-                sSqlCommand = txtSql.Text.ToString();
-
-            //Evaluacion de Parametros, si los hubiere
-            param = hSql.GetParameters(sSqlCommand);
-
-            if (param.Count != 0)
-            {
-                Dictionary<string, string> DictParam = null;
-                
-                frmParam fmp = new frmParam();
-                fmp.Parametros = param;
-                fmp.ShowDialog();
-                if (fmp.OutParameters.Count == 0)
-                    return;
-
-                DictParam = fmp.OutParameters;
-                hSql.ExecCmdDataWithParam(sSqlCommand, DictParam);
-            }
-            else
-                hSql.ExecuteSqlData(sSqlCommand);
-
-            if (hSql.Data == null)
-            {
-                if (hSql.ErrorExiste)
-                {
-                    MessageBox.Show(this, $"Error SQL {hSql.ErrorString}\r\n{hSql.Messages}", "Atención", MessageBoxButtons.OK);
-                    hSql.ErrorClear();
-                    return;
-                }
-
-                //Current DB
-                LoadDatabaseList();
-
-                MessageBox.Show("No hay resultados para su consulta\n\n *** Mensajes ***\n\n" + hSql.Messages);
-                Clipboard.Clear();
-                Clipboard.SetText(hSql.Messages, TextDataFormat.Text);
-
-                return;
-            }
-
-            frmDespliegue Despliegue = new frmDespliegue(hSql);
-            Despliegue.Text = $"Resultados : {databasesToolStripMenuItem.Text}";
-            Despliegue.Show();
-            Despliegue.Top = this.Top;
-            Despliegue.Left = this.Left;
-
-            LoadDatabaseList();
         }
 
 
@@ -1429,12 +1374,22 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Grabar Archivo Como...
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void grabarComoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileStd(true);
         }
 
 
+        /// <summary>
+        /// Abrir Archivo en Editor
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void abrirToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtSql.Text = "";
@@ -1460,6 +1415,10 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Conteo de Parámetros, para Ejecución de "CommonTasks" parametrizados
+        /// </summary>
+        /// <returns></returns>
         private int paramCount()
         {
             int i;
@@ -1482,6 +1441,12 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Completar Strings, usado para operaciones de Snippets (Indentación automática)
+        /// </summary>
+        /// <param name="sValue"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         private string StringComplete(string sValue, int length)
         {
             int dif = length - sValue.Length;
@@ -1506,7 +1471,14 @@ namespace SQLCrypt
             frmC.ShowDialog();
 
             if (frmC.ConnectionString == string.Empty)
+            {
+                splitC.Panel1Collapsed = true;
+                sTabla = string.Empty;
+                lstObjetos.Items.Clear();
+                lsColumnas.Items.Clear();
+                databasesToolStripMenuItem.Items.Clear();
                 return;
+            }
 
             hSql.ConnectionString = frmC.ConnectionString;
 
@@ -1573,6 +1545,9 @@ namespace SQLCrypt
         /// <param name="e"></param>
         private void databasesToolStripMenuItem_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (!hSql.ConnectionStatus)
+                return;
+
             if (databasesToolStripMenuItem.SelectedIndex == -1)
                 return;
 
@@ -1593,7 +1568,11 @@ namespace SQLCrypt
         }
 
 
-
+        /// <summary>
+        /// Abre el diálogo de Encriptación de Claves
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void encriptarClavesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             frmPassWord frmPass = new frmPassWord();
@@ -1603,7 +1582,7 @@ namespace SQLCrypt
 
         /// <summary>
         /// btConsultas_Click
-        /// Consultas predefinidas de ejecución rápida
+        /// Consultas predefinidas de ejecución rápida (CommonTasks)
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1685,12 +1664,22 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Diálogo de Comandos Imnmediatos (CommonTasks)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void comandosInmediatosToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             btConsultas_Click(null, null);
         }
 
 
+        /// <summary>
+        /// Consultas rápidas (CommonTasks)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void toolStripSplitButton1_ButtonClick(object sender, EventArgs e)
         {
             btConsultas_Click(null, null);
@@ -1718,7 +1707,10 @@ namespace SQLCrypt
         }
 
 
-
+        /// <summary>
+        /// Grabación del Archivo en Edición
+        /// </summary>
+        /// <param name="bSaveAs"></param>
         private void SaveFileStd(bool bSaveAs)
         {
 
@@ -1760,18 +1752,30 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Llamada a Grabación de Archivo en Edición
+        /// </summary>
         private void txtSql_SaveFile()
         {
             System.IO.File.WriteAllText(CurrentFile, txtSql.Text);
         }
 
 
+        /// <summary>
+        /// Salida a Texto o Grilla (Deprecado)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void salidaATextoGrillaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             chkToText.Checked =  chkToText.Checked ? false : true ;
         }
 
 
+        /// <summary>
+        /// Carga Objetos en la Lista de Objetos (Tablas, Funciones, Vistas, etc..)
+        /// </summary>
+        /// <param name="type"></param>
         public void Load_lstObjetos(string type)
         {
             MytoolTip.SetToolTip(lstObjetos, "");
@@ -1831,6 +1835,9 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Menú contextual para Tablas
+        /// </summary>
         private void SetMenuTablas()
         {
             lstObjetos.ContextMenu = null;
@@ -1840,21 +1847,18 @@ namespace SQLCrypt
             //cm.MenuItems.Add("Get CREATE TABLE", new EventHandler(ObjGetCreateTable));
             cm.MenuItems.Add("Get Text", new EventHandler(ObjGetText));
             cm.MenuItems.Add("Selected To Clipboard", new EventHandler(ObjSelectedToClipboard));
-            cm.MenuItems.Add("-");
 
             string Type = ((ObjectType)cbObjetos.SelectedItem).type.Trim();
             if (Type == "U" || Type == "V" || Type == "S")
             {
                 cm.MenuItems.Add("Select COUNT(*) FROM ", new EventHandler(ObjectSelectCount));
                 cm.MenuItems.Add("Select TOP(100) * FROM ", new EventHandler(ObjectSelectStar));
-                cm.MenuItems.Add("Select * FROM ", new EventHandler(ObjectSelectStarAll));
             }
             if (Type == "U")
             {
                 cm.MenuItems.Add("Edit Data", new EventHandler(EditarDatos));
                 cm.MenuItems.Add("Get Indexes", new EventHandler(GetIndexes));
             }
-            cm.MenuItems.Add("-");
 
             string sAux = "";
 
@@ -1917,6 +1921,7 @@ namespace SQLCrypt
             {
                 splitC.Panel1Collapsed = true;
                 sTabla = string.Empty;
+                MessageBox.Show("Debe conectarse a una Base de Datos...", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -1957,7 +1962,12 @@ namespace SQLCrypt
         }
 
 
-        // Copiar al Clipboard Fila Completa de las Columnas Seleccionadas del Objeto
+
+        /// <summary>
+        /// Copiar al Clipboard Fila Completa de las Columnas Seleccionadas del Objeto
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void colmSelectionToClipBoard( object sender, EventArgs e)
         {
             Clipboard.Clear();
@@ -1975,7 +1985,11 @@ namespace SQLCrypt
         }
 
 
-        // Copiar al Clipboard Solo los NOMBRES de las Columnas del Objeto
+        /// <summary>
+        /// Copiar al Clipboard Solo los NOMBRES de las Columnas del Objeto
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void colmSelectionNameToClipBoard(object sender, EventArgs e)
         {
             Clipboard.Clear();
@@ -1993,6 +2007,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Select Top 100 de Vista o Tabla
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ObjectSelectStar(object sender, EventArgs e)
         {
             if (lstObjetos.SelectedIndex == -1)
@@ -2015,30 +2034,11 @@ namespace SQLCrypt
         }
 
 
-
-        private void ObjectSelectStarAll(object sender, EventArgs e)
-        {
-            if (lstObjetos.SelectedIndex == -1)
-                return;
-
-            DBObject DBObj = new DBObject(hSql);
-            DBObj = (DBObject)lstObjetos.SelectedItem;
-
-            if (DBObj.type != "U" && DBObj.type != "V" && DBObj.type != "S")
-            {
-                MessageBox.Show("Esta opción es sólo para Tablas y Vistas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string sAux = DBObj.GetData(false);
-
-            frmDespliegue Despliegue = new frmDespliegue(hSql);
-            Despliegue.Text = sAux;
-            Despliegue.Show();
-        }
-
-
-
+        /// <summary>
+        /// Ayudante de Creación - Borrado de Índices
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GetIndexes(object sender, EventArgs e)
         {
             if (lstObjetos.SelectedIndex == -1)
@@ -2058,6 +2058,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Editar Datos en Tabla de Forma Gráfica
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EditarDatos(object sender, EventArgs e)
         {
             if (lstObjetos.SelectedIndex == -1)
@@ -2113,6 +2118,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Cambio en la Selección de Objetos (Lista)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void lstObjetos_SelectedIndexChanged(object sender, EventArgs e)
         {
             //Formatear el Nombre de Tabla a Nombre "Seguro" usando las partes entre paréntesis []
@@ -2258,7 +2268,9 @@ namespace SQLCrypt
         }
 
 
-
+        /// <summary>
+        /// Define el menú contextual de Objetos Para los Procedimientos Almacenados
+        /// </summary>
         private void SetMenuProcedimientos()
         {
             string Type = ((ObjectType)cbObjetos.SelectedItem).type.Trim();
@@ -2279,6 +2291,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Busca Los procedimientos que contienen un Texto determinado
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FindProcedureByText(object sender, EventArgs e)
         {
             if (txBuscaEnLista.Text == "")
@@ -2294,6 +2311,9 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Carga la Lista de Objetos Filtrada (por búsqueda)
+        /// </summary>
         private void Load_lstObjetos_ProcFiltered()
         {
             lstObjetos.Items.Clear();
@@ -2309,7 +2329,11 @@ namespace SQLCrypt
         }
 
 
-
+        /// <summary>
+        /// Obtiene el Texto de un Objeto de BD (Vistas, Procs, Funciones, Triggers)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ObjGetText(object sender, EventArgs e)
         {
             int x = 0;
@@ -2335,6 +2359,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Diálogo de Búsqueda de Página 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buscaPaginaSQLToolStripMenuItem_Click(object sender, EventArgs e)
         {
             hSql.ErrorClear();
@@ -2356,6 +2385,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Evento MouseDown lstObjetos para DragDrop y Copiado
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void lstObjetos_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -2379,6 +2413,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Evento MouseDown lsColumnas (Selección para DragDrop y Copiado)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void lsColumnas_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -2402,6 +2441,9 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Carga el ComboBox de Tipos de Objetos (Bajo la Lista de Objetos).
+        /// </summary>
         private void Load_cbObjetos()
         {
             cbObjetos.Items.Clear();
@@ -2414,6 +2456,12 @@ namespace SQLCrypt
             }
         }
 
+
+        /// <summary>
+        /// Selección del Tipo de Objetos a Desplegar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cbObjetos_SelectedValueChanged(object sender, EventArgs e)
         {
             Load_lstObjetos( ((ObjectType)cbObjetos.SelectedItem).type );
@@ -2421,6 +2469,10 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Carga el Tipo de Objetos Seleccionado en la Lista de Objetos
+        /// </summary>
+        /// <param name="Tipo"></param>
         private void cbObjetosSelect( string Tipo)
         {
             string OriginalValue = "";
@@ -2439,6 +2491,12 @@ namespace SQLCrypt
             }
         }
 
+
+        /// <summary>
+        /// Diálogo de Edición de las Propiedades Extendidas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void extendedPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!hSql.ConnectionStatus)
@@ -2455,34 +2513,66 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Conexión a BD
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btConnectToBd_Click(object sender, EventArgs e)
         {
             ConnectToDatabase(sender, e);
         }
 
 
+        /// <summary>
+        /// Editor, Eliminar Espacios sobrantes al fin de línea
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void eliminarEspaciosFinDeLíneaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             CutTrailingSpaces();
         }
 
+        /// <summary>
+        /// Convertir Selección a Mayúsculas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void selecciónAMayúsculasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Uppercase();
         }
 
+
+        /// <summary>
+        /// Convertir Selección a Minúsculas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void selecciónAMinúsculasToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Lowercase();
         }
 
 
+        /// <summary>
+        /// Abrir el Diálogo de Find & Replace 
+        /// Es peersistente Sólo se invisibiliza para que F3 siga funcionando aún ccerrado el Diálogo
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void findReplaceToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _findReplace.Show();
         }
 
         
+        /// <summary>
+        /// Al Cerrar el presente Form (Principal)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrmSqlCrypt_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (AlCerrarElFormulario() == DialogResult.Cancel)
@@ -2503,6 +2593,12 @@ namespace SQLCrypt
                 _findReplace.Show();
         }
 
+
+        /// <summary>
+        /// Diálogo del Helper de Índices
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void indicesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!hSql.ConnectionStatus)
@@ -2516,18 +2612,33 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Edición, Convertir los Tabs a Espacios
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void tABAEspaciosToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TAB_to_spaces();
         }
 
         
+        /// <summary>
+        /// Refrescar La Lista de Objetos cuando ha sido Filtrada
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btRefreshType_Click(object sender, EventArgs e)
         {
             cbObjetos_SelectedValueChanged(sender, e);
         }
 
 
+        /// <summary>
+        /// Botón de Re-Conexión (En caso Necesarios, evita tener que reconectar con el Diálogo de Conexión)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btReconnect_Click(object sender, EventArgs e)
         {
             if (hSql.ConnectionString != "" && !hSql.ConnectionStatus)
@@ -2576,6 +2687,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Mostrar Guias de Indentación
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btIndentShow_Click(object sender, EventArgs e)
         {
             scintilla__IndentationGuides();
@@ -2588,6 +2704,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Diálogo de Snippets (Simula Menú)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void sToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var frm = new frmSnippets();
@@ -2603,27 +2724,55 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Ir al Bookmark Previo
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void previousBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtSql_PreviousBookmark();
         }
 
+
+        /// <summary>
+        /// MArca Desmarca Bookmark en la Línea Actual
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void toggleBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtSql_ToogleBookmark();
         }
 
+
+        /// <summary>
+        /// Ir al Siguiente Bookmark
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void goToNextBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
         {
             txtSql_NextBookmark();
         }
 
+
+        /// <summary>
+        /// Completar Snippet busca <expansión>
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void completarSnippetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             complete_snippet();
         }
 
   
+        /// <summary>
+        /// Pegado de Objetos en el Editor
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void lstObjetos_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode != Keys.Enter)
@@ -2634,6 +2783,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Pegado de Columnas en el Editor
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void lsColumnas_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode != Keys.Enter)
@@ -2655,6 +2809,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// Cancelación de Consultas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btCancell_Click(object sender, EventArgs e)
         {
             if (Program.sql_spid == 0 && Program.hSqlQuery != null)

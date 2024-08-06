@@ -476,6 +476,8 @@
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(20, 23);
             this.toolStripTextBox1.Text = "4";
+            this.toolStripTextBox1.ToolTipText = "Espacios que tomará el [TAB]\r\nTambién se usa este valor en la opción\r\nTabs a Espa" +
+    "cios del menú \"Edit\"";
             this.toolStripTextBox1.TextChanged += new System.EventHandler(this.toolStripTextBox1_TextChanged);
             // 
             // baseDeDatoToolStripMenuItem
@@ -490,6 +492,7 @@
             this.databasesToolStripMenuItem.BackColor = System.Drawing.SystemColors.ControlLight;
             this.databasesToolStripMenuItem.Name = "databasesToolStripMenuItem";
             this.databasesToolStripMenuItem.Size = new System.Drawing.Size(250, 23);
+            this.databasesToolStripMenuItem.ToolTipText = "Seleccione la Base de Datos con la que desea trabajar...";
             this.databasesToolStripMenuItem.SelectedIndexChanged += new System.EventHandler(this.databasesToolStripMenuItem_SelectedIndexChanged);
             // 
             // ayudToolStripMenuItem
@@ -547,6 +550,8 @@
             this.toolStripSplitButton1.Name = "toolStripSplitButton1";
             this.toolStripSplitButton1.Size = new System.Drawing.Size(40, 29);
             this.toolStripSplitButton1.Text = "toolStripSplitButton1";
+            this.toolStripSplitButton1.ToolTipText = "Comandos almacenados.\r\nGuarde sus consultas comunes\r\ndentro de la carpeta \"Common" +
+    "Tasks\"\r\ncon extensión .sqc y ejecútelas con\r\n[Ctrl] + [i]";
             this.toolStripSplitButton1.ButtonClick += new System.EventHandler(this.toolStripSplitButton1_ButtonClick);
             // 
             // tssLaFile
@@ -797,9 +802,9 @@
             this.btReconnect.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btReconnect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btReconnect.ImageKey = "(none)";
-            this.btReconnect.Location = new System.Drawing.Point(696, 4);
+            this.btReconnect.Location = new System.Drawing.Point(695, 4);
             this.btReconnect.Name = "btReconnect";
-            this.btReconnect.Size = new System.Drawing.Size(51, 22);
+            this.btReconnect.Size = new System.Drawing.Size(57, 22);
             this.btReconnect.TabIndex = 29;
             this.btReconnect.Text = "R-Fresh";
             this.btReconnect.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
