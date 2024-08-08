@@ -129,7 +129,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
-            this.menuStrip1.Size = new System.Drawing.Size(1163, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(1157, 25);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -538,7 +538,7 @@
             this.tssLaStat});
             this.statusStrip1.Location = new System.Drawing.Point(0, 594);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1163, 31);
+            this.statusStrip1.Size = new System.Drawing.Size(1157, 31);
             this.statusStrip1.TabIndex = 14;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -621,8 +621,8 @@
             this.splitC.Panel2.Controls.Add(this.txtSql);
             this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(3);
             this.splitC.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.splitC.Size = new System.Drawing.Size(1163, 569);
-            this.splitC.SplitterDistance = 286;
+            this.splitC.Size = new System.Drawing.Size(1157, 569);
+            this.splitC.SplitterDistance = 284;
             this.splitC.TabIndex = 15;
             // 
             // laBuscarTablas
@@ -645,7 +645,7 @@
             this.txBuscaEnLista.ForeColor = System.Drawing.Color.Black;
             this.txBuscaEnLista.Location = new System.Drawing.Point(5, 298);
             this.txBuscaEnLista.Name = "txBuscaEnLista";
-            this.txBuscaEnLista.Size = new System.Drawing.Size(278, 20);
+            this.txBuscaEnLista.Size = new System.Drawing.Size(276, 20);
             this.txBuscaEnLista.TabIndex = 26;
             this.txBuscaEnLista.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txBuscaEnLista_KeyDown);
             // 
@@ -661,7 +661,7 @@
             this.panObjetos.Location = new System.Drawing.Point(0, 0);
             this.panObjetos.Margin = new System.Windows.Forms.Padding(2);
             this.panObjetos.Name = "panObjetos";
-            this.panObjetos.Size = new System.Drawing.Size(286, 322);
+            this.panObjetos.Size = new System.Drawing.Size(284, 322);
             this.panObjetos.TabIndex = 21;
             // 
             // btRefreshType
@@ -709,7 +709,7 @@
             this.lstObjetos.Name = "lstObjetos";
             this.lstObjetos.ScrollAlwaysVisible = true;
             this.lstObjetos.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstObjetos.Size = new System.Drawing.Size(286, 249);
+            this.lstObjetos.Size = new System.Drawing.Size(284, 249);
             this.lstObjetos.TabIndex = 12;
             this.lstObjetos.SelectedIndexChanged += new System.EventHandler(this.lstObjetos_SelectedIndexChanged);
             this.lstObjetos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstObjetos_KeyDown);
@@ -725,7 +725,7 @@
             this.panColumnas.Location = new System.Drawing.Point(0, 326);
             this.panColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.panColumnas.Name = "panColumnas";
-            this.panColumnas.Size = new System.Drawing.Size(286, 240);
+            this.panColumnas.Size = new System.Drawing.Size(284, 240);
             this.panColumnas.TabIndex = 0;
             // 
             // lsColumnas
@@ -748,7 +748,7 @@
             this.lsColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.lsColumnas.Name = "lsColumnas";
             this.lsColumnas.ShowGroups = false;
-            this.lsColumnas.Size = new System.Drawing.Size(286, 240);
+            this.lsColumnas.Size = new System.Drawing.Size(284, 240);
             this.lsColumnas.TabIndex = 33;
             this.lsColumnas.UseCompatibleStateImageBehavior = false;
             this.lsColumnas.View = System.Windows.Forms.View.Details;
@@ -784,7 +784,7 @@
             this.txtSql.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtSql.Location = new System.Drawing.Point(3, 3);
             this.txtSql.Name = "txtSql";
-            this.txtSql.Size = new System.Drawing.Size(867, 563);
+            this.txtSql.Size = new System.Drawing.Size(863, 563);
             this.txtSql.TabIndex = 0;
             this.txtSql.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.txtSql_CharAdded);
             this.txtSql.InsertCheck += new System.EventHandler<ScintillaNET.InsertCheckEventArgs>(this.txtSql_InsertCheck);
@@ -826,10 +826,11 @@
             // 
             // btCancell
             // 
+            this.btCancell.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btCancell.BackColor = System.Drawing.SystemColors.Control;
             this.btCancell.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btCancell.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btCancell.Location = new System.Drawing.Point(764, 4);
+            this.btCancell.Location = new System.Drawing.Point(758, 4);
             this.btCancell.Name = "btCancell";
             this.btCancell.Size = new System.Drawing.Size(107, 22);
             this.btCancell.TabIndex = 30;
@@ -839,16 +840,18 @@
             // 
             // pgBarQuery
             // 
-            this.pgBarQuery.Location = new System.Drawing.Point(877, 5);
+            this.pgBarQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pgBarQuery.Location = new System.Drawing.Point(871, 5);
             this.pgBarQuery.Name = "pgBarQuery";
             this.pgBarQuery.Size = new System.Drawing.Size(161, 18);
             this.pgBarQuery.TabIndex = 31;
             // 
             // laDataLoadStatus
             // 
+            this.laDataLoadStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.laDataLoadStatus.AutoSize = true;
             this.laDataLoadStatus.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.laDataLoadStatus.Location = new System.Drawing.Point(1045, 8);
+            this.laDataLoadStatus.Location = new System.Drawing.Point(1039, 8);
             this.laDataLoadStatus.Name = "laDataLoadStatus";
             this.laDataLoadStatus.Size = new System.Drawing.Size(35, 13);
             this.laDataLoadStatus.TabIndex = 32;
@@ -859,7 +862,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::SQLCrypt.Properties.Settings.Default.AppBackColor;
-            this.ClientSize = new System.Drawing.Size(1163, 625);
+            this.ClientSize = new System.Drawing.Size(1157, 625);
             this.Controls.Add(this.laDataLoadStatus);
             this.Controls.Add(this.pgBarQuery);
             this.Controls.Add(this.btCancell);
@@ -871,7 +874,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(1130, 622);
+            this.MinimumSize = new System.Drawing.Size(1173, 622);
             this.Name = "FrmSqlCrypt";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Sql Crypt";

@@ -183,7 +183,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "frmDespliegue";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Despliegue de resultados";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmDespliegue_Closing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmDespliegue_Closed);

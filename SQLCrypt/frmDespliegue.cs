@@ -66,6 +66,11 @@ namespace SQLCrypt
                 MessageBox.Show("No hay resultados para su consulta\r\nMensajes\r\n" + hSql.Messages);
                 Clipboard.Clear();
                 Clipboard.SetText(hSql.Messages, TextDataFormat.Text);
+
+                string currentDb = hSql.GetCurrentDatabase();
+                if (currentDb != "")
+                    Program.DataBase = currentDb;
+                
                 this.Close();
                 return;
             }
@@ -147,7 +152,11 @@ namespace SQLCrypt
                     dataGridView.DataSource = ds.Tables[current_ds];
 
                 toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds + 1}/{ds.Tables.Count}");
-                
+
+                string currentDb = hSql.GetCurrentDatabase();
+                if (currentDb != "")
+                    Program.DataBase = currentDb;
+
                 Program.hSqlQuery = null;
 
                 this.Show();
@@ -336,18 +345,14 @@ namespace SQLCrypt
         //------------------------
         private void frmDespliegue_Closed(object sender, FormClosedEventArgs e)
         {
-            // Program.hSql.DataClose();
             foreach (DataTable dt in ds.Tables)
                 dt.Clear();
 
             ds.Clear();
             ds.Dispose();
-            this.dataGridView.Dispose();
             Program.hSqlQuery = null;
             Program.sql_spid = 0;
             Program.CancelQuery = false;
-            Program.DataBase = hSql.GetCurrentDatabase();
-            System.GC.Collect();
         }
 
 
