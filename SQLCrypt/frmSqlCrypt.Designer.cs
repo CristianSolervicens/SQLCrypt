@@ -841,9 +841,9 @@
             // pgBarQuery
             // 
             this.pgBarQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pgBarQuery.Location = new System.Drawing.Point(871, 5);
+            this.pgBarQuery.Location = new System.Drawing.Point(871, 4);
             this.pgBarQuery.Name = "pgBarQuery";
-            this.pgBarQuery.Size = new System.Drawing.Size(161, 18);
+            this.pgBarQuery.Size = new System.Drawing.Size(189, 19);
             this.pgBarQuery.TabIndex = 31;
             // 
             // laDataLoadStatus
@@ -851,7 +851,7 @@
             this.laDataLoadStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.laDataLoadStatus.AutoSize = true;
             this.laDataLoadStatus.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.laDataLoadStatus.Location = new System.Drawing.Point(1039, 8);
+            this.laDataLoadStatus.Location = new System.Drawing.Point(915, 7);
             this.laDataLoadStatus.Name = "laDataLoadStatus";
             this.laDataLoadStatus.Size = new System.Drawing.Size(35, 13);
             this.laDataLoadStatus.TabIndex = 32;

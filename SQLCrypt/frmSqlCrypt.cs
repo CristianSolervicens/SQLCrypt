@@ -117,6 +117,7 @@ namespace SQLCrypt
             autoCompleteKeywords = keyWords.ToUpper();
             // ---------------------------------------------
             laDataLoadStatus.Text = "";
+            laDataLoadStatus.Visible = false;
 
             laTablas.Text = "";
             tssLaFile.Text = "";
@@ -1189,9 +1190,14 @@ Para buscar por contenido";
                     string currentDB = hSql.GetCurrentDatabase();
                     int top = this.Top;
                     int left = this.Left;
+                    
                     frmDespliegue Despliegue = new frmDespliegue(connectionString, currentDB, sSqlCommand, DictParam);
-                    Despliegue.Top = top;
-                    Despliegue.Left = left;
+                    
+                    Despliegue.Top = this.Top;
+                    Despliegue.Left = this.Left;
+                    Despliegue.Height = this.Height;
+                    Despliegue.Width = this.Width;
+
                     Despliegue.ShowDialog();
 
                     if (Despliegue.hSql.ConnectionStatus)
@@ -1219,6 +1225,9 @@ Para buscar por contenido";
         /// </summary>
         private void SetTimer()
         {
+            laDataLoadStatus.Text = "";
+            laDataLoadStatus.Visible = false;
+
             queryTimer = new System.Timers.Timer(300);
             queryTimer.SynchronizingObject = this;
             queryTimer.Elapsed += OnQueryTimeEvent;
@@ -1245,6 +1254,7 @@ Para buscar por contenido";
             catch { }
 
             laDataLoadStatus.Text = "";
+            laDataLoadStatus.Visible = false;
 
             if (Program.DataBase != "")
             {
@@ -1266,6 +1276,7 @@ Para buscar por contenido";
 
             if (Program.sql_spid != 0)
             {
+                laDataLoadStatus.Visible=false;
                 if (pgBarQuery.Value < pgBarQuery.Maximum)
                     pgBarQuery.Value += 10;
                 else
@@ -1275,12 +1286,17 @@ Para buscar por contenido";
             if (Program.sql_spid == 0 && Program.hSqlQuery != null)
             {
                 pgBarQuery.Value = pgBarQuery.Maximum;
-                
-                if (laDataLoadStatus.Text == "")
-                    laDataLoadStatus.Text = "Cargando Data...";
-                else
-                    laDataLoadStatus.Text = "";
 
+                if (laDataLoadStatus.Text == "")
+                {
+                    laDataLoadStatus.Text = "Cargando Data...";
+                    laDataLoadStatus.Visible = true;
+                }
+                else
+                {
+                    laDataLoadStatus.Text = "";
+                    laDataLoadStatus.Visible = false;
+                }
                 laDataLoadStatus.Refresh();
             }
 
@@ -1654,6 +1670,11 @@ Para buscar por contenido";
             if (chkToText.Checked)
             {
                 frmDespliegueTxt frm = new frmDespliegueTxt(hSql);
+                frm.Top = this.Top;
+                frm.Left = this.Left;
+                frm.Width = this.Width;
+                frm.Height = this.Height;
+
                 frm.Show(this);
                 frm.ExecuteSQLStatement(sSqlCommand, TextLimit);
             }
@@ -1670,6 +1691,11 @@ Para buscar por contenido";
                     }
 
                 frmDespliegue Despliegue = new frmDespliegue(hSql);
+                Despliegue.Top = this.Top;
+                Despliegue.Left = this.Left;
+                Despliegue.Width = this.Width;
+                Despliegue.Height = this.Height;
+
                 Despliegue.Show();
             }
 
@@ -2042,6 +2068,11 @@ Para buscar por contenido";
             string sAux = DBObj.GetData(true);
 
             frmDespliegue Despliegue = new frmDespliegue(hSql);
+            Despliegue.Top = this.Top;
+            Despliegue.Left = this.Left;
+            Despliegue.Width = this.Width;
+            Despliegue.Height = this.Height;
+
             Despliegue.Text = sAux;
             Despliegue.Show();
         }
