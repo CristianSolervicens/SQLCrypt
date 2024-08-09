@@ -43,6 +43,7 @@
             this.previoResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.laMessages = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -171,12 +172,23 @@
             this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem.Size = new System.Drawing.Size(328, 23);
             this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem.Text = "[Ctrl] [N] Siguiente Result Set       [Ctrl] [P] Previo Result Set";
             // 
+            // laMessages
+            // 
+            this.laMessages.AutoSize = true;
+            this.laMessages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.laMessages.Location = new System.Drawing.Point(926, 8);
+            this.laMessages.Name = "laMessages";
+            this.laMessages.Size = new System.Drawing.Size(35, 13);
+            this.laMessages.TabIndex = 18;
+            this.laMessages.Text = "label1";
+            // 
             // frmDespliegue
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btSalir;
             this.ClientSize = new System.Drawing.Size(1139, 621);
+            this.Controls.Add(this.laMessages);
             this.Controls.Add(this.btSalir);
             this.Controls.Add(this.dataGridView);
             this.Controls.Add(this.menuStrip1);
@@ -212,6 +224,7 @@
         private System.Windows.Forms.ToolStripMenuItem grabarJSONToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem;
+        private System.Windows.Forms.Label laMessages;
     }
    
 }

@@ -22,7 +22,9 @@ using System.ComponentModel;
 using static ScintillaNET.Style;
 using static SQLCrypt.Program;
 using System.Threading;
+using qTimer = System.Timers.Timer;
 using System.Timers;
+
 
 //TODO: Parsear scripts respetando GO
 //TODO: Buscar Errores de Sintáxis en el Documento Actual o Selección ??
@@ -33,7 +35,7 @@ namespace SQLCrypt
     public partial class FrmSqlCrypt : Form
     {
         Thread threadQuery = null;
-        private System.Timers.Timer queryTimer;
+        private qTimer queryTimer;
 
         private DbObjects Objetos;
         private System.Windows.Forms.ToolTip MytoolTip = new System.Windows.Forms.ToolTip();
@@ -100,6 +102,8 @@ namespace SQLCrypt
         public FrmSqlCrypt(MySql hSql, string fileName)
         {
             InitializeComponent();
+
+            QueryController.Prepare();
 
             // =======   KEYWORDS Y AUTOCOMPLETAR   ========
             var keywords_file = "keywords.cfg";
@@ -1185,7 +1189,8 @@ Para buscar por contenido";
             {
                 threadQuery = new Thread(() =>
                 {
-                    Program.CancelQuery = false;
+                    QueryController.InQuery = true;
+                    QueryController.CancelQuery = false;
                     string connectionString = hSql.ConnectionString;
                     string currentDB = hSql.GetCurrentDatabase();
                     int top = this.Top;
@@ -1204,11 +1209,11 @@ Para buscar por contenido";
                     {
                         string curr_db = Despliegue.hSql.GetCurrentDatabase();
                         if (curr_db != "")
-                            Program.DataBase = curr_db;
+                            QueryController.DataBase = curr_db;
 
                         Despliegue.hSql.CloseDBConn();
                     }
-                    Program.hSqlQuery = null;
+                    QueryController.hSqlQuery = null;
                     Despliegue.Dispose();
                     System.GC.Collect();
                 });
@@ -1228,9 +1233,9 @@ Para buscar por contenido";
             laDataLoadStatus.Text = "";
             laDataLoadStatus.Visible = false;
 
-            queryTimer = new System.Timers.Timer(300);
+            queryTimer = new qTimer(300);
             queryTimer.SynchronizingObject = this;
-            queryTimer.Elapsed += OnQueryTimeEvent;
+            queryTimer.Elapsed += this.OnQueryTimeEvent;
             queryTimer.AutoReset = true;
             queryTimer.Enabled = true;
             queryTimer.Start();
@@ -1242,7 +1247,7 @@ Para buscar por contenido";
         /// </summary>
         private void DisposeTimer()
         {
-            if ( (Program.sql_spid != 0 || Program.hSqlQuery != null) )
+            if ( (QueryController.sql_spid != 0 || QueryController.hSqlQuery != null) )
                 return;
 
             try
@@ -1256,12 +1261,13 @@ Para buscar por contenido";
             laDataLoadStatus.Text = "";
             laDataLoadStatus.Visible = false;
 
-            if (Program.DataBase != "")
+            if (QueryController.DataBase != "")
             {
-                hSql.SetDatabase(Program.DataBase);
-                Program.DataBase = "";
+                hSql.SetDatabase(QueryController.DataBase);
+                QueryController.DataBase = "";
             }
             threadQuery = null;
+            QueryController.Prepare();
             LoadDatabaseList();
         }
 
@@ -1274,7 +1280,7 @@ Para buscar por contenido";
         private void OnQueryTimeEvent(Object source, ElapsedEventArgs e)
         {
 
-            if (Program.sql_spid != 0)
+            if (QueryController.sql_spid != 0 || (QueryController.sql_spid == 0 && QueryController.InQuery))
             {
                 laDataLoadStatus.Visible=false;
                 if (pgBarQuery.Value < pgBarQuery.Maximum)
@@ -1283,7 +1289,7 @@ Para buscar por contenido";
                     pgBarQuery.Value = 0;
             }
             
-            if (Program.sql_spid == 0 && Program.hSqlQuery != null)
+            if (QueryController.sql_spid == 0 && QueryController.hSqlQuery != null)
             {
                 pgBarQuery.Value = pgBarQuery.Maximum;
 
@@ -1300,7 +1306,7 @@ Para buscar por contenido";
                 laDataLoadStatus.Refresh();
             }
 
-            if (Program.sql_spid == 0 && Program.hSqlQuery == null)
+            if (QueryController.sql_spid == 0 && QueryController.hSqlQuery == null && !QueryController.InQuery)
             {
                 DisposeTimer();
             }
@@ -2860,18 +2866,24 @@ Para buscar por contenido";
         /// <param name="e"></param>
         private void btCancell_Click(object sender, EventArgs e)
         {
-            if (Program.sql_spid == 0 && Program.hSqlQuery != null)
+            if (QueryController.sql_spid == 0 && QueryController.hSqlQuery != null && !QueryController.InQuery)
             {
-                Program.CancelQuery = true;
+                QueryController.CancelQuery = true;
                 MessageBox.Show("Query finalizada, la data está en proceso de Carga, ya no es posible Cancelar...", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (Program.sql_spid != 0)
+            if (QueryController.InQuery)
+            {
+                QueryController.CancelQuery = true;
+                return;
+            }
+
+            if (QueryController.sql_spid != 0)
             {
                 int mySpid = hSql.GetCurrent_SPID();
-                hSql.Kill_SPID(Program.sql_spid);
-                Program.CancelQuery = true;
+                hSql.Kill_SPID(QueryController.sql_spid);
+                QueryController.CancelQuery = true;
                 if (hSql.ErrorExiste || hSql.Messages != "")
                 {
                     MessageBox.Show($"Error\r\n{hSql.ErrorString}\r\n{hSql.Messages}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
