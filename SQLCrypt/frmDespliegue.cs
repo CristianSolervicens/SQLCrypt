@@ -22,58 +22,114 @@ namespace SQLCrypt
         int current_ds = -1;
         public MySql hSql = null;
         Dictionary<string, string> DictParam = null;
-        
+        List<string> sComandos = new List<string>();
+        List<string> listMensajes = new List<string>();
+        List<string> listErrores = new List<string>();
+
 
         public frmDespliegue(MySql _hSql)
         {
             this.hSql = _hSql;
             InitializeComponent();
             btSalir.Top = -200;
+            laMessages.Text = "";
         }
 
 
-        public frmDespliegue(string connectionString, string Database, string commandString, Dictionary<string,string> DictParam)
+        public frmDespliegue(string connectionString, string Database, string commandString, Dictionary<string, string> DictParam)
         {
+            InitializeComponent();
+
+            btSalir.Top = -200;
+            laMessages.Text = "";
+
             hSql = new MySql();
             hSql.ConnectionString = connectionString;
             hSql.ConnectToDB();
             hSql.SetDatabase(Database);
-            
-            InitializeComponent();
 
-            btSalir.Top = -200;
-
-            Program.hSqlQuery = hSql;
+            QueryController.hSqlQuery = hSql;
             int spid = hSql.GetCurrent_SPID();
-            Program.sql_spid = spid;
+            QueryController.sql_spid = spid;
+            QueryController.InQuery = false;
 
-
-            if (DictParam == null)
-                hSql.ExecuteSqlData(commandString);
-            else
-                hSql.ExecCmdDataWithParam(commandString, DictParam);
-
-            if (hSql.Data == null)
+            if (QueryController.CancelQuery)
             {
-                if (hSql.ErrorExiste)
-                {
-                    MessageBox.Show(this, $"Error SQL {hSql.ErrorString}\r\n{hSql.Messages}", "Atención", MessageBoxButtons.OK);
-                    hSql.ErrorClear();
-                    this.Close();
-                    return;
-                }
-
-                MessageBox.Show("No hay resultados para su consulta\r\nMensajes\r\n" + hSql.Messages);
-                Clipboard.Clear();
-                Clipboard.SetText(hSql.Messages, TextDataFormat.Text);
-
-                string currentDb = hSql.GetCurrentDatabase();
-                if (currentDb != "")
-                    Program.DataBase = currentDb;
-                
                 this.Close();
                 return;
             }
+
+            sComandos = MyFuncs.ParseSqlCommandGO(commandString);
+
+            foreach (string comando in sComandos)
+            {
+                if (QueryController.CancelQuery) 
+                    return;
+
+                if (DictParam != null)
+                    hSql.ExecCmdDataWithParam(comando, DictParam);
+                else
+                    hSql.ExecuteSqlData(comando);
+
+
+                if (hSql.Data == null)
+                {
+                    if (hSql.ErrorExiste)
+                    {
+                        listErrores.Add(hSql.ErrorString);
+                        hSql.ErrorClear();
+                        return;
+                    }
+
+                    if (hSql.Messages != "")
+                        listMensajes.Add(hSql.Messages);
+
+                    string currentDb = hSql.GetCurrentDatabase();
+                    if (currentDb != "")
+                        QueryController.DataBase = currentDb;
+
+                }
+                else
+                {
+                    try
+                    {
+                        if (!hSql.Data.HasRows)
+                        {
+                            if (hSql.Messages != "")
+                            {
+                                listMensajes.Add(hSql.Messages);
+                                hSql.ErrorClear();
+                                hSql.ClearMessages();
+                            }
+                            continue;
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Error SQL no Administrado\n", "Error SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        this.Close();
+                        return;
+                    }
+
+                    try
+                    {
+                        LoadData();
+                        if (QueryController.CancelQuery)
+                        {
+                            this.Close();
+                            return;
+                        }
+                    }
+                    catch { }
+                }
+            }
+
+            if (QueryController.sql_spid != 0)
+                QueryController.sql_spid = 0;
+
+            laMessages.Text = "";
+            laMessages.Text = (listErrores.Count > 0 ? "Hay Errores" : ""); 
+            laMessages.Text += (laMessages.Text != ""? "; ": "") + (listMensajes.Count > 0 ? "Hay Mensajes" : "");
 
         }
 
@@ -81,90 +137,124 @@ namespace SQLCrypt
         private void frmDespliegue_Load(object sender, EventArgs e)
         {
 
-            try
+            string currentDb = "";
+
+            if (QueryController.CancelQuery)
             {
-                if (!hSql.Data.HasRows)
-                {
-                    if (hSql.Messages != "")
-                    {
-                        MessageBox.Show(String.Format("No hay resultdos para su consulta\n\n{0}", hSql.Messages),
-                            "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        hSql.ErrorClear();
-                        hSql.ClearMessages();
-                        this.Close();
-                        return;
-                    }
-                    else 
-                    {
-                        MessageBox.Show("No hay resultados para su consulta\n\n", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        hSql.ErrorClear();
-                        this.Close();
-                        return;
-                    }
-                }
-            }
-            catch
-            {
-                MessageBox.Show("Error SQL no Administrado\n", "Error SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                currentDb = hSql.GetCurrentDatabase();
+                if (currentDb != "")
+                    QueryController.DataBase = currentDb;
+
+                hSql.ErrorClear();
+                hSql.ClearMessages();
                 this.Close();
                 return;
             }
 
-            //Carga de Filas en la Grilla.
-            try
+            if (sComandos.Count == 0)
             {
-                do
+                try
                 {
-                    try
+                    if (!hSql.Data.HasRows)
                     {
-                        if (Program.CancelQuery)
+                        if (hSql.Messages != "")
                         {
-                            this.Close();
+                            listMensajes.Add(hSql.Messages);
+                            hSql.ErrorClear();
+                            hSql.ClearMessages();
                             return;
                         }
-                        DataTable dt = new DataTable();
-                        if (Program.CancelQuery)
-                        {
-                            this.Close();
-                            return;
-                        }
-                        dt.Load(hSql.Data);
-                        if (Program.CancelQuery)
-                        {
-                            this.Close();
-                            return;
-                        }
-                        ds.Tables.Add(dt);
-
-                        if (Program.sql_spid != 0 )
-                            Program.sql_spid = 0;
                     }
-                    catch( Exception ex)
+                }
+                catch
+                {
+                    MessageBox.Show("Error SQL no Administrado\n", "Error SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Close();
+                    return;
+                }
+
+                //Carga de Filas en la Grilla.
+                try
+                {
+                    LoadData();
+                    if (QueryController.CancelQuery)
                     {
-                        MessageBox.Show($"Error\r\n{ex.Message}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         this.Close();
                         return;
                     }
-                } while (!hSql.Data.IsClosed);
-
-                current_ds = 0;
-                if (ds.Tables.Count > 0)
-                    dataGridView.DataSource = ds.Tables[current_ds];
-
-                toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds + 1}/{ds.Tables.Count}");
-
-                string currentDb = hSql.GetCurrentDatabase();
-                if (currentDb != "")
-                    Program.DataBase = currentDb;
-
-                Program.hSqlQuery = null;
-
-                this.Show();
-                this.Activate();
-                this.BringToFront();
+                }
+                catch { }
             }
-            catch {
-                this.Close();
+
+            //
+            // DESPLIEGUE DE DATOS
+            current_ds = 0;
+            if (ds.Tables.Count > 0)
+                dataGridView.DataSource = ds.Tables[current_ds];
+            else
+            {
+                MessageBox.Show("No hay resultados para su consulta", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (listErrores.Count == 0 && listMensajes.Count == 0)
+                {
+                    this.Close();
+                    return;
+                }
+            }
+
+            if (ds.Tables.Count > 0)
+                toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds + 1}/{ds.Tables.Count}");
+            else
+                toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set 0/0");
+
+            currentDb = hSql.GetCurrentDatabase();
+            if (currentDb != "")
+                QueryController.DataBase = currentDb;
+
+            QueryController.hSqlQuery = null;
+            QueryController.InQuery = false;
+
+            this.Show();
+            this.Activate();
+            this.BringToFront();
+        }
+
+
+        /// <summary>
+        /// Carga los Result-Sets en el DataSet
+        /// </summary>
+        public void LoadData()
+        {
+            try
+            {
+                while (hSql.Data.HasRows)
+                {
+                    try
+                    {
+                        if (QueryController.CancelQuery)
+                            return;
+
+                        DataTable dt = new DataTable();
+                        dt.Load(hSql.Data);
+                        if (QueryController.CancelQuery)
+                            return;
+
+                        ds.Tables.Add(dt);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error\r\n{ex.Message}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    
+                    //hSql.Data.NextResult();
+                    if (hSql.Data.IsClosed)
+                        return;
+                }
+            }
+            catch
+            {
+                return;
             }
         }
 
@@ -337,7 +427,7 @@ namespace SQLCrypt
         {
             // Program.hSql.DataClose();
             // Parent.LoadDatabaseList();
-            Program.sql_spid = 0;
+            QueryController.sql_spid = 0;
         }
 
         //------------------------
@@ -350,9 +440,9 @@ namespace SQLCrypt
 
             ds.Clear();
             ds.Dispose();
-            Program.hSqlQuery = null;
-            Program.sql_spid = 0;
-            Program.CancelQuery = false;
+            QueryController.hSqlQuery = null;
+            QueryController.sql_spid = 0;
+            QueryController.CancelQuery = false;
         }
 
 
@@ -374,13 +464,24 @@ namespace SQLCrypt
 
         private void verMensajesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (hSql.Messages == "" || string.IsNullOrEmpty(hSql.Messages))
+            if (listMensajes.Count == 0 && listErrores.Count == 0)
                 MessageBox.Show("No hay mensajes");
             else
             {
-                MessageBox.Show(hSql.Messages);
-                Clipboard.Clear();
-                Clipboard.SetText( hSql.Messages, TextDataFormat.Text);
+                string msg = "";
+                foreach (var error in listErrores)
+                    msg += error + "\r\n\r\n";
+                foreach (var error in listMensajes)
+                    msg += error + "\r\n\r\n";
+
+                string msgDisplay = msg + "\r\nDesea copiarlos al Clipboard?\r\n";
+
+                var ans = MessageBox.Show(msgDisplay, "Errores y Mensajes", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2);
+                if (ans == DialogResult.Yes)
+                {
+                    Clipboard.Clear();
+                    Clipboard.SetText(msg, TextDataFormat.Text);
+                }
             }
         }
 

@@ -15,6 +15,7 @@ namespace SQLCrypt.FunctionalClasses
     using System.Text.RegularExpressions;
     using System.Windows.Forms;
     using System.Security.Policy;
+    using System.Windows.Media.Media3D;
 
     namespace MySql
     {
@@ -1342,6 +1343,23 @@ namespace SQLCrypt.FunctionalClasses
                 nRes = i;
 
                 return nRes;
+            }
+
+
+            public static List<string> ParseSqlCommandGO(string sql)
+            {
+                List<string> list = new List<string>();
+                string[] result = System.Text.RegularExpressions.Regex.Split(sql, @"(^[ ]*GO[ ]*(\r\n|$))", RegexOptions.Multiline | RegexOptions.Singleline);
+
+
+                for (int i = 0; i < result.Length; ++i)
+                {
+                    if (result[i].Trim() == "" || result[i].Trim() == "\\r\\n" || System.Text.RegularExpressions.Regex.IsMatch(result[i], @"(^[ ]*GO[ ]*)|(^[ ]*GO[ ]*--[\w\W.,\d\D ])"))
+                        continue;
+                    list.Add(result[i]);
+                }
+
+                return list;
             }
 
         } //MyFuncs
