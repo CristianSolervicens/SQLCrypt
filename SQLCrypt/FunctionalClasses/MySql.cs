@@ -1349,12 +1349,12 @@ namespace SQLCrypt.FunctionalClasses
             public static List<string> ParseSqlCommandGO(string sql)
             {
                 List<string> list = new List<string>();
-                string[] result = System.Text.RegularExpressions.Regex.Split(sql, @"(^[ ]*GO[ ]*(\r\n|$))", RegexOptions.Multiline | RegexOptions.Singleline);
+                string[] result = System.Text.RegularExpressions.Regex.Split(sql, @"(^[ ]*GO[ ]*(\r\n|$))", RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
 
 
                 for (int i = 0; i < result.Length; ++i)
                 {
-                    if (result[i].Trim() == "" || result[i].Trim() == "\\r\\n" || System.Text.RegularExpressions.Regex.IsMatch(result[i], @"(^[ ]*GO[ ]*)|(^[ ]*GO[ ]*--[\w\W.,\d\D ])"))
+                    if (result[i].Trim() == "" || result[i].Trim() == "\\r\\n" || System.Text.RegularExpressions.Regex.IsMatch(result[i], @"(^[ ]*GO[ ]*)|(^[ ]*GO[ ]*--[\w\W.,\d\D ])", RegexOptions.IgnoreCase))
                         continue;
                     list.Add(result[i]);
                 }
