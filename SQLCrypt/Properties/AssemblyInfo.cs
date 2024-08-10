@@ -7,12 +7,12 @@ using System.Resources;
 // conjunto de atributos. Cambie estos atributos para modificar la información
 // asociada con un ensamblado.
 [assembly: AssemblyTitle("SQLCrypt")]
-[assembly: AssemblyDescription( "Encriptación de Comandos SQL - Cristian Solervicens  C.                Las Variables deben ir representadas por #1# ... #nnn#;  Siendo los números necesariamente consecutivos." )]
+[assembly: AssemblyDescription("Cliente SQL para desarrolladores, por favor ingrese a la Wiki del producto para obtener más información.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany( "Cristian Solervicéns" )]
 [assembly: AssemblyProduct("SQLCrypt")]
-[assembly: AssemblyCopyright( "© Cristian Solervicéns 2011" )]
-[assembly: AssemblyTrademark("ADIA")]
+[assembly: AssemblyCopyright("© Cristian Solervicéns 2024")]
+[assembly: AssemblyTrademark("Cristian Solervicéns Cornely")]
 [assembly: AssemblyCulture("")]
 
 // Si establece ComVisible como false hace que los tipos de este ensamblado no sean visibles 
@@ -30,6 +30,6 @@ using System.Resources;
 //      Número de versión de compilación
 //      Revisión
 //
-[assembly: AssemblyVersion( "1.0.18.0450" )]
-[assembly: AssemblyFileVersion( "1.0.18.0450" )]
+[assembly: AssemblyVersion("1.1.0.0550")]
+[assembly: AssemblyFileVersion("1.1.0.0550")]
 [assembly: NeutralResourcesLanguageAttribute( "es-CL" )]

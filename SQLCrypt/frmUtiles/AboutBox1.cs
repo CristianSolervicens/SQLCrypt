@@ -110,6 +110,11 @@ namespace SQLCrypt
             return ((AssemblyCompanyAttribute)attributes[0]).Company;
          }
       }
-      #endregion
-   }
+        #endregion
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start((sender as LinkLabel).Tag.ToString());
+        }
+    }
 }

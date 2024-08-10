@@ -1319,8 +1319,6 @@ namespace SQLCrypt.FunctionalClasses
                 return lsParametros;
             }
 
-
-
         }  //MSql
 
 

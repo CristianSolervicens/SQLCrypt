@@ -789,6 +789,7 @@ Para buscar por contenido";
             {
                 foreach (var sel in txtSql.Selections)
                 {
+                    omit_key = false;
                     var l = txtSql.LineFromPosition(sel.Start);
                     var end_pos = txtSql.Lines[l].EndPosition - 2;
                     sel.Start = end_pos;
@@ -800,6 +801,7 @@ Para buscar por contenido";
             // Modo Fin de Linea para Bloques
             if (txtSql.Selections.Count > 1 && e.KeyCode == Keys.End)
             {
+                omit_key = false;
                 scintilla_end_mode = true;
                 foreach (var sel in txtSql.Selections)
                 {
@@ -814,7 +816,9 @@ Para buscar por contenido";
 
             // Salir de Modo Fin de Linea para Bloques
             if (scintilla_end_mode && txtSql.Selections.Count <= 1)
+            {
                 scintilla_end_mode = false;
+            }
         }
 
 
