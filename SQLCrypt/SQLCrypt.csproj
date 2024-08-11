@@ -247,6 +247,7 @@
     <None Include="Resources\DBMonitor.ico" />
     <None Include="Resources\Connect3.ico" />
     <None Include="Resources\refresh2.png" />
+    <Content Include=".gitignore" />
     <Content Include="_Frog Full.ico" />
   </ItemGroup>
   <ItemGroup>
