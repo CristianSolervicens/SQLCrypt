@@ -40,4 +40,7 @@ través de **GO**
 
 [SQLCrypt Download](https://github.com/CristianSolervicens/SQLCrypt/actions/runs/10336572323/artifacts/1798612737)
 
+Si deseas generar un diccionario de Datos basado en las Extended Properties que este programa te simplifica editar
+visita [DataBaseDictionary](https://github.com/CristianSolervicens/DataBaseDictionary.Net)
+
 Cristian Solervicéns.
