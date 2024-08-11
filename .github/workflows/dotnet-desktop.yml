@@ -54,10 +54,6 @@ jobs:
     runs-on: windows-2019    # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
-    env:
-      Solution_Name: SQLCrypt.sln
-      # Test_Project_Path: your-test-project-path                  # Replace with the path to your test project, i.e. MyWpfApp.Tests\MyWpfApp.Tests.csproj
-
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -75,10 +71,10 @@ jobs:
       uses: microsoft/setup-msbuild@v1.1
 
     - name: Restore Packages
-      run: nuget restore MySolution.sln
+      run: nuget restore SQLCrypt.sln
 
     - name: Build solution
-      run: msbuild MySolution.sln -t:rebuild -property:Configuration=Release
+      run: msbuild SQLCrypt.sln -t:rebuild -property:Configuration=Release
     
      # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
     - name: Upload build artifacts
