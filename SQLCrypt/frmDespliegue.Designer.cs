@@ -44,6 +44,8 @@
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.laMessages = new System.Windows.Forms.Label();
+            this.btBuscar = new System.Windows.Forms.Button();
+            this.txtSearch = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -164,7 +166,7 @@
             // 
             this.toolStripTextBox1.Enabled = false;
             this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(500, 23);
+            this.toolStripTextBox1.Size = new System.Drawing.Size(250, 23);
             // 
             // ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem
             // 
@@ -176,11 +178,28 @@
             // 
             this.laMessages.AutoSize = true;
             this.laMessages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.laMessages.Location = new System.Drawing.Point(926, 8);
+            this.laMessages.Location = new System.Drawing.Point(915, 8);
             this.laMessages.Name = "laMessages";
             this.laMessages.Size = new System.Drawing.Size(35, 13);
             this.laMessages.TabIndex = 18;
             this.laMessages.Text = "label1";
+            // 
+            // btBuscar
+            // 
+            this.btBuscar.Location = new System.Drawing.Point(654, 3);
+            this.btBuscar.Name = "btBuscar";
+            this.btBuscar.Size = new System.Drawing.Size(75, 23);
+            this.btBuscar.TabIndex = 19;
+            this.btBuscar.Text = "&Search";
+            this.btBuscar.UseVisualStyleBackColor = true;
+            this.btBuscar.Click += new System.EventHandler(this.btBuscar_Click);
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Location = new System.Drawing.Point(735, 4);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(157, 20);
+            this.txtSearch.TabIndex = 20;
             // 
             // frmDespliegue
             // 
@@ -188,6 +207,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btSalir;
             this.ClientSize = new System.Drawing.Size(1139, 621);
+            this.Controls.Add(this.txtSearch);
+            this.Controls.Add(this.btBuscar);
             this.Controls.Add(this.laMessages);
             this.Controls.Add(this.btSalir);
             this.Controls.Add(this.dataGridView);
@@ -225,6 +246,8 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem;
         private System.Windows.Forms.Label laMessages;
+        private System.Windows.Forms.Button btBuscar;
+        private System.Windows.Forms.TextBox txtSearch;
     }
    
 }

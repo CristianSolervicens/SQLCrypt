@@ -11,6 +11,7 @@ using SQLCrypt.FunctionalClasses;
 using SQLCrypt.FunctionalClasses.MySql;
 using static ScintillaNET.Style;
 using System.Data.SqlClient;
+using System.Linq;
 
 
 namespace SQLCrypt
@@ -39,6 +40,9 @@ namespace SQLCrypt
         public frmDespliegue(string connectionString, string Database, string commandString, Dictionary<string, string> DictParam)
         {
             InitializeComponent();
+
+            dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
+            dataGridView.MultiSelect = false;
 
             btSalir.Top = -200;
             laMessages.Text = "";
@@ -527,6 +531,46 @@ namespace SQLCrypt
         {
             saveCurrentToJson();
             System.GC.Collect();
+        }
+
+        private void btBuscar_Click(object sender, EventArgs e)
+        {
+            if (txtSearch.Text == string.Empty)
+            {
+                MessageBox.Show("Debe ingresar el texto de búsqueda...", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            int selRow = 0;
+            int selCol = 0;
+            bool found = false;
+            if (dataGridView.SelectedCells.Count > 0)
+            {
+                selRow = dataGridView.SelectedCells[0].RowIndex;
+                selCol = dataGridView.SelectedCells[0].ColumnIndex;
+            }
+            else
+            {
+                dataGridView.Rows[selRow].Cells[selCol].Selected = true;
+            }
+            for (int row = selRow; row < dataGridView.Rows.Count; ++row)
+            {
+                for (int col = selCol; col < dataGridView.Columns.Count; ++col)
+                {
+                    if (dataGridView.Rows[row].Cells[col].Value.ToString().ToLower().Contains(txtSearch.Text.ToLower()) )
+                    {
+                        dataGridView.Rows[row].Cells[col].Selected = true;
+                        found = true;
+                        dataGridView.Select();
+                        return;
+                    }
+                }
+            }
+            if (!found)
+            {
+                MessageBox.Show("Valor no encontrado...", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                dataGridView.Select();
+            }
         }
     }
 
