@@ -20,7 +20,7 @@ namespace SQLCrypt.FunctionalClasses
 
             using (TextReader txtRdr = new StringReader(sqlCommand))
             {
-                TSql120Parser parser = new TSql120Parser(true);
+                TSql160Parser parser = new TSql160Parser(true);
                 IList<ParseError> errors;
 
                 // TSqlFragment deriva de TSqlScript

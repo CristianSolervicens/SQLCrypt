@@ -2913,10 +2913,17 @@ Para buscar por contenido";
         private void formatSQLCodeToolStripMenuItem_Click(object sender, EventArgs e)
         {    
             var SQLFormatter = new SQLFormatter();
-            var sqlErrors = SQLFormatter.Format_TSQL(txtSql.Text);
+            List<SQLParseError> sqlErrors;
+
+            if (txtSql.SelectedText == "")
+                sqlErrors = SQLFormatter.Format_TSQL(txtSql.Text);
+            else
+                sqlErrors = SQLFormatter.Format_TSQL(txtSql.SelectedText);
+            
             if (sqlErrors.Count > 0)
             {
-                txtSql.SelectionEnd = txtSql.SelectionStart;
+                HighlightErrorClean();
+                
                 string sErrors = "";
                 foreach (var error in sqlErrors)
                 {
@@ -2927,8 +2934,12 @@ Para buscar por contenido";
             }
             else
             {
-                txtSql.Text = SQLFormatter.FormattedString;
+                if (txtSql.SelectedText == "")
+                    txtSql.Text = SQLFormatter.FormattedString;
+                else
+                    txtSql.ReplaceSelection(SQLFormatter.FormattedString);
             }
+
         }
 
 
