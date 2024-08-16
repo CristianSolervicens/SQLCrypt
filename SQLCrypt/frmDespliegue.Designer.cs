@@ -166,7 +166,7 @@
             // 
             this.toolStripTextBox1.Enabled = false;
             this.toolStripTextBox1.Name = "toolStripTextBox1";
-            this.toolStripTextBox1.Size = new System.Drawing.Size(250, 23);
+            this.toolStripTextBox1.Size = new System.Drawing.Size(240, 23);
             // 
             // ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem
             // 
@@ -178,7 +178,7 @@
             // 
             this.laMessages.AutoSize = true;
             this.laMessages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.laMessages.Location = new System.Drawing.Point(915, 8);
+            this.laMessages.Location = new System.Drawing.Point(922, 8);
             this.laMessages.Name = "laMessages";
             this.laMessages.Size = new System.Drawing.Size(35, 13);
             this.laMessages.TabIndex = 18;
@@ -186,7 +186,7 @@
             // 
             // btBuscar
             // 
-            this.btBuscar.Location = new System.Drawing.Point(654, 3);
+            this.btBuscar.Location = new System.Drawing.Point(636, 3);
             this.btBuscar.Name = "btBuscar";
             this.btBuscar.Size = new System.Drawing.Size(75, 23);
             this.btBuscar.TabIndex = 19;
@@ -196,9 +196,9 @@
             // 
             // txtSearch
             // 
-            this.txtSearch.Location = new System.Drawing.Point(735, 4);
+            this.txtSearch.Location = new System.Drawing.Point(716, 4);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(157, 20);
+            this.txtSearch.Size = new System.Drawing.Size(197, 20);
             this.txtSearch.TabIndex = 20;
             // 
             // frmDespliegue

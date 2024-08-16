@@ -70,6 +70,9 @@
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tABAEspaciosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.autoCompleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.formatSQLCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkSQLCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitCommasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.baseDeDatoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -104,6 +107,8 @@
             this.btCancell = new System.Windows.Forms.Button();
             this.pgBarQuery = new System.Windows.Forms.ProgressBar();
             this.laDataLoadStatus = new System.Windows.Forms.Label();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.removeMultiSpacesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).BeginInit();
@@ -303,6 +308,7 @@
             this.mostrarEspaciosToolStripMenuItem,
             this.guiaIndentacionToolStripMenuItem,
             this.numerosDeLíneaToolStripMenuItem,
+            this.autoCompleteToolStripMenuItem,
             this.toolStripSeparator8,
             this.toggleBookmarkToolStripMenuItem,
             this.goToNextBookmarkToolStripMenuItem,
@@ -312,10 +318,14 @@
             this.selecciónAMinúsculasToolStripMenuItem,
             this.commentSelectionToolStripMenuItem,
             this.uncommentSelectionToolStripMenuItem,
-            this.toolStripSeparator5,
+            this.toolStripSeparator1,
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem,
             this.tABAEspaciosToolStripMenuItem,
-            this.autoCompleteToolStripMenuItem});
+            this.splitCommasToolStripMenuItem,
+            this.removeMultiSpacesToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.formatSQLCodeToolStripMenuItem,
+            this.checkSQLCodeToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 23);
             this.editToolStripMenuItem.Text = "&Edit";
@@ -463,6 +473,32 @@
             this.autoCompleteToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
             this.autoCompleteToolStripMenuItem.Text = "Auto Complete";
             this.autoCompleteToolStripMenuItem.Click += new System.EventHandler(this.autoCompleteToolStripMenuItem_Click);
+            // 
+            // formatSQLCodeToolStripMenuItem
+            // 
+            this.formatSQLCodeToolStripMenuItem.Name = "formatSQLCodeToolStripMenuItem";
+            this.formatSQLCodeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.F)));
+            this.formatSQLCodeToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+            this.formatSQLCodeToolStripMenuItem.Text = "Format SQL Code";
+            this.formatSQLCodeToolStripMenuItem.Click += new System.EventHandler(this.formatSQLCodeToolStripMenuItem_Click);
+            // 
+            // checkSQLCodeToolStripMenuItem
+            // 
+            this.checkSQLCodeToolStripMenuItem.Name = "checkSQLCodeToolStripMenuItem";
+            this.checkSQLCodeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.C)));
+            this.checkSQLCodeToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+            this.checkSQLCodeToolStripMenuItem.Text = "Check SQL Code";
+            this.checkSQLCodeToolStripMenuItem.Click += new System.EventHandler(this.checkSQLCodeToolStripMenuItem_Click);
+            // 
+            // splitCommasToolStripMenuItem
+            // 
+            this.splitCommasToolStripMenuItem.Name = "splitCommasToolStripMenuItem";
+            this.splitCommasToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Oemcomma)));
+            this.splitCommasToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+            this.splitCommasToolStripMenuItem.Text = "Split Commas";
+            this.splitCommasToolStripMenuItem.Click += new System.EventHandler(this.splitCommasToolStripMenuItem_Click);
             // 
             // tabSizeToolStripMenuItem
             // 
@@ -857,6 +893,19 @@
             this.laDataLoadStatus.TabIndex = 32;
             this.laDataLoadStatus.Text = "label1";
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(267, 6);
+            // 
+            // removeMultiSpacesToolStripMenuItem
+            // 
+            this.removeMultiSpacesToolStripMenuItem.Name = "removeMultiSpacesToolStripMenuItem";
+            this.removeMultiSpacesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Space)));
+            this.removeMultiSpacesToolStripMenuItem.Size = new System.Drawing.Size(270, 22);
+            this.removeMultiSpacesToolStripMenuItem.Text = "Remove multi spaces";
+            this.removeMultiSpacesToolStripMenuItem.Click += new System.EventHandler(this.removeMultiSpacesToolStripMenuItem_Click);
+            // 
             // FrmSqlCrypt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -974,6 +1023,11 @@
         private System.Windows.Forms.Button btCancell;
         private System.Windows.Forms.ProgressBar pgBarQuery;
         private System.Windows.Forms.Label laDataLoadStatus;
+        private System.Windows.Forms.ToolStripMenuItem formatSQLCodeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem checkSQLCodeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem splitCommasToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem removeMultiSpacesToolStripMenuItem;
     }
 }
 

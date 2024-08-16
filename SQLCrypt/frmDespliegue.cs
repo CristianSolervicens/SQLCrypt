@@ -59,7 +59,6 @@ namespace SQLCrypt
 
             if (QueryController.CancelQuery)
             {
-                this.Close();
                 return;
             }
 
@@ -111,7 +110,6 @@ namespace SQLCrypt
                     catch
                     {
                         MessageBox.Show("Error SQL no Administrado\n", "Error SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        this.Close();
                         return;
                     }
 
@@ -120,7 +118,6 @@ namespace SQLCrypt
                         LoadData();
                         if (QueryController.CancelQuery)
                         {
-                            this.Close();
                             return;
                         }
                     }

@@ -24,6 +24,7 @@ using static SQLCrypt.Program;
 using System.Threading;
 using qTimer = System.Timers.Timer;
 using System.Timers;
+using System.Diagnostics.Eventing.Reader;
 
 
 //TODO: Buscar Errores de Sintáxis en el Documento Actual o Selección ??
@@ -34,7 +35,7 @@ namespace SQLCrypt
     public partial class FrmSqlCrypt : Form
     {
         Thread threadQuery = null;
-        private qTimer queryTimer;
+        private qTimer queryTimer = new qTimer();
 
         private DbObjects Objetos;
         private System.Windows.Forms.ToolTip MytoolTip = new System.Windows.Forms.ToolTip();
@@ -1266,12 +1267,14 @@ Para buscar por contenido";
 
             if (QueryController.DataBase != "")
             {
-                hSql.SetDatabase(QueryController.DataBase);
+                if (hSql.ConnectionStatus )
+                    hSql.SetDatabase(QueryController.DataBase);
                 QueryController.DataBase = "";
             }
             threadQuery = null;
             QueryController.Prepare();
-            LoadDatabaseList();
+            if (hSql.ConnectionStatus)
+                LoadDatabaseList();
         }
 
 
@@ -2907,5 +2910,163 @@ Para buscar por contenido";
         }
 
 
+        private void formatSQLCodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {    
+            var SQLFormatter = new SQLFormatter();
+            var sqlErrors = SQLFormatter.Format_TSQL(txtSql.Text);
+            if (sqlErrors.Count > 0)
+            {
+                txtSql.SelectionEnd = txtSql.SelectionStart;
+                string sErrors = "";
+                foreach (var error in sqlErrors)
+                {
+                    sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}\n";
+                    HighlightError(error.line - 1, error.column);
+                }
+                MessageBox.Show(sErrors, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else
+            {
+                txtSql.Text = SQLFormatter.FormattedString;
+            }
+        }
+
+
+        private void checkSQLCodeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var sqlcheck = new SQLCheck();
+            List<SQLParseError> sqlErrors;
+
+            HighlightErrorClean();
+
+            if (txtSql.SelectedText != "")
+                sqlErrors = sqlcheck.RunCheck(txtSql.SelectedText);
+            else
+                sqlErrors = sqlcheck.RunCheck(txtSql.Text);
+
+            string sErrors = "";
+            foreach (var error in sqlErrors)
+            {
+                sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}\n";
+                HighlightError(error.line-1, error.column);
+            }
+            if (sErrors != "")
+                MessageBox.Show(sErrors, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            else
+            {
+                HighlightErrorClean();
+                MessageBox.Show("Sintaxis OK", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+
+        private void HighlightErrorClean()
+        {
+            const int NUM = 8;
+            txtSql.IndicatorCurrent = NUM;
+            txtSql.IndicatorClearRange(0, txtSql.TextLength);
+        }
+
+
+        private void HighlightError(int row, int col)
+        {
+            
+            // Indicators 0-7 could be in use by a lexer
+            // so we'll use indicator 8 to highlight words.
+            const int NUM = 8;
+            // Remove all uses of our indicator
+            txtSql.IndicatorCurrent = NUM;
+
+            // Update indicator appearance
+            txtSql.Indicators[NUM].Style = IndicatorStyle.StraightBox;
+            txtSql.Indicators[NUM].Under = true;
+            txtSql.Indicators[NUM].ForeColor = Color.Magenta;
+            txtSql.Indicators[NUM].OutlineAlpha = 80;
+            txtSql.Indicators[NUM].Alpha = 80;
+
+            // Search the document
+            txtSql.SearchFlags = SearchFlags.None;
+            int _row = 0;
+
+            if (txtSql.SelectedText != "")
+            {
+                _row = txtSql.LineFromPosition(txtSql.SelectionStart);
+            }
+            else
+            {
+                _row = 0;
+            }
+
+            int end_pos = 0;
+            int start_pos = txtSql.Lines[_row + row].Position + col -1;
+            for (int i = start_pos; i < txtSql.TextLength && txtSql.Text.Substring(i, 1) != " "; i++)
+                end_pos = i;
+
+            txtSql.IndicatorFillRange(start_pos, end_pos - start_pos +1);
+            txtSql.SelectionStart = start_pos;
+            txtSql.SelectionEnd = start_pos;
+        }
+
+
+        private void splitByComma()
+        {
+            int row = txtSql.LineFromPosition(txtSql.SelectionStart);
+            int pos_ini = txtSql.Lines[row].Position;
+            //int pos_fin = txtSql.Lines[row].EndPosition;
+
+            for (int i = pos_ini; i < txtSql.TextLength ; i++)
+            {
+                if ( i+1  >= txtSql.TextLength )
+                    break;
+
+                if (txtSql.Text.Substring(i, 2) == "\r\n")
+                    break;
+
+                if (txtSql.Text.Substring(i, 1) == ",")
+                {
+                    i++;
+                    int len = 0;
+                    txtSql.SelectionStart = i;
+
+                    while (txtSql.Text.Substring(i + len, 1) == " ")
+                        len++;
+
+                    txtSql.SelectionEnd = i + len;
+                    txtSql.ReplaceSelection("\r\n");
+                    i = txtSql.SelectionStart;
+
+                }
+                
+            }
+
+        }
+
+
+        private void RemoveMultiSpaces()
+        {
+            int pos_ini = txtSql.SelectionStart;
+            int len = 0;
+
+            while (txtSql.Text.Substring(pos_ini + len, 1) == " ")
+                len++;
+
+            txtSql.SelectionEnd = pos_ini + len;
+            txtSql.ReplaceSelection("");
+            txtSql.SelectionStart = pos_ini;
+            txtSql.SelectionEnd = pos_ini;
+            
+        }
+
+
+        private void splitCommasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            splitByComma();
+        }
+
+
+        private void removeMultiSpacesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            RemoveMultiSpaces();
+        }
     }
 }
