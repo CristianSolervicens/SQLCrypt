@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,6 +35,74 @@ namespace SQLCrypt
         public bool IsIdentity { get; set; }
         public bool IsGuid { get; set; }
         public bool IsPrimaryKey { get; set; }
+
+        public (string ColumnName, string DataType) GetTranslated()
+        {
+            string sColName = string.Empty;
+            string sColDataType = string.Empty;
+            string DataType = string.Empty;
+
+            switch (this.Type)
+            {
+                case "INT":
+                case "SMALLINT":
+                case "TINYINT":
+                case "BIGINT":
+                case "BIT":
+                case "DATETIME":
+                case "DATE":
+                case "TIME":
+                case "FLOAT":
+                case "DATETIME2":
+                case "SMALLDATETIME":
+                case "IMAGE":
+                case "XML":
+                case "MONEY":
+                case "TEXT":
+                case "NTEXT":
+                case "UNIQUEIDENTIFIER":
+                case "SQL_VARIANT":
+
+                    sColName = this.Name;
+                    sColDataType = $"{this.Type}";
+                    break;
+
+                case "CHAR":
+                case "VARCHAR":
+                case "NVARCHAR":
+                case "BINARY":
+                case "VARBINARY":
+                    DataType = $"{this.Type}({(this.Length == -1 ? "MAX" : Convert.ToString(this.Length))})";
+                    sColName = this.Name;
+                    sColDataType = $"{this.Type}({(this.Length == -1 ? "MAX" : Convert.ToString(this.Length))})";
+                    break;
+
+                case "NUMERIC":
+                case "DECIMAL":
+                    DataType = $"{this.Type}({this.Prec},{this.Scale})";
+
+                    sColName = this.Name;
+                    sColDataType = $"{this.Type}({this.Prec},{this.Scale})";
+                    break;
+
+                default:
+                    try
+                    {
+                        if (this.Collation != "")
+                            sColDataType = $"{this.Type} * {(this.Length == -1 ? "MAX" : Convert.ToString(this.Length))}";
+                        else
+                            sColDataType = $"{this.Type}({(this.Length == -1 ? "MAX" : Convert.ToString(this.Length))},{this.Prec},{this.Scale})";
+                    }
+                    catch
+                    {
+                        sColDataType = string.Format("{0}", this.Type);
+                    }
+                    sColName = this.Name;
+
+                    break;
+            }
+            return (ColumnName: sColName, DataType: sColDataType);
+        }
     }
 
 
@@ -157,56 +226,6 @@ namespace SQLCrypt
                                 break;
                         }
 
-                        //switch (hSql.Data.GetString(1).ToUpper())
-                        //{
-                        //    case "INT":
-                        //    case "SMALLINT":
-                        //    case "TINYINT":
-                        //    case "BIGINT":
-                        //    case "BIT":
-                        //    case "DATETIME":
-                        //    case "DATE":
-                        //    case "TIME":
-                        //    case "XML":
-                        //    case "MONEY":
-                        //    case "FLOAT":
-                        //    case "DATETIME2":
-                        //    case "TEXT":
-                        //    case "NTEXT":
-                        //    case "UNIQUEIDENTIFIER":
-                        //    case "SQL_VARIANT":
-                        //        CreateTable += string.Format("  {0, -32} {1,-18} {2}", hSql.Data[0], hSql.Data[1], hSql.Data.GetString(6) == "no" ? "NOT NULL" : "    NULL");
-                        //        break;
-
-                        //    case "CHAR":
-                        //    case "VARCHAR":
-                        //    case "NVARCHAR":
-                        //    case "BINARY":
-                        //    case "VARBINARY":
-                        //        DataType = string.Format("{0}({1})", hSql.Data[1], hSql.Data.GetInt32(3) == -1 ? "MAX" : Convert.ToString(hSql.Data.GetInt32(3)));
-                        //        CreateTable += string.Format("  {0, -32} {1, -18} {2}", hSql.Data[0], DataType, hSql.Data.GetString(6) == "no" ? "NOT NULL" : "    NULL");
-                        //        break;
-
-                        //    case "NUMERIC":
-                        //    case "DECIMAL":
-                        //        DataType = string.Format("{0}({1},{2})", hSql.Data[1], hSql.Data.GetInt32(4), hSql.Data.GetInt32(5));
-                        //        CreateTable += string.Format("  {0, -32} {1, -18} {2}", hSql.Data[0], DataType, hSql.Data.GetString(6) == "no" ? "NOT NULL" : "    NULL");
-                        //        break;
-
-                        //    default:
-                        //        try
-                        //        {
-                        //            DataType = string.Format("{0}({1},{2},{3})", hSql.Data[1], hSql.Data.GetInt32(3) == -1 ? "MAX" : Convert.ToString(hSql.Data.GetInt32(3)), hSql.Data.GetInt32(4), hSql.Data.GetInt32(5));
-                        //        }
-                        //        catch
-                        //        {
-                        //            DataType = string.Format("{0}", hSql.Data[1]);
-                        //        }
-
-                        //        CreateTable += string.Format(" **{0, -32} {1, -18} {2}\n", hSql.Data[0], DataType, hSql.Data.GetString(6) == "no" ? "NOT NULL" : "    NULL", Separador);
-                        //        break;
-                        //}
-
                         Columns.Add(col);
 
                     }
@@ -266,22 +285,6 @@ namespace SQLCrypt
 
             return true;
         }
-
-
-        //public class CSDataGrid:DataGridView
-        //{
-        //    private string _TableName;
-
-        //    public HSql hSql { get; set; }
-        //    public string TableName
-        //    {
-        //        get { return _TableName; }
-        //        set
-        //        {
-        //        }
-        //    }
-        //}
-
 
     }
 

@@ -26,10 +26,10 @@ namespace SQLCrypt.frmUtiles
             CargaComandos();
             if (lsSnippets.Items.Count == 0)
             {
-                MessageBox.Show("No hay Snippets cargados", "Atención");
+                MessageBox.Show("There are No Snippets!", "Information");
                 this.Close();
             }
-            toolTip.SetToolTip(lsSnippets, "Esc: Sair\nEnter o Doble Click: Retorna el Snippet");
+            toolTip.SetToolTip(lsSnippets, "Esc: Exit\nEnter or Double Click: Returns selected Snippet");
         }
 
 

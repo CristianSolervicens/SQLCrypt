@@ -56,9 +56,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(7, 54);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(200, 13);
+            this.label2.Size = new System.Drawing.Size(231, 13);
             this.label2.TabIndex = 7;
-            this.label2.Text = "Clave a Encriptada (Queda en Clipboard)";
+            this.label2.Text = "Encrypted Password (Copied into the Clipboard)";
             // 
             // txClaveEncriptada
             // 
@@ -73,9 +73,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(8, 8);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(88, 13);
+            this.label1.Size = new System.Drawing.Size(104, 13);
             this.label1.TabIndex = 5;
-            this.label1.Text = "Clave a Encriptar";
+            this.label1.Text = "Password to Encrypt";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // txClaveClara
@@ -118,7 +118,7 @@
             this.Controls.Add(this.panel1);
             this.Name = "frmPassWord";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Encriptación de Claves";
+            this.Text = "Password Encryption";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);

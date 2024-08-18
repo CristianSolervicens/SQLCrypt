@@ -52,7 +52,7 @@
             // 
             this.splitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.splitContainer.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.splitContainer.Margin = new System.Windows.Forms.Padding(2);
             this.splitContainer.Name = "splitContainer";
             // 
             // splitContainer.Panel1
@@ -79,7 +79,7 @@
             this.dbObjs.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dbObjs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dbObjs.Location = new System.Drawing.Point(0, 0);
-            this.dbObjs.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dbObjs.Margin = new System.Windows.Forms.Padding(2);
             this.dbObjs.Name = "dbObjs";
             this.dbObjs.Size = new System.Drawing.Size(247, 602);
             this.dbObjs.TabIndex = 0;
@@ -92,20 +92,20 @@
             "MS_Description",
             "Seguridad"});
             this.cbLabel.Location = new System.Drawing.Point(866, 40);
-            this.cbLabel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbLabel.Margin = new System.Windows.Forms.Padding(2);
             this.cbLabel.Name = "cbLabel";
-            this.cbLabel.Size = new System.Drawing.Size(142, 21);
+            this.cbLabel.Size = new System.Drawing.Size(161, 21);
             this.cbLabel.TabIndex = 8;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(863, 14);
+            this.label2.Location = new System.Drawing.Point(864, 19);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(46, 13);
+            this.label2.Size = new System.Drawing.Size(116, 13);
             this.label2.TabIndex = 7;
-            this.label2.Text = "Etiqueta";
+            this.label2.Text = "Extended Property Tag";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label1
@@ -114,14 +114,14 @@
             this.label1.Location = new System.Drawing.Point(249, 49);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(63, 13);
+            this.label1.Size = new System.Drawing.Size(60, 13);
             this.label1.TabIndex = 6;
-            this.label1.Text = "Descripción";
+            this.label1.Text = "Description";
             // 
             // txtObjDescription
             // 
             this.txtObjDescription.Location = new System.Drawing.Point(321, 8);
-            this.txtObjDescription.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtObjDescription.Margin = new System.Windows.Forms.Padding(2);
             this.txtObjDescription.Multiline = true;
             this.txtObjDescription.Name = "txtObjDescription";
             this.txtObjDescription.Size = new System.Drawing.Size(535, 68);
@@ -135,16 +135,16 @@
             this.laObjDescription.Name = "laObjDescription";
             this.laObjDescription.Size = new System.Drawing.Size(38, 13);
             this.laObjDescription.TabIndex = 4;
-            this.laObjDescription.Text = "Objeto";
+            this.laObjDescription.Text = "Object";
             // 
             // btGrabar
             // 
             this.btGrabar.Location = new System.Drawing.Point(67, 40);
-            this.btGrabar.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btGrabar.Margin = new System.Windows.Forms.Padding(2);
             this.btGrabar.Name = "btGrabar";
-            this.btGrabar.Size = new System.Drawing.Size(59, 31);
+            this.btGrabar.Size = new System.Drawing.Size(101, 31);
             this.btGrabar.TabIndex = 3;
-            this.btGrabar.Text = "Grabar";
+            this.btGrabar.Text = "Save Changes";
             this.btGrabar.UseVisualStyleBackColor = true;
             this.btGrabar.Click += new System.EventHandler(this.btGrabar_Click);
             // 
@@ -155,10 +155,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelDisplay.Controls.Add(this.dgObject);
             this.panelDisplay.Location = new System.Drawing.Point(2, 78);
-            this.panelDisplay.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panelDisplay.Margin = new System.Windows.Forms.Padding(2);
             this.panelDisplay.Name = "panelDisplay";
             this.panelDisplay.Padding = new System.Windows.Forms.Padding(0, 65, 0, 0);
-            this.panelDisplay.Size = new System.Drawing.Size(1035, 522);
+            this.panelDisplay.Size = new System.Drawing.Size(1036, 522);
             this.panelDisplay.TabIndex = 2;
             // 
             // dgObject
@@ -171,22 +171,22 @@
             this.dgObject.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.dgObject.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgObject.Location = new System.Drawing.Point(0, 0);
-            this.dgObject.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dgObject.Margin = new System.Windows.Forms.Padding(2);
             this.dgObject.Name = "dgObject";
             this.dgObject.RowHeadersWidth = 62;
             this.dgObject.RowTemplate.Height = 28;
-            this.dgObject.Size = new System.Drawing.Size(1035, 520);
+            this.dgObject.Size = new System.Drawing.Size(1036, 520);
             this.dgObject.TabIndex = 2;
             // 
             // btSalir
             // 
             this.btSalir.AutoEllipsis = true;
             this.btSalir.Location = new System.Drawing.Point(5, 40);
-            this.btSalir.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btSalir.Margin = new System.Windows.Forms.Padding(2);
             this.btSalir.Name = "btSalir";
             this.btSalir.Size = new System.Drawing.Size(59, 31);
             this.btSalir.TabIndex = 4;
-            this.btSalir.Text = "Salir";
+            this.btSalir.Text = "Exit";
             this.btSalir.UseVisualStyleBackColor = true;
             this.btSalir.Click += new System.EventHandler(this.btSalir_Click);
             // 
@@ -197,9 +197,9 @@
             this.ClientSize = new System.Drawing.Size(1287, 602);
             this.Controls.Add(this.splitContainer);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "frmExtendedProperties";
-            this.Text = "Editor de Extended Properties";
+            this.Text = "Extended Properties Editor";
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel2.ResumeLayout(false);
             this.splitContainer.Panel2.PerformLayout();

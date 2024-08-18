@@ -44,19 +44,19 @@ namespace SQLCrypt
             RootNode.Text = hSql.GetCurrentDatabase();
             dbObjs.Nodes.Add(RootNode);
 
-            TablesNode = new TreeNode("Tablas");
+            TablesNode = new TreeNode("Tables");
             RootNode.Nodes.Add(TablesNode);
 
-            ViewsNode = new TreeNode("Vistas");
+            ViewsNode = new TreeNode("Views");
             RootNode.Nodes.Add(ViewsNode);
 
-            ProcsNode = new TreeNode("Procedimientos");
+            ProcsNode = new TreeNode("Procedures");
             RootNode.Nodes.Add(ProcsNode);
 
-            SclrFuncNode = new TreeNode("Funciones Escalares");
+            SclrFuncNode = new TreeNode("Scalar Functions");
             RootNode.Nodes.Add(SclrFuncNode);
 
-            TblFuncNode = new TreeNode("Funciones Tabulares");
+            TblFuncNode = new TreeNode("Table Functions");
             RootNode.Nodes.Add(TblFuncNode);
 
             LoadTables();
@@ -102,7 +102,7 @@ namespace SQLCrypt
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show( $" Error cargando Tablas: {hSql.ErrorString}");
+                MessageBox.Show( $" Error loading Tables: {hSql.ErrorString}");
                 return false;
             }
             while (hSql.Data.Read())
@@ -125,7 +125,7 @@ namespace SQLCrypt
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($" Error cargando Vistas: {hSql.ErrorString}");
+                MessageBox.Show($" Error loading Views: {hSql.ErrorString}");
                 return false;
             }
             while (hSql.Data.Read())
@@ -147,7 +147,7 @@ namespace SQLCrypt
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($" Error cargando Procedimientos: {hSql.ErrorString}");
+                MessageBox.Show($" Error loading Stored Procedures: {hSql.ErrorString}");
                 return false;
             }
             while (hSql.Data.Read())
@@ -170,7 +170,7 @@ namespace SQLCrypt
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($" Error cargando Funciones Escalares: {hSql.ErrorString}");
+                MessageBox.Show($" Error loading Scalar Functions: {hSql.ErrorString}");
                 return false;
             }
             while (hSql.Data.Read())
@@ -193,7 +193,7 @@ namespace SQLCrypt
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($" Error cargando Funciones Tabulares: {hSql.ErrorString}");
+                MessageBox.Show($" Error loading Table Functions: {hSql.ErrorString}");
                 return false;
             }
             while (hSql.Data.Read())
@@ -230,7 +230,7 @@ namespace SQLCrypt
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Error cargando Función [{Schema}].[{TableName}]\n{hSql.ErrorString}");
+                MessageBox.Show($"Error loading Function [{Schema}].[{TableName}]\n{hSql.ErrorString}");
                 hSql.ErrorClear();
             }
 
@@ -268,7 +268,7 @@ namespace SQLCrypt
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Error cargando Procedimiento [{Schema}].[{TableName}]\n{hSql.ErrorString}");
+                MessageBox.Show($"Error loading Procedure [{Schema}].[{TableName}]\n{hSql.ErrorString}");
                 hSql.ErrorClear();
             }
 
@@ -294,7 +294,7 @@ namespace SQLCrypt
             string Schema = arr[0];
             string TableName = arr[1];
 
-            laObjDescription.Text = $"Tabla: [{Schema}].[{TableName}]";
+            laObjDescription.Text = $"Table: [{Schema}].[{TableName}]";
 
             string Comando = $@"
             select 
@@ -377,7 +377,7 @@ namespace SQLCrypt
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste && hSql.Messages != string.Empty)
             {
-                MessageBox.Show($"Error Cargando definición de la Vista: [{Schema}.{TableName}]");
+                MessageBox.Show($"Error Loading View definition: [{Schema}.{TableName}]");
                 hSql.ErrorClear();
                 return false;
             }
@@ -393,7 +393,7 @@ namespace SQLCrypt
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Error cargando Vista [{Schema}].[{TableName}]\n{hSql.ErrorString}");
+                MessageBox.Show($"Error loading View [{Schema}].[{TableName}]\n{hSql.ErrorString}");
                 hSql.ErrorClear();
             }
 
@@ -419,7 +419,7 @@ namespace SQLCrypt
             string Schema = arr[0];
             string TableName = arr[1];
 
-            laObjDescription.Text = $"Tabla: [{Schema}].[{TableName}]";
+            laObjDescription.Text = $"Table: [{Schema}].[{TableName}]";
 
             string Comando = $@"
                    select 
@@ -577,7 +577,7 @@ namespace SQLCrypt
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste && hSql.Messages != string.Empty)
             {
-                MessageBox.Show($"Error Cargando definición de la Tabla: [{Schema}.{TableName}]");
+                MessageBox.Show($"Error Loading Table Definition: [{Schema}.{TableName}]");
                 hSql.ErrorClear();
                 return false;
             }
@@ -593,7 +593,7 @@ namespace SQLCrypt
             hSql.ExecuteSqlData(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Error cargando Tabla [{Schema}].[{TableName}]\n{hSql.ErrorString}");
+                MessageBox.Show($"Error Loading Table [{Schema}].[{TableName}]\n{hSql.ErrorString}");
                 hSql.ErrorClear();
             }
 
@@ -699,7 +699,7 @@ namespace SQLCrypt
 
             if (DescColumn > grid.Columns.Count)
             {
-                MessageBox.Show($"Seting Change_Control:\nDescColumn es {DescColumn} y la Grilla contiene {grid.Columns.Count} columnas");
+                MessageBox.Show($"Seting Change_Control:\nDescColumn is {DescColumn} and the Grid contains {grid.Columns.Count} columns");
                 return;
             }
 
@@ -742,7 +742,7 @@ namespace SQLCrypt
             hSql.ExecuteSql(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Error Agregando EP a [{Schema}].[{ObjectName}]");
+                MessageBox.Show($"Error adding Extended Propertie to [{Schema}].[{ObjectName}]");
                 hSql.ErrorClear();
                 return false;
             }
@@ -764,7 +764,7 @@ namespace SQLCrypt
             hSql.ExecuteSql(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Error Agregando EP a [{Schema}].[{ObjectName}] Columna {ColumnName}");
+                MessageBox.Show($"Error adding Extended Propertie to [{Schema}].[{ObjectName}] Column {ColumnName}");
                 hSql.ErrorClear();
                 return false;
             }
@@ -784,7 +784,7 @@ namespace SQLCrypt
             hSql.ExecuteSql(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Error Agregando EP a [{Schema}].[{ObjectName}]");
+                MessageBox.Show($"Error adding Extended Propertie to [{Schema}].[{ObjectName}]");
                 hSql.ErrorClear();
                 return false;
             }
@@ -806,7 +806,7 @@ namespace SQLCrypt
             hSql.ExecuteSql(Comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Error Agregando EP a [{Schema}].[{ObjectName}] Columna {ColumnName}");
+                MessageBox.Show($"Error adding Extended Propertie to [{Schema}].[{ObjectName}] Column {ColumnName}");
                 hSql.ErrorClear();
                 return false;
             }

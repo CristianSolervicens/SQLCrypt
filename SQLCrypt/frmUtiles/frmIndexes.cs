@@ -77,7 +77,7 @@ namespace SQLCrypt.frmUtiles
                 if (lsExistingIndexes.SelectedIndices.Contains(x))
                 {
                     var drop_stmt = drop_indexes_statements[x];
-                    var res = MessageBox.Show($"Desea ejecutar: {drop_stmt} ?", "Confirme", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    var res = MessageBox.Show($"Confirm action: {drop_stmt} ?", "Question", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                     if (res == DialogResult.Cancel)
                         return;
                     if (res == DialogResult.No)
@@ -86,7 +86,7 @@ namespace SQLCrypt.frmUtiles
                     if (hSql.ErrorExiste || hSql.Messages != "")
                     {
                         var msg = $"{hSql.ErrorString}\n{hSql.Messages}";
-                        MessageBox.Show(msg, "Error SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(msg, "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         hSql.ErrorClear();
                         hSql.ClearMessages();
                     }
@@ -117,7 +117,7 @@ namespace SQLCrypt.frmUtiles
             string Elementos = "";
             if (lsExistingIndexes.SelectedItems.Count == 0)
             {
-                laStatus.Text = "NADA SELECCIONADO !!!";
+                laStatus.Text = "NOTING SELECTED !!!";
                 return;
             }
 
@@ -133,7 +133,7 @@ namespace SQLCrypt.frmUtiles
 
         private void btPaste_Click(object sender, EventArgs e)
         {
-            laStatus.Text = "Iniciando...";
+            laStatus.Text = "Starting...";
             this.Update();
             this.Refresh();
 
@@ -142,17 +142,17 @@ namespace SQLCrypt.frmUtiles
             {
                 ProcessIndexStatement();
             }
-            laStatus.Text = "Análisis realizado.";
+            laStatus.Text = "Analysis done";
         }
 
         private void btParse_Click(object sender, EventArgs e)
         {
-            laStatus.Text = "Iniciando...";
+            laStatus.Text = "Starting...";
             this.Update();
             this.Refresh();
             
             ProcessIndexStatement();
-            laStatus.Text = "Análisis realizado.";
+            laStatus.Text = "Analysis done";
         }
 
         private void ProcessIndexStatement()
@@ -163,7 +163,7 @@ namespace SQLCrypt.frmUtiles
             int pos_on = txtIndex.Text.ToLower().IndexOf(" on ");
             if (pos_on == -1)
             {
-                laStatus.Text = "No se encontró \"ON\" para identificar la tabla";
+                laStatus.Text = "Cant find \"ON\" Keyword to identify the Table name";
                 return;
             }
             var index_text = txtIndex.Text.ToLower().Substring(pos_on + 3).Trim();
@@ -172,7 +172,7 @@ namespace SQLCrypt.frmUtiles
             
             if (tabla.IndexOf(".") == -1)
             {
-                MessageBox.Show("El nombre de la tabla debe contener el Schema (Ej: dbo.tabla)");
+                MessageBox.Show("Table name must contain the Schema (Ex: dbo.table)");
                 tabla = $"dbo.{tabla}";
             }
 
@@ -186,12 +186,12 @@ namespace SQLCrypt.frmUtiles
 
             int rows = CountAllRows(tabla);
 
-            lsCurrentIndex.Items.Add($"Filas en Tabla {tabla:40} = {rows}");
+            lsCurrentIndex.Items.Add($"Rows in Table {tabla:40} = {rows}");
             foreach (var col in columnas)
             {
                 var col_name = col.Trim();
                 int col_rows = CountColumnRows(tabla, col_name);
-                lsCurrentIndex.Items.Add($"Valores distintos de la Columna: {col_name:40} = {col_rows}");
+                lsCurrentIndex.Items.Add($"Distinct values for the Column: {col_name:40} = {col_rows}");
             }
 
             LoadExistingIndexes(tabla);
@@ -359,7 +359,7 @@ namespace SQLCrypt.frmUtiles
             hSql.ExecuteSqlData(comando);
             if (hSql.ErrorExiste || hSql.Messages != "")
             {
-                MessageBox.Show($"Error SQL Buscando Índices {hSql.ErrorString}\n{hSql.Messages}");
+                MessageBox.Show($"SQL Error finding Indexes {hSql.ErrorString}\n{hSql.Messages}");
                 hSql.ErrorClear();
                 return;
             }
@@ -383,7 +383,7 @@ namespace SQLCrypt.frmUtiles
             hSql.ExecuteSqlData(comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Error SQL: {hSql.ErrorString}");
+                MessageBox.Show($"SQL Error: {hSql.ErrorString}");
                 hSql.ErrorClear();
                 return -1;
             }
@@ -405,7 +405,7 @@ namespace SQLCrypt.frmUtiles
             hSql.ExecuteSqlData(comando);
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Error SQL: {hSql.ErrorString}");
+                MessageBox.Show($"SQL Error: {hSql.ErrorString}");
                 hSql.ErrorClear();
                 return -1;
             }
@@ -425,13 +425,13 @@ namespace SQLCrypt.frmUtiles
             hSql.ExecuteSql(txtIndex.Text);
             if (hSql.ErrorExiste || hSql.Messages != "")
             {
-                MessageBox.Show($"Error Creando Índice:\n{hSql.ErrorString} {hSql.Messages}");
+                MessageBox.Show($"Error Creatind Index:\n{hSql.ErrorString} {hSql.Messages}");
                 hSql.ErrorClear();
                 hSql.ClearMessages();
                 return;
             }
             LoadExistingIndexes(txtTableName.Text);
-            laStatus.Text = "Indice Creado...";
+            laStatus.Text = "Index Created!";
         }
 
 

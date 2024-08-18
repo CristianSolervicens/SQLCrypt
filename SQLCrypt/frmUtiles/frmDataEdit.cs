@@ -40,7 +40,7 @@ namespace SQLCrypt
 
             InitializeComponent();
             
-            this.Text = "Edición de Tabla: " + _TableName;
+            this.Text = "Table Data Edition: " + _TableName;
             Table.Name = _TableName;
 
             //Carga de Combobox de Columnas
@@ -57,7 +57,7 @@ namespace SQLCrypt
             }
 
             if ( labelPK.Text == string.Empty)
-               labelPK.Text = "No tienen PK, no podrás Editar";
+               labelPK.Text = "Do not have PK, Edit is not Enabled.";
 
             //Formatear el Nombre de Tabla a Nombre "Seguro" usando las partes entre paréntesis []
             string[] tableArray = _TableName.Split('.');
@@ -72,13 +72,6 @@ namespace SQLCrypt
 
             _TableName = sTabla;
 
-            ////NO editar si no Tiene PK
-            //if (!Table.HasPrimaryKey)
-            //{
-            //    btAplicaCambios.Enabled = false;
-            //    btBorrarActual.Enabled = false;
-            //}
-
         }
 
 
@@ -92,7 +85,7 @@ namespace SQLCrypt
         {
             if (string.IsNullOrWhiteSpace(txFiltro.Text))
             {
-                if (MessageBox.Show(string.Format("Desea traer datos de la Tabla [{0}] sin usar Filtro?", _TableName), "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (MessageBox.Show(string.Format("Fetch Data from [{0}] without Filters?", _TableName), "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 {
                     return;
                 }
@@ -143,7 +136,7 @@ namespace SQLCrypt
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error en la Consulta.\n" + ex.Message.ToString(), "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Query Error.\n" + ex.Message.ToString(), "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             //Columnas de PK no editables.
@@ -161,7 +154,7 @@ namespace SQLCrypt
                     
             }
 
-            laFilas.Text = string.Format("Filas: {0}", dgv.Rows.Count);
+            laFilas.Text = string.Format("Rows: {0}", dgv.Rows.Count);
             NumFilas = dgv.Rows.Count;
         }
 
@@ -294,26 +287,26 @@ namespace SQLCrypt
 
                 sComandoTotal += sComando + sValues + ";\n";
 
-                //hSql.ExecuteSql(sComando + sValues);
+                hSql.ExecuteSql(sComando + sValues);
 
-                //if (hSql.ErrorExiste)
-                //{
-                //    MessageBox.Show("Error SQL al actualizar Datos\n" + hSql.ErrorString, "Error SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //    hSql.ErrorClear();
-                //}
-                    
+                if (hSql.ErrorExiste)
+                {
+                    MessageBox.Show("SQL Error SQL updating Data\n" + hSql.ErrorString, "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    hSql.ErrorClear();
+                }
+
             }
 
             if (string.IsNullOrEmpty(sComandoTotal))
             {
-                MessageBox.Show("No hay modificaciones para notificar.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("There are no updates to notify.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             Clipboard.Clear();
             Clipboard.SetText(sComandoTotal);
 
-            MessageBox.Show("Los comandos generados están en el Clipboard.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Generated commands are in the Clipboard.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 
             //}
 
@@ -323,11 +316,11 @@ namespace SQLCrypt
             try
             {
                 sqlDataAdapter.Update(dt);
-                MessageBox.Show("Registro(s) Actualizado(s)", "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Row(s) Updated", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Algún Error en la Actualización.\n" + ex.Message.ToString(), "Mensaje", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Error Updating Data.\n" + ex.Message.ToString(), "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             //Volver a Leer de la Tabla
@@ -348,7 +341,7 @@ namespace SQLCrypt
             Int32 selectedCellCount = dgv.GetCellCount(DataGridViewElementStates.Selected);
             if (selectedCellCount == 0)
             {
-                MessageBox.Show("No ha filas seleccionadas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("There are no rows selected", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -402,7 +395,7 @@ namespace SQLCrypt
             Clipboard.Clear();
             Clipboard.SetText(sComandoTotal);
 
-            MessageBox.Show("Los comandos generados están en el Clipboard.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Generated Commands are in Clipboard.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 
             //}
 
@@ -411,7 +404,7 @@ namespace SQLCrypt
                 return;
             
 
-            if (MessageBox.Show("Confirme la Eliminación", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (MessageBox.Show("Please Confirm Deletion", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 return;
             }

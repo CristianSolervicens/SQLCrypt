@@ -77,7 +77,7 @@ namespace SQLCrypt
                 }
                 catch 
                 {
-                    MessageBox.Show($"No se ha podido crear el Directorio:\n  {sPath}", "Aención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show($"Folder not created:\n  {sPath}", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     this.Close();
                 }
             }

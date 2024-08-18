@@ -312,6 +312,7 @@ namespace SQLCrypt.StructureClasses
                         CreateTable += string.Format("   {0, -32} {1,-18} {2,  8} {3, 8}", hSql.Data[0], hSql.Data[1], Identity, Nulable);
                         break;
 
+                    case "NCHAR":
                     case "CHAR":
                     case "VARCHAR":
                     case "NVARCHAR":
@@ -424,6 +425,7 @@ ORDER  BY CAST(OBJECT_SCHEMA_NAME(c.[TableId]) + '.' + c.[TableName] as Varchar(
             return CreateTable;
         }
 
+
         public string GetCreateTable2()
         {
             if (this.type != "U")
@@ -466,6 +468,7 @@ ORDER  BY CAST(OBJECT_SCHEMA_NAME(c.[TableId]) + '.' + c.[TableName] as Varchar(
                             case "BIGINT":
                             case "BIT":
                             case "DATETIME":
+                            case "SMALLDATETIME":
                             case "DATE":
                             case "TIME":
                             case "XML":
@@ -473,12 +476,14 @@ ORDER  BY CAST(OBJECT_SCHEMA_NAME(c.[TableId]) + '.' + c.[TableName] as Varchar(
                             case "FLOAT":
                             case "DATETIME2":
                             case "TEXT":
+                            case "IMAGE":
                             case "NTEXT":
                             case "UNIQUEIDENTIFIER":
                             case "SQL_VARIANT":
                                 CreateTable += string.Format("  {0, -32} {1,-18} {2}", hSql.Data[0], hSql.Data[1], hSql.Data.GetString(6) == "no" ? "NOT NULL" : "    NULL");
                                 break;
 
+                            case "NCHAR":
                             case "CHAR":
                             case "VARCHAR":
                             case "NVARCHAR":

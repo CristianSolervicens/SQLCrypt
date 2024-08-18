@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDataEdit));
             this.dgv = new System.Windows.Forms.DataGridView();
             this.btTraeDatos = new System.Windows.Forms.Button();
             this.txFiltro = new System.Windows.Forms.TextBox();
@@ -62,7 +63,7 @@
             this.btTraeDatos.Name = "btTraeDatos";
             this.btTraeDatos.Size = new System.Drawing.Size(107, 23);
             this.btTraeDatos.TabIndex = 1;
-            this.btTraeDatos.Text = "Traer Datos";
+            this.btTraeDatos.Text = "Fetch Data";
             this.btTraeDatos.UseVisualStyleBackColor = true;
             this.btTraeDatos.Click += new System.EventHandler(this.btTraeDatos_Click);
             // 
@@ -80,7 +81,7 @@
             this.btAplicaCambios.Name = "btAplicaCambios";
             this.btAplicaCambios.Size = new System.Drawing.Size(107, 23);
             this.btAplicaCambios.TabIndex = 3;
-            this.btAplicaCambios.Text = "Aplicar Cambios";
+            this.btAplicaCambios.Text = "Apply Changes";
             this.btAplicaCambios.UseVisualStyleBackColor = true;
             this.btAplicaCambios.Click += new System.EventHandler(this.btAplicaCambios_Click);
             // 
@@ -91,7 +92,7 @@
             this.btSalir.Name = "btSalir";
             this.btSalir.Size = new System.Drawing.Size(107, 23);
             this.btSalir.TabIndex = 4;
-            this.btSalir.Text = "Salir";
+            this.btSalir.Text = "Exit";
             this.btSalir.UseVisualStyleBackColor = true;
             this.btSalir.Click += new System.EventHandler(this.btSalir_Click);
             // 
@@ -102,16 +103,16 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(29, 13);
             this.label1.TabIndex = 5;
-            this.label1.Text = "Filtro";
+            this.label1.Text = "Filter";
             // 
             // checkIncluyeColBinarias
             // 
             this.checkIncluyeColBinarias.AutoSize = true;
             this.checkIncluyeColBinarias.Location = new System.Drawing.Point(649, 383);
             this.checkIncluyeColBinarias.Name = "checkIncluyeColBinarias";
-            this.checkIncluyeColBinarias.Size = new System.Drawing.Size(143, 17);
+            this.checkIncluyeColBinarias.Size = new System.Drawing.Size(136, 17);
             this.checkIncluyeColBinarias.TabIndex = 6;
-            this.checkIncluyeColBinarias.Text = "Incluir Columnas Binarias";
+            this.checkIncluyeColBinarias.Text = "Include Binary Columns";
             this.checkIncluyeColBinarias.UseVisualStyleBackColor = true;
             // 
             // cbColumna
@@ -160,7 +161,7 @@
             this.btCleanFilter.Name = "btCleanFilter";
             this.btCleanFilter.Size = new System.Drawing.Size(48, 23);
             this.btCleanFilter.TabIndex = 11;
-            this.btCleanFilter.Text = "Limpia";
+            this.btCleanFilter.Text = "Clean";
             this.btCleanFilter.UseVisualStyleBackColor = true;
             this.btCleanFilter.Click += new System.EventHandler(this.btCleanFilter_Click);
             // 
@@ -180,7 +181,7 @@
             this.btBorrarActual.Name = "btBorrarActual";
             this.btBorrarActual.Size = new System.Drawing.Size(107, 23);
             this.btBorrarActual.TabIndex = 13;
-            this.btBorrarActual.Text = "Borrar Actual";
+            this.btBorrarActual.Text = "Delete Current";
             this.btBorrarActual.UseVisualStyleBackColor = true;
             this.btBorrarActual.Click += new System.EventHandler(this.btBorrarActual_Click);
             // 
@@ -198,9 +199,9 @@
             this.laFilas.AutoSize = true;
             this.laFilas.Location = new System.Drawing.Point(484, 384);
             this.laFilas.Name = "laFilas";
-            this.laFilas.Size = new System.Drawing.Size(28, 13);
+            this.laFilas.Size = new System.Drawing.Size(34, 13);
             this.laFilas.TabIndex = 15;
-            this.laFilas.Text = "Filas";
+            this.laFilas.Text = "Rows";
             // 
             // frmDataEdit
             // 
@@ -224,6 +225,7 @@
             this.Controls.Add(this.txFiltro);
             this.Controls.Add(this.btTraeDatos);
             this.Controls.Add(this.dgv);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmDataEdit";
             this.Text = "frmDataEdit";
             ((System.ComponentModel.ISupportInitialize)(this.dgv)).EndInit();

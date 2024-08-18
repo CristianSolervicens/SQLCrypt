@@ -12,6 +12,7 @@ using SQLCrypt.FunctionalClasses.MySql;
 using static ScintillaNET.Style;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading;
 
 
 namespace SQLCrypt
@@ -27,11 +28,16 @@ namespace SQLCrypt
         List<string> listMensajes = new List<string>();
         List<string> listErrores = new List<string>();
 
+        const int MESSAGE_WIDTH = 760;
+        const int MESSAGE_HEIGHT = 450;
+
 
         public frmDespliegue(MySql _hSql)
         {
             this.hSql = _hSql;
             InitializeComponent();
+            txtMessages.Visible = false;
+            txtMessages.SendToBack();
             btSalir.Top = -200;
             laMessages.Text = "";
         }
@@ -43,6 +49,9 @@ namespace SQLCrypt
 
             dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
             dataGridView.MultiSelect = false;
+
+            txtMessages.Visible = false;
+            txtMessages.SendToBack();
 
             btSalir.Top = -200;
             laMessages.Text = "";
@@ -109,7 +118,7 @@ namespace SQLCrypt
                     }
                     catch
                     {
-                        MessageBox.Show("Error SQL no Administrado\n", "Error SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Non Administered SQL Error\n", "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
@@ -129,9 +138,16 @@ namespace SQLCrypt
                 QueryController.sql_spid = 0;
 
             laMessages.Text = "";
-            laMessages.Text = (listErrores.Count > 0 ? "Hay Errores" : ""); 
-            laMessages.Text += (laMessages.Text != ""? "; ": "") + (listMensajes.Count > 0 ? "Hay Mensajes" : "");
-
+            laMessages.Text = (listErrores.Count > 0 ? "Errors" : ""); 
+            laMessages.Text += (laMessages.Text != ""? "; ": "") + (listMensajes.Count > 0 ? "Messages" : "");
+            
+            //Mostrar Mensajes si hay
+            if (listErrores.Count + listMensajes.Count > 0)
+            {
+                txtMessages.Visible = false;
+                txtMessages.SendToBack();
+                verMensajesToolStripMenuItem_Click(null, null);
+            }
         }
 
 
@@ -169,7 +185,7 @@ namespace SQLCrypt
                 }
                 catch
                 {
-                    MessageBox.Show("Error SQL no Administrado\n", "Error SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Non Administered SQL Error\n", "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.Close();
                     return;
                 }
@@ -185,6 +201,15 @@ namespace SQLCrypt
                     }
                 }
                 catch { }
+
+
+                //Mostrar Mensajes si hay
+                if (listErrores.Count + listMensajes.Count > 0)
+                {
+                    txtMessages.Visible = false;
+                    txtMessages.SendToBack();
+                    verMensajesToolStripMenuItem_Click(null, null);
+                }
             }
 
             //
@@ -194,7 +219,7 @@ namespace SQLCrypt
                 dataGridView.DataSource = ds.Tables[current_ds];
             else
             {
-                MessageBox.Show("No hay resultados para su consulta", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("No results for your SQL Command", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 if (listErrores.Count == 0 && listMensajes.Count == 0)
                 {
                     this.Close();
@@ -203,9 +228,9 @@ namespace SQLCrypt
             }
 
             if (ds.Tables.Count > 0)
-                toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds + 1}/{ds.Tables.Count}");
+                toolStripTextBox1.Text = string.Format($"Rows: {dataGridView.Rows.Count}  Result Set {current_ds + 1}/{ds.Tables.Count}");
             else
-                toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set 0/0");
+                toolStripTextBox1.Text = string.Format($"Rows: {dataGridView.Rows.Count}  Result Set 0/0");
 
             currentDb = hSql.GetCurrentDatabase();
             if (currentDb != "")
@@ -213,6 +238,14 @@ namespace SQLCrypt
 
             QueryController.hSqlQuery = null;
             QueryController.InQuery = false;
+
+            //Mostrar Mensajes si hay
+            if (listErrores.Count + listMensajes.Count > 0)
+            {
+                txtMessages.Visible = false;
+                txtMessages.SendToBack();
+                verMensajesToolStripMenuItem_Click(null, null);
+            }
 
             this.Show();
             this.Activate();
@@ -244,7 +277,7 @@ namespace SQLCrypt
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show($"Error\r\n{ex.Message}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Error\r\n{ex.Message}", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                     
@@ -305,7 +338,7 @@ namespace SQLCrypt
                 }
                 catch
                 {
-                    MessageBox.Show("No fue posible eliminar el Archivo existente.\nVerifique que no esté en uso.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("Cannot delete existing File.\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
             }
@@ -339,7 +372,7 @@ namespace SQLCrypt
                 }
                 catch
                 {
-                    MessageBox.Show("No fue posible eliminar el Archivo existente.\nVerifique que no esté en uso.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show("Cannot delete existing File.\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
             }
@@ -355,7 +388,7 @@ namespace SQLCrypt
             var dt = ds.Tables[current_ds];
             using (ExcelPackage pck = new ExcelPackage(newFile))
             {
-                ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Reporte");
+                ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Report");
                 ws.Cells["A1"].LoadFromDataTable( dt, true);
                 for (int c = 0; c < dt.Columns.Count; c++)
                 {
@@ -465,27 +498,60 @@ namespace SQLCrypt
 
         private void verMensajesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (listMensajes.Count == 0 && listErrores.Count == 0)
-                MessageBox.Show("No hay mensajes");
+            if (txtMessages.Visible)
+                HideMessages();
             else
+                ShowMessages();
+
+            if (txtMessages.Visible)
+                txtMessages.BringToFront();
+            else
+                txtMessages.SendToBack();
+
+            if (listMensajes.Count + listErrores.Count > 0 )
             {
-                string msg = "";
+                string msg;
+                msg = "\r\n";
                 foreach (var error in listErrores)
                     msg += error + "\r\n\r\n";
                 foreach (var error in listMensajes)
                     msg += error + "\r\n\r\n";
 
-                string msgDisplay = msg + "\r\nDesea copiarlos al Clipboard?\r\n";
-
-                var ans = MessageBox.Show(msgDisplay, "Errores y Mensajes", MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2);
-                if (ans == DialogResult.Yes)
-                {
-                    Clipboard.Clear();
-                    Clipboard.SetText(msg, TextDataFormat.Text);
-                }
+                msg += "\r\nPress [Ctrl] + [M] To Hide Messages";
+                txtMessages.Text = msg;
+            }
+            else
+            {
+                txtMessages.Text = "\r\n\r\n      There are no Errors or Messages";
             }
         }
 
+
+        /// <summary>
+        /// ShowMessages
+        /// </summary>
+        private void ShowMessages()
+        {
+            txtMessages.Visible = true;
+            txtMessages.BringToFront();
+        }
+
+
+        /// <summary>
+        /// HideMessages
+        /// </summary>
+        private void HideMessages()
+        {   
+            txtMessages.Visible = false;
+            txtMessages.SendToBack();
+        }
+
+
+        /// <summary>
+        /// dataGridView_DataError
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void dataGridView_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             e.ThrowException = false;
@@ -511,7 +577,7 @@ namespace SQLCrypt
                 current_ds++;
 
             dataGridView.DataSource = ds.Tables[current_ds];
-            toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds+1}/{ds.Tables.Count}");
+            toolStripTextBox1.Text = string.Format($"Rows: {dataGridView.Rows.Count}  Result Set {current_ds+1}/{ds.Tables.Count}");
         }
 
 
@@ -521,7 +587,7 @@ namespace SQLCrypt
                 current_ds--;
             
             dataGridView.DataSource = ds.Tables[current_ds];
-            toolStripTextBox1.Text = string.Format($"Filas: {dataGridView.Rows.Count}  Result Set {current_ds+1}/{ds.Tables.Count}");
+            toolStripTextBox1.Text = string.Format($"Rows: {dataGridView.Rows.Count}  Result Set {current_ds+1}/{ds.Tables.Count}");
         }
 
         private void grabarJSONToolStripMenuItem_Click(object sender, EventArgs e)
@@ -534,7 +600,7 @@ namespace SQLCrypt
         {
             if (txtSearch.Text == string.Empty)
             {
-                MessageBox.Show("Debe ingresar el texto de búsqueda...", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("You mus set the search term...", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -565,7 +631,7 @@ namespace SQLCrypt
             }
             if (!found)
             {
-                MessageBox.Show("Valor no encontrado...", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("No matching value...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 dataGridView.Select();
             }
         }

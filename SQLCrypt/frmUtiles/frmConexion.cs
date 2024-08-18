@@ -156,7 +156,7 @@ namespace SQLCrypt
 
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show(hSql.ErrorString, "Prueba Erronea");
+                MessageBox.Show(hSql.ErrorString, "Connection Error");
                 return;
             }
 
@@ -164,7 +164,7 @@ namespace SQLCrypt
 
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show(hSql.ErrorString, "Error Obteniendo Bases");
+                MessageBox.Show(hSql.ErrorString, "Error Getting Bases");
                 return;
             }
 
@@ -176,7 +176,7 @@ namespace SQLCrypt
             }
 
 
-            MessageBox.Show(this, "Se ha conectado a la Base de Datos!!\nCadena de conexión probada exitosamente", "Prueba exitosa", MessageBoxButtons.OK);
+            MessageBox.Show(this, "Successfuly Connected!!", "Test OK", MessageBoxButtons.OK);
 
             cbDescripcion.Focus();
         }
@@ -240,7 +240,7 @@ namespace SQLCrypt
             int Idx = cbDescripcion.SelectedIndex;
             if ( Idx == -1)
             {
-                if (MessageBox.Show("Desea Actualizar el Nombre la Conexión ?", "Atención", MessageBoxButtons.YesNo) == DialogResult.No)
+                if (MessageBox.Show("Do you want to Update the Connection Name ?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return;
             }
 

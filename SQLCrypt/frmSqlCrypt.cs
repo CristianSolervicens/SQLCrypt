@@ -34,6 +34,8 @@ namespace SQLCrypt
 {
     public partial class FrmSqlCrypt : Form
     {
+        private const string EOL = "\r\n";
+
         Thread threadQuery = null;
         private qTimer queryTimer = new qTimer();
 
@@ -58,67 +60,20 @@ namespace SQLCrypt
         private MySql hSql;
         SearchManager FindMan = null;
         FindReplace _findReplace = null;
-        private int maxLineNumberCharLength;
-        private int lastCaretPos = 0;
-        private bool autoCompleteEnabled = true;
 
-        private bool scintilla_end_mode = false;
-        private const int BOOKMARK_MARGIN = 1; // Conventionally the symbol margin
-        private const int BOOKMARK_MARKER = 3; // Arbitrary. Any valid index would work.
-
-        private bool omit_key = false;
-
-        private string keyWords = "add all alter and any as asc avg" +
-                                  "backup begin between break browse bulk by " +
-                                  "cascade case check checkpoint close clustered coalesce collate column commit constraint continue convert count create cross current " +
-                                  "current_timestamp current_user cursor " +
-                                  "database datediff datepart dbcc deallocate declare default delete deny desc disable disk distinct distributed double drop dummy dump " +
-                                  "else enable end errlvl errorexit escape except exec execute exists exit " +
-                                  "fetch file fillfactor for foreign forward_only freetext from full function " +
-                                  "getdate go grant group " +
-                                  "having holdlock " +
-                                  "identity identity_insert identitycol if in index inner insert instead intersect into is isnull isolation " +
-                                  "join " +
-                                  "key kill " +
-                                  "left level like load " +
-                                  "move " +
-                                  "no nocheck nocount nonclustered norecovery not null nullif " +
-                                  "object_id of off offsets on once only open opendatasource openquery openrowset option or order outer output over " +
-                                  "percent perm prepare primary print proc procedure public " +
-                                  "raiserror read readtext read_only reconfigure recovery references repeatable replication restore restrict return returns revoke right " +
-                                  "rollback rowcount rowguidcol rule " +
-                                  "save schema select serializable session_user set setuser shutdown some statistics stats sum synonym system_user " +
-                                  "table tape temp then to top tran transaction trigger truncate " +
-                                  "uncommitted union unique update updatetext use user " +
-                                  "values view " +
-                                  "waitfor when where while with work writetext";
-
-        private string keyWords2 = "bigint binary max bit char character date datetime dec decimal float image int integer money nchar ntext numeric nvarchar " +
-                                   "real smalldatetime smallint smallmoney sql_variant sysname text timestamp tinyint uniqueidentifier varbinary varchar";
-
-        private string autoCompleteKeywords = "";
-
+        ///
+        /// Clase para Encapsular el manejo de Scintilla
+        ///
+        private ScintillaCustom scintillaC;
 
         public FrmSqlCrypt(MySql hSql, string fileName)
         {
             InitializeComponent();
 
+            scintillaC = new ScintillaCustom(txtSql, "keywords.cfg", "keywords2.cfg");
+
             QueryController.Prepare();
 
-            // =======   KEYWORDS Y AUTOCOMPLETAR   ========
-            var keywords_file = "keywords.cfg";
-            if (File.Exists(keywords_file))
-                keyWords = File.ReadAllText(keywords_file);
-
-            keyWords = keyWords.Replace("\r\n", " ");
-
-            var keywords2_file = "keywords2.cfg";
-            if (File.Exists(keywords2_file))
-                keyWords2 = File.ReadAllText(keywords2_file);
-
-            keyWords2 = keyWords2.Replace("\r\n", " ");
-
-            autoCompleteKeywords = keyWords.ToUpper();
             // ---------------------------------------------
             laDataLoadStatus.Text = "";
             laDataLoadStatus.Visible = false;
@@ -136,42 +91,44 @@ namespace SQLCrypt
             sTabla = string.Empty;
 
             ContextMenu colm = new ContextMenu();
-            colm.MenuItems.Add("Selección al Clipboard", new EventHandler(colmSelectionToClipBoard));
-            colm.MenuItems.Add("Nombre al Clipboard", new EventHandler(colmSelectionNameToClipBoard));
+            colm.MenuItems.Add("Selection to Clipboard", new EventHandler(colmSelectionToClipBoard));
+            colm.MenuItems.Add("Name to Clipboard", new EventHandler(colmSelectionNameToClipBoard));
 
             lsColumnas.ContextMenu = colm;
 
             ContextMenu txm = new ContextMenu();
-            txm.MenuItems.Add("Seleccionar Todo", new EventHandler(txmSelAll));
-            txm.MenuItems.Add("Deseleccionar Todo", new EventHandler(txmDeSelAll));
+            txm.MenuItems.Add("Select All", new EventHandler(txmSelAll));
+            txm.MenuItems.Add("Deselect All", new EventHandler(txmDeSelAll));
             txm.MenuItems.Add("-");
             txm.MenuItems.Add("Cut", new EventHandler(txmCut));
             txm.MenuItems.Add("Copy", new EventHandler(txmCopy));
             txm.MenuItems.Add("Paste", new EventHandler(txmPaste));
             txm.MenuItems.Add("-");
-            txm.MenuItems.Add("Ejecutar Todo/Selección", new EventHandler(ejecutarComandoToolStripMenuItem_Click));
-            txm.MenuItems.Add("Ver/Ocultar Panel de Tablas", new EventHandler(verPanelDeObjetosToolStripMenuItem_Click));
+            txm.MenuItems.Add("Execut All/Selection", new EventHandler(ejecutarComandoToolStripMenuItem_Click));
+            txm.MenuItems.Add("Show/Hide Objects Pannel", new EventHandler(verPanelDeObjetosToolStripMenuItem_Click));
             txtSql.ContextMenu = txm;
 
             _findReplace = new FindReplace();
             _findReplace.SetTarget(txtSql);
             _findReplace.SetFind(txtSql);
 
-            MytoolTip.SetToolTip(btReconnect, "Reconectarse a la Base de Datos...");
-            MytoolTip.SetToolTip(btRefreshType, "Refrescar la lista de objetos...");
-            MytoolTip.SetToolTip(btConnectToBd, "Conectarse a un Servidor de Base de Datos");
-            MytoolTip.SetToolTip(btCancell, "Cancelar una consulta en ejecución");
+            MytoolTip.SetToolTip(btReconnect, "Reconnect to Database...");
+            MytoolTip.SetToolTip(btRefreshType, "Refresh Objects list...");
+            MytoolTip.SetToolTip(btConnectToBd, "Connect to a MS SQL Server Database Server");
+            MytoolTip.SetToolTip(btCancell, "Cancel current query");
             
-            string msg = @"Busca objeto en lista de Objetos presionando [Enter]
-También se usa con el menú contextual de la Lista de Objetos
-Para buscar por contenido";
+            string msg = @"Find Objeto in Objects List pressing [Enter]
+You can also use the context menu in the Objects List
+to Search Objects by their content";
             
             MytoolTip.SetToolTip(txBuscaEnLista, msg);
-            
 
             FindMan = new SearchManager();
             FindMan.TextArea = txtSql;
-            InitSyntaxColoring(txtSql);
+            
+            // Inicialización de Scintilla
+            scintillaC.InitSyntaxColoring();
+            txtSql_TextChanged(null, null);
 
             SetAutocompleteMenuItemText();
 
@@ -188,165 +145,15 @@ Para buscar por contenido";
 
         #region Scintilla
 
-        public static Color IntToColor(int rgb)
-        {
-            return Color.FromArgb(255, (byte)(rgb >> 16), (byte)(rgb >> 8), (byte)rgb);
-        }
-
-        private static bool IsBrace(int c)
-        {
-            switch (c)
-            {
-                case '(':
-                case ')':
-                case '[':
-                case ']':
-                case '{':
-                case '}':
-                case '<':
-                case '>':
-                    return true;
-            }
-
-            return false;
-        }
-
-
-        /// <summary>
-        /// Seteo del control "scintilla"
-        /// con todas las opciones de color y otras, esperadas para el control
-        /// </summary>
-        /// <param name="TextArea"></param>
-        private void InitSyntaxColoring(ScintillaNET.Scintilla TextArea)
-        {
-
-            // Configure the default style
-            TextArea.Margins[0].Width = 5;
-
-            TextArea.StyleResetDefault();
-
-            TextArea.Styles[Style.Default].Font = "Consolas";
-            TextArea.Styles[Style.Default].Size = 10;
-            TextArea.Styles[Style.Default].BackColor = IntToColor(0x212121);
-            TextArea.Styles[Style.Default].ForeColor = IntToColor(0xFFFFFF);
-
-            TextArea.CaretLineBackColor = IntToColor(0x333333);
-            TextArea.CaretForeColor = IntToColor(0xF0F0F0);
-            TextArea.CaretWidth = 2;
-
-            //TextArea.SetSelectionBackColor(true, IntToColor(0x000099));
-            TextArea.SetSelectionBackColor(true, IntToColor(0x004389));
-            TextArea.StyleClearAll();
-
-            //Resaltado de Parentesis (Braces)
-            TextArea.Styles[Style.BraceBad].ForeColor = IntToColor(0xFFFFFF);
-            TextArea.Styles[Style.BraceLight].ForeColor = IntToColor(0xFF00AA);
-
-            TextArea.Styles[Style.Sql.Identifier].ForeColor = IntToColor(0xD0DAE2);
-            TextArea.Styles[Style.Sql.Comment].ForeColor = IntToColor(0xBD758B);
-            TextArea.Styles[Style.Sql.CommentLine].ForeColor = IntToColor(0x40BF57);
-            TextArea.Styles[Style.Sql.CommentDoc].ForeColor = IntToColor(0x2FAE35);
-            TextArea.Styles[Style.Sql.Number].ForeColor = IntToColor(0xFFFF00);
-            TextArea.Styles[Style.Sql.String].ForeColor = IntToColor(0xFFFF00);
-            TextArea.Styles[Style.Sql.Character].ForeColor = IntToColor(0xE95454);
-            TextArea.Styles[Style.Sql.Operator].ForeColor = IntToColor(0xE0E0E0);
-            TextArea.Styles[Style.Sql.CommentLineDoc].ForeColor = IntToColor(0x77A7DB);
-            TextArea.Styles[Style.Sql.Word].ForeColor = IntToColor(0x48A8EE);
-            TextArea.Styles[Style.Sql.Word2].ForeColor = IntToColor(0xF98906);
-            TextArea.Styles[Style.Sql.CommentDocKeyword].ForeColor = IntToColor(0xB3D991);
-            TextArea.Styles[Style.Sql.CommentDocKeywordError].ForeColor = IntToColor(0xFF0000);
-
-            TextArea.Lexer = Lexer.Sql;
-
-            TextArea.SetKeywords(0, keyWords);
-            TextArea.SetKeywords(1, keyWords2);
-
-            TextArea.Styles[Style.LineNumber].ForeColor = IntToColor(0xAFAFAF);
-            TextArea.Styles[Style.LineNumber].BackColor = IntToColor(0x211021);
-
-            TextArea.AdditionalSelectionTyping = true;
-            TextArea.MultipleSelection = true;
-            TextArea.MouseSelectionRectangularSwitch = true;
-            TextArea.VirtualSpaceOptions = VirtualSpace.RectangularSelection;
-
-            //Barra de Book-Marks
-            TextArea.Margins[BOOKMARK_MARGIN].Width = 16;
-            TextArea.Margins[BOOKMARK_MARGIN].Sensitive = true;
-            TextArea.Margins[BOOKMARK_MARGIN].Type = MarginType.Symbol;
-            //TextArea.Margins[BOOKMARK_MARGIN].Mask = Marker.MaskAll;
-            TextArea.Margins[BOOKMARK_MARGIN].Cursor = MarginCursor.Arrow;
-            TextArea.Margins[BOOKMARK_MARGIN].BackColor = IntToColor(0x211021);
-
-            TextArea.Markers[BOOKMARK_MARKER].Symbol = MarkerSymbol.Bookmark;
-            TextArea.Markers[BOOKMARK_MARKER].SetBackColor(Color.Bisque);
-            TextArea.Markers[BOOKMARK_MARKER].SetForeColor(Color.Black);
-
-            TextArea.MarginClick += txtSql_MarginClick;
-            //------------------
-
-            scintilla__TextChanged();
-        }
-
-
-        private void txtSql_MarginClick(object sender, MarginClickEventArgs e)
-        {
-            if (e.Margin == BOOKMARK_MARGIN)
-            {
-                // Do we have a marker for this line?
-                const uint mask = (1 << BOOKMARK_MARKER);
-                var line = txtSql.Lines[txtSql.LineFromPosition(e.Position)];
-                if ((line.MarkerGet() & mask) > 0)
-                {
-                    // Remove existing bookmark
-                    line.MarkerDelete(BOOKMARK_MARKER);
-                }
-                else
-                {
-                    // Add bookmark
-                    line.MarkerAdd(BOOKMARK_MARKER);
-                }
-            }
-        }
 
 
         private void scintilla__SelectionChanged(object sender, UpdateUIEventArgs e)
         {
-            // Has the caret changed position?
-            var caretPos = txtSql.CurrentPosition;
-            if (lastCaretPos != caretPos)
-            {
-                lastCaretPos = caretPos;
-                var bracePos1 = -1;
-                var bracePos2 = -1;
-
-                // Is there a brace to the left or right?
-                if (caretPos > 0 && IsBrace(txtSql.GetCharAt(caretPos - 1)))
-                    bracePos1 = (caretPos - 1);
-                else if (IsBrace(txtSql.GetCharAt(caretPos)))
-                    bracePos1 = caretPos;
-
-                if (bracePos1 >= 0)
-                {
-                    // Find the matching brace
-                    bracePos2 = txtSql.BraceMatch(bracePos1);
-                    if (bracePos2 == Scintilla.InvalidPosition)
-                        txtSql.BraceBadLight(bracePos1);
-                    else
-                        txtSql.BraceHighlight(bracePos1, bracePos2);
-                }
-                else
-                {
-                    // Turn off brace matching
-                    txtSql.BraceHighlight(Scintilla.InvalidPosition, Scintilla.InvalidPosition);
-                }
-            }
+            scintillaC.BraceHighLight();
 
             try
             {
-                int line = txtSql.CurrentLine;
-                int column = txtSql.GetColumn(txtSql.CurrentPosition);
-
-                tssLaPos.Text = $"{StringComplete(string.Format("Fila: {0}", line + 1), 13)} {StringComplete(string.Format("Col: {0}", column + 1), 13)}";
+                tssLaPos.Text = $"{StringComplete(string.Format("Row: {0}", txtSql.CurrentLine + 1), 13)} {StringComplete(string.Format("Col: {0}", scintillaC.CurrentColumn + 1), 13)}";
             }
             catch
             {
@@ -354,66 +161,16 @@ Para buscar por contenido";
             }
         }
 
-        private void scintilla__IndentationGuides()
-        {
-            if (txtSql.IndentationGuides == IndentView.None)
-                txtSql.IndentationGuides = IndentView.LookBoth;
-            else
-                txtSql.IndentationGuides = IndentView.None;
-        }
-
-        private void scintilla__TextChanged()
-        {
-            if (txtSql.Modified && tssLaStat.Text != "Archivo Modificado...")
-                tssLaStat.Text = "Archivo Modificado...";
-
-            if (txtSql.Margins[0].Width == 3)
-                return;
-
-            // Did the number of characters in the line number display change?
-            // i.e. nnn VS nn, or nnnn VS nn, etc...
-            var maxLineNumberCharLength = txtSql.Lines.Count.ToString().Length;
-            if (maxLineNumberCharLength == this.maxLineNumberCharLength)
-                return;
-
-            // Calculate the width required to display the last line number
-            // and include some padding for good measure.
-            const int padding = 2;
-            txtSql.Margins[0].Width = txtSql.TextWidth(Style.LineNumber, new string('9', maxLineNumberCharLength + 1)) + padding;
-            this.maxLineNumberCharLength = maxLineNumberCharLength;
-
-        }
-
-
-        private void CutTrailingSpaces()
-        {
-            StringBuilder strB = new StringBuilder();
-
-            for (int i = 0; i < txtSql.Lines.Count; i++)
-            {
-                // Get the text of the current line
-                string lineText = txtSql.Lines[i].Text;
-                // Remove trailing spaces from the line
-                strB.AppendLine(lineText.TrimEnd());
-            }
-            txtSql.Text = strB.ToString();
-        }
 
         private void mostrarEspaciosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (txtSql.ViewWhitespace == WhitespaceMode.Invisible)
-                txtSql.ViewWhitespace = WhitespaceMode.VisibleAlways;
-            else
-                txtSql.ViewWhitespace = WhitespaceMode.Invisible;
+            scintillaC.MostrarEspacios();
         }
 
 
         private void guiaIndentacionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (txtSql.IndentationGuides == IndentView.None)
-                txtSql.IndentationGuides = IndentView.LookBoth;
-            else
-                txtSql.IndentationGuides = IndentView.None;
+            scintillaC.MostrarGuiaIndentacion();
         }
 
         private void toolStripTextBox1_TextChanged(object sender, EventArgs e)
@@ -425,201 +182,28 @@ Para buscar por contenido";
 
         private void numerosDeLíneaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (txtSql.Margins[0].Width != 3)
-                txtSql.Margins[0].Width = 3;
-            else
-            {
-                const int padding = 2;
-                txtSql.Margins[0].Width = txtSql.TextWidth(Style.LineNumber, new string('9', maxLineNumberCharLength + 1)) + padding;
-            }
+            scintillaC.MostrarNumerosDeLinea();
         }
 
 
         private void commentSelectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (txtSql.SelectedText.Length > 0)
-            {
-                int f = txtSql.LineFromPosition(txtSql.SelectionStart);
-                int t = txtSql.LineFromPosition(txtSql.SelectionEnd);
-
-                for (int i = f; i <= t; i++)
-                {
-                    txtSql.InsertText(txtSql.Lines[i].Position, "--");
-                }
-                txtSql.SelectionStart = txtSql.Lines[f].Position;
-                txtSql.SelectionEnd = txtSql.Lines[t].EndPosition - 1;
-            }
+            scintillaC.CommentSelection();
         }
 
 
         private void uncommentSelectionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (txtSql.SelectedText.Length > 0)
-            {
-                int f = txtSql.LineFromPosition(txtSql.SelectionStart);
-                int t = txtSql.LineFromPosition(txtSql.SelectionEnd);
-
-                for (int i = f; i <= t; i++)
-                {
-                    string s = txtSql.Lines[i].Text;
-                    if (s.TrimStart().StartsWith("--"))
-                    {
-                        var regex = new Regex(Regex.Escape("--"));
-                        var newText = regex.Replace(s, "", 1);
-                        int x = txtSql.Lines[i].Position;
-                        int y = txtSql.Lines[i].EndPosition;
-                        txtSql.SelectionStart = x;
-                        txtSql.SelectionEnd = y;
-                        txtSql.ReplaceSelection(newText);
-                    }
-                }
-                txtSql.SelectionStart = txtSql.Lines[f].Position;
-                txtSql.SelectionEnd = txtSql.Lines[t].EndPosition - 1;
-            }
+            scintillaC.UnCommentSelection();
         }
 
-
-        private void TAB_to_spaces()
-        {
-            string spaces = "";
-            try
-            {
-                int numSpaces = Convert.ToInt32(toolStripTextBox1.Text);
-                for (int i = 0; i < numSpaces; ++i)
-                    spaces += " ";
-            }
-            catch
-            {
-                MessageBox.Show("Por favor ingrese el número de espacios en 'Tab Size'");
-                return;
-            }
-            StringBuilder strB = new StringBuilder();
-
-            for (int i = 0; i < txtSql.Lines.Count; i++)
-            {
-                // Get the text of the current line
-                string lineText = txtSql.Lines[i].Text;
-                // Remove trailing spaces from the line
-                strB.AppendLine(lineText.TrimEnd().Replace("\t", spaces));
-            }
-            txtSql.Text = strB.ToString();
-        }
-
-
-        /// <summary>
-        /// Rutina para Autocompletar
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void txtSql_CharAdded(object sender, CharAddedEventArgs e)
-        {
-
-            if (!autoCompleteEnabled || scintilla_end_mode)
-                return;
-
-            // Find the word start
-            var currentPos = txtSql.CurrentPosition;
-            var wordStartPos = txtSql.WordStartPosition(currentPos, true);
-
-            // Display the autocompletion list
-            var lenEntered = currentPos - wordStartPos;
-            if (lenEntered > 0)
-            {
-                if (!txtSql.AutoCActive)
-                {
-                    txtSql.AutoCIgnoreCase = true;
-                    txtSql.AutoCShow(lenEntered, autoCompleteKeywords);
-                }
-            }
-        }
 
 
         private void SetAutocompleteMenuItemText()
         {
-            autoCompleteToolStripMenuItem.Text = "Auto Complete" + (autoCompleteEnabled ? "   - Deshabilitar" : "   - Habilitar");
+            autoCompleteToolStripMenuItem.Text = "Auto Complete" + (scintillaC.AutoCompleteEnabled ? " - Disable" : " - Enable");
         }
 
-
-        /// <summary>
-        /// Brace matching en modo INSERT
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void txtSql_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (omit_key)
-            {
-                e.Handled = true;
-                return;
-            }
-
-            if (txtSql.SelectedText.Length > 0)
-            {
-                var selected = txtSql.SelectedText;
-                switch (e.KeyChar)
-                {
-                    case '"':
-                        txtSql.ReplaceSelection($"\"{selected}\"");
-                        e.Handled = true;
-                        break;
-                    case '\'':
-                        txtSql.ReplaceSelection($"'{selected}'");
-                        e.Handled = true;
-                        break;
-                    case '(':
-                        txtSql.ReplaceSelection($"({selected})");
-                        e.Handled = true;
-                        break;
-                    case '{':
-                        txtSql.ReplaceSelection("{" + selected + "}");
-                        e.Handled = true;
-                        break;
-                    case '[':
-                        txtSql.ReplaceSelection($"[{selected}]");
-                        e.Handled = true;
-                        break;
-                }
-            }
-            else
-            {
-                //switch (e.Char)
-                switch (e.KeyChar)
-                {
-                    case '"':
-                        txtSql.InsertText(txtSql.CurrentPosition, "\"");
-                        break;
-                    case '\'':
-                        txtSql.InsertText(txtSql.CurrentPosition, "'");
-                        break;
-                    case '(':
-                        txtSql.InsertText(txtSql.CurrentPosition, ")");
-                        break;
-                    case '{':
-                        txtSql.InsertText(txtSql.CurrentPosition, "}");
-                        break;
-                    case '[':
-                        txtSql.InsertText(txtSql.CurrentPosition, "]");
-                        break;
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// Auto Indentación "scintilla"
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void txtSql_InsertCheck(object sender, InsertCheckEventArgs e)
-        {
-            if ((e.Text.EndsWith("\r") || e.Text.EndsWith("\n")))
-            {
-                var curLine = txtSql.LineFromPosition(e.Position);
-                var curLineText = txtSql.Lines[curLine].Text;
-                var indent = Regex.Match(curLineText, @"^[ ]*");
-                e.Text += indent.Value; // Add indent following "\r\n"
-            }
-        }
 
 
         private void txtSql_DragEnter(object sender, DragEventArgs e)
@@ -644,11 +228,11 @@ Para buscar por contenido";
                 var cadena = (string)e.Data.GetData(DataFormats.Text);
                 if (cadena.Contains("\n"))
                 {
-                    var space_num = txtSql.GetColumn(Math.Min(txtSql.SelectionStart, txtSql.SelectionEnd));
+                    var space_num = scintillaC.CurrentMinColumn;
                     var fill = new string(' ', space_num);
 
                     //Split
-                    string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(cadena, "\r\n");
+                    string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(cadena, EOL);
                     for (int i = 0; i < snippet_spaced.Length; i++)
                     {
                         snippet_spaced[i] = $"{(i != 0 ? fill : "")}{snippet_spaced[i]}";
@@ -656,10 +240,10 @@ Para buscar por contenido";
 
                     cadena = "";
                     for (int i = 0; i < snippet_spaced.Length; i++)
-                        cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : "\r\n")}";
+                        cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : EOL)}";
                 }
 
-                if (txtSql.SelectionStart != txtSql.SelectionEnd)
+                if (txtSql.SelectedText != "")
                     txtSql.ReplaceSelection(cadena);
                 else
                 {
@@ -767,149 +351,6 @@ Para buscar por contenido";
         }
 
 
-        /// <summary>
-        /// txtSql_KeyDown
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void txtSql_KeyDown(object sender, KeyEventArgs e)
-        {
-            omit_key = false;
-
-            //Completar Snippets
-            if (e.Control && (e.KeyCode == Keys.Tab || e.KeyCode == Keys.OemMinus))
-            {
-                omit_key = true;
-                e.Handled = true;
-                complete_snippet();
-                return;
-            }
-
-            // Modo Fin de Linea para Bloques
-            if (txtSql.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
-            {
-                foreach (var sel in txtSql.Selections)
-                {
-                    omit_key = false;
-                    var l = txtSql.LineFromPosition(sel.Start);
-                    var end_pos = txtSql.Lines[l].EndPosition - 2;
-                    sel.Start = end_pos;
-                    sel.End = end_pos;
-                    sel.Caret = end_pos;
-                }
-            }
-
-            // Modo Fin de Linea para Bloques
-            if (txtSql.Selections.Count > 1 && e.KeyCode == Keys.End)
-            {
-                omit_key = false;
-                scintilla_end_mode = true;
-                foreach (var sel in txtSql.Selections)
-                {
-                    var l = txtSql.LineFromPosition(sel.Start);
-                    var end_pos = txtSql.Lines[l].EndPosition - 2;
-                    sel.Start = end_pos;
-                    sel.End = end_pos;
-                    sel.Caret = end_pos;
-                }
-                e.Handled = true;
-            }
-
-            // Salir de Modo Fin de Linea para Bloques
-            if (scintilla_end_mode && txtSql.Selections.Count <= 1)
-            {
-                scintilla_end_mode = false;
-            }
-        }
-
-
-        /// <summary>
-        /// txtSql_PreviousBookmark
-        /// </summary>
-        private void txtSql_PreviousBookmark()
-        {
-            var line = txtSql.LineFromPosition(txtSql.CurrentPosition);
-            var prevLine = txtSql.Lines[--line].MarkerPrevious(1 << BOOKMARK_MARKER);
-            if (prevLine != -1)
-                txtSql.Lines[prevLine].Goto();
-        }
-
-
-        /// <summary>
-        /// txtSql_NextBookmark
-        /// </summary>
-        private void txtSql_NextBookmark()
-        {
-            var line = txtSql.LineFromPosition(txtSql.CurrentPosition);
-            var nextLine = txtSql.Lines[++line].MarkerNext(1 << BOOKMARK_MARKER);
-            if (nextLine != -1)
-                txtSql.Lines[nextLine].Goto();
-        }
-
-
-        /// <summary>
-        /// txtSql_ToogleBookmark
-        /// </summary>
-        private void txtSql_ToogleBookmark()
-        {
-            const uint mask = (1 << BOOKMARK_MARKER);
-            var line = txtSql.Lines[txtSql.LineFromPosition(txtSql.CurrentPosition)];
-            if ((line.MarkerGet() & mask) > 0)
-            {
-                // Remove existing bookmark
-                line.MarkerDelete(BOOKMARK_MARKER);
-            }
-            else
-            {
-                // Add bookmark
-                line.MarkerAdd(BOOKMARK_MARKER);
-            }
-        }
-
-
-        /// <summary>
-        /// Control para permitir Edición en modo Fin de Línea
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void txtSql_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (omit_key)
-            {
-                e.Handled = true;
-                return;
-            }
-
-            if (txtSql.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
-            {
-                foreach (var sel in txtSql.Selections)
-                {
-                    var l = txtSql.LineFromPosition(sel.Start);
-                    var end_pos = txtSql.Lines[l].EndPosition - 2;
-                    sel.Start = end_pos;
-                    sel.End = end_pos;
-                    sel.Caret = end_pos;
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// HELPER - retorna el número de Espacios al inicio de la línea actual en "scintilla"
-        /// </summary>
-        /// <param name="texto"></param>
-        /// <returns></returns>
-        private int beginning_spaces(string texto)
-        {
-            int count = 0;
-            for (int i = 0; i < texto.Length; i++)
-            {
-                if (texto[i] == ' ') count++;
-                if (texto[i] != ' ') break;
-            }
-            return count;
-        }
-
 
         /// <summary>
         /// Carga snippet seleccionado en la selección actual en "scintilla"
@@ -917,15 +358,15 @@ Para buscar por contenido";
         /// <param name="snippet"></param>
         private void Load_Snippet(string snippet)
         {
-            var l = txtSql.LineFromPosition(txtSql.SelectionStart);
-            var space_num = txtSql.GetColumn(Math.Min(txtSql.SelectionStart, txtSql.SelectionEnd));
+            var l = txtSql.CurrentLine;
+            var space_num = scintillaC.CurrentMinColumn;
 
             var fill = new string(' ', space_num);
             if (fill == null)
                 fill = "";
 
             //Split
-            string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(snippet, "\r\n");
+            string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(snippet, EOL);
             for (int i = 1; i < snippet_spaced.Length; i++)
             {
                 snippet_spaced[i] = $"{(i != 0 ? fill : "")}{snippet_spaced[i]}";
@@ -933,7 +374,7 @@ Para buscar por contenido";
 
             var cadena = "";
             for (int i = 0; i < snippet_spaced.Length; i++)
-                cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : "\r\n")}";
+                cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : EOL)}";
 
             txtSql.ReplaceSelection(cadena);
 
@@ -942,36 +383,7 @@ Para buscar por contenido";
         }
 
 
-
-        /// <summary>
-        /// Helper para buscar los campos a llenar para un snippet
-        /// </summary>
-        private void complete_snippet()
-        {
-            SearchFlags flags = new SearchFlags();
-            flags |= SearchFlags.Regex;
-            txtSql.SearchFlags = flags;
-            txtSql.TargetStart = 0;
-            txtSql.TargetEnd = txtSql.TextLength;
-
-            var pos = txtSql.SearchInTarget("[<][a-zA-Z0-9_]+[>]");
-
-            if (pos == -1)
-            {
-                SystemSounds.Beep.Play();
-            }
-
-            if (pos >= 0)
-                txtSql.SetSel(txtSql.TargetStart, txtSql.TargetEnd);
-        }
-
-
         #endregion
-
-
-
-
-
 
 
 
@@ -986,13 +398,13 @@ Para buscar por contenido";
 
             if (DBObj.type != "U" && DBObj.type != "V" && DBObj.type != "S")
             {
-                MessageBox.Show("Esta opción es sólo para Tablas y Vistas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("This option is only for Tables and Views", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             int Count = DBObj.GetCountRows();
-            string TipoObjeto = (DBObj.type.Trim() == "U" ? "Tabla" : "Vista");
-            MessageBox.Show($"La {TipoObjeto} [{DBObj.schema_name}].[{DBObj.name}] tiene {Count} Filas.", "Filas", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            string TipoObjeto = (DBObj.type.Trim() == "U" ? "Table" : "View");
+            MessageBox.Show($"{TipoObjeto} [{DBObj.schema_name}].[{DBObj.name}] has {Count} Rows.", "Rows", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -1080,7 +492,7 @@ Para buscar por contenido";
         {
             if (txtSql.Modified)
             {
-                var res = MessageBox.Show("El Documento ha sido Modificado.\n¿Desea Grabar antes de Salir?", "Atención", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                var res = MessageBox.Show("The Document has been modified.\n¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (res == DialogResult.Yes)
                 {
                     if (CurrentFile == "")
@@ -1118,13 +530,13 @@ Para buscar por contenido";
             
             if (txtSql.Text.Trim().ToString() == "")
             {
-                MessageBox.Show(this, "No hay sentencia SQL para ejecutar", "Atención", MessageBoxButtons.OK);
+                MessageBox.Show(this, "There is no SQL Code to execute", "Information", MessageBoxButtons.OK);
                 return;
             }
 
             if (hSql.ConnectionStatus == false)
             {
-                MessageBox.Show(this, "Debe estar conectado(a) a una Base de Datos.", "Atención", MessageBoxButtons.OK);
+                MessageBox.Show(this, "You should be connected to a Database. ;)", "Attention", MessageBoxButtons.OK);
                 return;
             }
 
@@ -1142,20 +554,20 @@ Para buscar por contenido";
             {
                 if (threadQuery.IsAlive)
                 {
-                    MessageBox.Show("Hay una consulta en curso...", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("There is an active query running...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
 
             if (!hSql.ConnectionStatus)
             {
-                MessageBox.Show(this, "Debe estar conectado(a) a una Base de Datos.", "Atención", MessageBoxButtons.OK);
+                MessageBox.Show(this, "You should be connected to a Database. ;)", "Attention", MessageBoxButtons.OK);
                 return;
             }
 
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Conexión a SQL con Error:\r\n{hSql.ErrorString}\r\n{hSql.Messages}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show($"Not connected :({EOL}{hSql.ErrorString}{EOL}{hSql.Messages}", "Oh No!!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -1163,7 +575,7 @@ Para buscar por contenido";
 
             if (txtSql.Text.Trim().ToString() == "")
             {
-                MessageBox.Show(this, "No hay sentencia SQL para ejecutar", "Atención", MessageBoxButtons.OK);
+                MessageBox.Show(this, "There is no SQL Code to execute", "Information", MessageBoxButtons.OK);
                 return;
             }
 
@@ -1301,7 +713,7 @@ Para buscar por contenido";
 
                 if (laDataLoadStatus.Text == "")
                 {
-                    laDataLoadStatus.Text = "Cargando Data...";
+                    laDataLoadStatus.Text = "Loading Data...";
                     laDataLoadStatus.Visible = true;
                 }
                 else
@@ -1348,42 +760,6 @@ Para buscar por contenido";
         }
 
 
-
-        /// <summary>
-        /// Selección "scintilla" a LOWERCASE
-        /// </summary>
-        private void Lowercase()
-        {
-
-            // save the selection
-            int start = txtSql.SelectionStart;
-            int end = txtSql.SelectionEnd;
-
-            // modify the selected text
-            txtSql.ReplaceSelection(txtSql.GetTextRange(start, end - start).ToLower());
-
-            // preserve the original selection
-            txtSql.SetSelection(start, end);
-        }
-
-
-        /// <summary>
-        /// Selección "scintilla" a UPPERCASE
-        /// </summary>
-        private void Uppercase()
-        {
-
-            // save the selection
-            int start = txtSql.SelectionStart;
-            int end = txtSql.SelectionEnd;
-
-            // modify the selected text
-            txtSql.ReplaceSelection(txtSql.GetTextRange(start, end - start).ToUpper());
-
-            // preserve the original selection
-            txtSql.SetSelection(start, end);
-        }
-
         
         /// <summary>
         /// Cierre del Documento en curso.
@@ -1394,7 +770,7 @@ Para buscar por contenido";
         {
             if (txtSql.Modified)
             {
-                var res = MessageBox.Show("El Documento ha sido Modificado.\nDesea Grabar antes de Cerrarlo?", "Atención", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                var res = MessageBox.Show("The Document has been modified.\n¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (res == DialogResult.Yes)
                 {
                     if (CurrentFile == "")
@@ -1408,7 +784,7 @@ Para buscar por contenido";
             IsEncrypted = false;
             txtSql.Text = "";
             this.Text = "SQLCrypt";
-            tssLaStat.Text = "Archivo Cerrado...";
+            tssLaStat.Text = "File Closed...";
             txtSql.SetSavePoint();
             txtSql.EmptyUndoBuffer();
         }
@@ -1504,8 +880,7 @@ Para buscar por contenido";
         /// <param name="e"></param>
         private void ConnectToDatabase(object sender, EventArgs e)
         {
-            if (hSql.ConnectionStatus)
-                hSql.CloseDBConn();
+            if (hSql.ConnectionStatus)  hSql.CloseDBConn();
 
             frmConexion frmC = new frmConexion();
             frmC.ShowDialog();
@@ -1531,7 +906,7 @@ Para buscar por contenido";
 
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show(hSql.ErrorString, "Error conectándose a la Base de Datos");
+                MessageBox.Show(hSql.ErrorString, "Error connecting to Database");
                 hSql.ErrorClear();
                 return;
             }
@@ -1594,7 +969,7 @@ Para buscar por contenido";
 
             if (!hSql.SetDatabase(databasesToolStripMenuItem.Text))
             {
-                MessageBox.Show(hSql.ErrorString, $"Error Abriendo Base de Datos\n{hSql.ErrorString}");
+                MessageBox.Show(hSql.ErrorString, $"Error Opening Database\n{hSql.ErrorString}");
                 hSql.ErrorClear();
                 databasesToolStripMenuItem.Text = hSql.GetCurrentDatabase();
                 return;
@@ -1605,7 +980,6 @@ Para buscar por contenido";
             if (splitC.Panel1Collapsed == false)
                 cbObjetosSelect("U");
             
-            // databasesToolStripMenuItem.Text = databasesToolStripMenuItem.Text;
         }
 
 
@@ -1633,7 +1007,7 @@ Para buscar por contenido";
 
             if (!hSql.ConnectionStatus)
             {
-                MessageBox.Show("Debe estar conectado a una Base de Datos", "Atención");
+                MessageBox.Show("You must be connected to a Database", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -1666,7 +1040,7 @@ Para buscar por contenido";
 
             if (string.IsNullOrEmpty(sSqlCommand) || string.IsNullOrWhiteSpace(sSqlCommand))
             {
-                MessageBox.Show("Comando vacío");
+                MessageBox.Show("Empty Command", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -1697,7 +1071,7 @@ Para buscar por contenido";
                 if (hSql.Data == null)
                     if (hSql.ErrorExiste)
                     {
-                        MessageBox.Show(this, $"Error SQL\n{hSql.ErrorString}", "Atención", MessageBoxButtons.OK);
+                        MessageBox.Show(this, $"SQL Error\n{hSql.ErrorString}", "Attention", MessageBoxButtons.OK);
                         hSql.ErrorClear();
                         return;
                     }
@@ -1808,7 +1182,7 @@ Para buscar por contenido";
         /// </summary>
         private void txtSql_SaveFile()
         {
-            System.IO.File.WriteAllText(CurrentFile, txtSql.Text);
+            scintillaC.SaveFile(CurrentFile);
         }
 
 
@@ -1946,7 +1320,7 @@ Para buscar por contenido";
         {
             if (txBuscaEnLista.Text == "")
             {
-                MessageBox.Show("Indique el Texto a buscar en 'Buscar Procs.'");
+                MessageBox.Show("What are you looking for? Set it in 'Find Procs.'");
             }
 
             string Type = ((ObjectType)cbObjetos.SelectedItem).type.Trim();
@@ -1954,7 +1328,7 @@ Para buscar por contenido";
             
             if (Objetos.Count == 0)
             {
-                MessageBox.Show("No se encontraron coincidencias");
+                MessageBox.Show("No matchess found :(");
             }
 
             Load_lstObjetos_ProcFiltered();
@@ -1972,14 +1346,14 @@ Para buscar por contenido";
             {
                 splitC.Panel1Collapsed = true;
                 sTabla = string.Empty;
-                MessageBox.Show("Debe conectarse a una Base de Datos...", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("You must connect to a Database...", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (splitC.Panel1Collapsed)
             {
                 splitC.Panel1Collapsed = false;
-                laBuscarTablas.Text = "Buscar...";
+                laBuscarTablas.Text = "Search...";
                 cbObjetosSelect("U");
                 this.SetMenuTablas();
                 Load_lstObjetos(((ObjectType)cbObjetos.SelectedItem).type.Trim());
@@ -2009,7 +1383,7 @@ Para buscar por contenido";
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
             else
-                MessageBox.Show("No hay elementos Seleccionados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("There are no selected elements", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -2032,8 +1406,9 @@ Para buscar por contenido";
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
             else
-                MessageBox.Show("No hay elementos Seleccionados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("There are no selected Elements", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
 
 
         /// <summary>
@@ -2054,8 +1429,9 @@ Para buscar por contenido";
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
             else
-                MessageBox.Show("No hay elementos Seleccionados", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("There are no selected Elements", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
 
 
         /// <summary>
@@ -2073,7 +1449,7 @@ Para buscar por contenido";
 
             if (DBObj.type != "U" && DBObj.type != "V" && DBObj.type != "S")
             {
-                MessageBox.Show("Esta opción es sólo para Tablas y Vistas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("This options is only for Tables and Views", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             } 
 
@@ -2105,7 +1481,7 @@ Para buscar por contenido";
 
             if (DBObj.type.Trim() != "U")
             {
-                MessageBox.Show("Esta opción aplica sólo para Tablas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("This option is only for Tables", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -2129,7 +1505,7 @@ Para buscar por contenido";
 
             if (DBObj.type.Trim() != "U")
             {
-                MessageBox.Show("Esta opción es sólo para Tablas", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("This option is only for Tables", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -2169,7 +1545,7 @@ Para buscar por contenido";
             Clipboard.Clear();
             Clipboard.SetText(sb.ToString());
 
-            MessageBox.Show("Información en Clipboard", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Información is in the Clipboard", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
 
@@ -2207,82 +1583,9 @@ Para buscar por contenido";
             
             foreach(ColumnDef t in Table.Columns)
             {
-                string sColName = string.Empty;
-                string sColDataType = string.Empty;
-                string sColNullable = string.Empty;
 
-                string sColumna = string.Empty;
-                string DataType = string.Empty;
+                (string sColName, string sColDataType) = t.GetTranslated();
 
-                switch (t.Type)
-                {
-                    case "INT":
-                    case "SMALLINT":
-                    case "TINYINT":
-                    case "BIGINT":
-                    case "BIT":
-                    case "DATETIME":
-                    case "DATE":
-                    case "TIME":
-                    case "FLOAT":
-                    case "DATETIME2":
-                    case "XML":
-                    case "MONEY":
-                    case "TEXT":
-                    case "NTEXT":
-                    case "UNIQUEIDENTIFIER":
-                    case "SQL_VARIANT":
-                        sColumna = $"{t.Name} {t.Type} {(t.Nullable ? "    NULL" : "NOT NULL")}";
-
-                        sColName = t.Name;
-                        sColDataType = $"{t.Type}";
-                        sColNullable = $"{(t.Nullable ? "NULL" : "NOT NULL")}";
-                        break;
-
-                    case "CHAR":
-                    case "VARCHAR":
-                    case "NVARCHAR":
-                    case "BINARY":
-                    case "VARBINARY":
-                        DataType = $"{t.Type}({(t.Length == -1 ? "MAX" : Convert.ToString(t.Length))})";
-                        sColumna = $"{t.Name} {DataType} {(t.Nullable ? "    NULL" : "NOT NULL")}";
-
-                        sColName = t.Name;
-                        sColDataType = $"{t.Type}({(t.Length == -1 ? "MAX" : Convert.ToString(t.Length))})";
-                        sColNullable = $"{(t.Nullable ? "NULL" : "NOT NULL")}";
-                        break;
-
-                    case "NUMERIC":
-                    case "DECIMAL":
-                        DataType = $"{t.Type}({t.Prec},{t.Scale})";
-                        sColumna = $"{t.Name} {DataType} {(t.Nullable ? "    NULL" : "NOT NULL")}";
-
-                        sColName = t.Name;
-                        sColDataType = $"{t.Type}({t.Prec},{t.Scale})";
-                        sColNullable = $"{(t.Nullable ? "NULL" : "NOT NULL")}";
-                        break;
-
-                    default:
-                        try
-                        {
-                            if (t.Collation != "")
-                                sColDataType = $"{t.Type} * {(t.Length == -1 ? "MAX" : Convert.ToString(t.Length))}";
-                            else
-                                sColDataType = $"{t.Type}({(t.Length == -1 ? "MAX" : Convert.ToString(t.Length))},{t.Prec},{t.Scale})";
-                        }
-                        catch
-                        {
-                            sColDataType = string.Format("{0}", t.Type);
-                        }
-
-                        sColumna = string.Format("{0} {1} {2}\n", t.Name, DataType, t.Nullable ? "    NULL" : "NOT NULL", "");
-
-                        sColName = t.Name;
-                        sColNullable = $"{(t.Nullable ? "NULL" : "NOT NULL")}";
-
-                        break;
-                }
-                
                 ListViewItem Item = new ListViewItem(sColName);
                 Item.SubItems.Add(sColDataType);
                 Item.SubItems.Add(t.Nullable? "X": "");
@@ -2309,7 +1612,7 @@ Para buscar por contenido";
 
             if (DBObj.type == "P")
             {
-                MessageBox.Show("Opción no corresponde, el Objeto es un procedimiento...", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Option not applicable, the object is a Stored Procedure...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -2320,7 +1623,7 @@ Para buscar por contenido";
             Clipboard.Clear();
             Clipboard.SetText(sSalida);
 
-            MessageBox.Show("Información pegada en el Clipboard", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show("Information is in theh Clipboard", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
 
@@ -2356,12 +1659,12 @@ Para buscar por contenido";
         {
             if (txBuscaEnLista.Text == "")
             {
-                MessageBox.Show("Indique el Texto a buscar en 'Buscar...'");
+                MessageBox.Show("Set the text to search for in 'Find...'");
             }
             Objetos.FindByText(((ObjectType)cbObjetos.SelectedItem).type, txBuscaEnLista.Text);
             if (Objetos.Count == 0)
             {
-                MessageBox.Show("No se encontraron coincidencias");
+                MessageBox.Show("There are no coincidences", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             Load_lstObjetos_ProcFiltered();
         }
@@ -2380,7 +1683,7 @@ Para buscar por contenido";
                 lstObjetos.Items.Add(n);
             }
 
-            laTablas.Text = $"Objetos: {lstObjetos.Items.Count}";
+            laTablas.Text = $"Objects: {lstObjetos.Items.Count}";
 
         }
 
@@ -2426,7 +1729,7 @@ Para buscar por contenido";
 
             if (!hSql.ConnectionStatus)
             {
-                MessageBox.Show("Debe estar conectado a una Base de Datos", "Atención");
+                MessageBox.Show("You must be connected to a Database ;)", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -2459,7 +1762,7 @@ Para buscar por contenido";
                 string Elementos = "";
                 for (int i = 0; i < lstObjetos.SelectedItems.Count; ++i)
                 {
-                    Elementos += (Elementos != "" ? "\r\n" : "") + lstObjetos.SelectedItems[i].ToString();
+                    Elementos += (Elementos != "" ? EOL : "") + lstObjetos.SelectedItems[i].ToString();
                 }
                 if (Elementos != "")
                     txtSql.DoDragDrop(Elementos, DragDropEffects.Copy);
@@ -2489,7 +1792,7 @@ Para buscar por contenido";
                 for (int x = 0; x < lsColumnas.Items.Count; ++x)
                 {
                     if (lsColumnas.Items[x].Selected)
-                        Elementos += (Elementos != "" ? "\r\n" : "") + $"{lsColumnas.Items[x].Text}";
+                        Elementos += (Elementos != "" ? EOL : "") + $"{lsColumnas.Items[x].Text}";
                 }
                 if (Elementos != "")
                     txtSql.DoDragDrop(Elementos, DragDropEffects.Copy);
@@ -2557,7 +1860,7 @@ Para buscar por contenido";
         {
             if (!hSql.ConnectionStatus)
             {
-                MessageBox.Show("Debe establecer una conexión a Base de Datos", "Atención");
+                MessageBox.Show("Must be connected to a Database...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -2587,7 +1890,7 @@ Para buscar por contenido";
         /// <param name="e"></param>
         private void eliminarEspaciosFinDeLíneaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CutTrailingSpaces();
+            scintillaC.CutTrailingSpaces();
         }
 
         /// <summary>
@@ -2597,7 +1900,8 @@ Para buscar por contenido";
         /// <param name="e"></param>
         private void selecciónAMayúsculasToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Uppercase();
+            scintillaC.SelectionUppercase();
+
         }
 
 
@@ -2608,7 +1912,7 @@ Para buscar por contenido";
         /// <param name="e"></param>
         private void selecciónAMinúsculasToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Lowercase();
+            scintillaC.SelectionLowercase();
         }
 
 
@@ -2659,7 +1963,7 @@ Para buscar por contenido";
         {
             if (!hSql.ConnectionStatus)
             {
-                MessageBox.Show("Debe estar conectado a una Base de Datos", "Atención");
+                MessageBox.Show("Must be connected to a Database...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -2675,7 +1979,17 @@ Para buscar por contenido";
         /// <param name="e"></param>
         private void tABAEspaciosToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TAB_to_spaces();
+            try
+            {
+                int numSpaces = Convert.ToInt32(toolStripTextBox1.Text);
+                scintillaC.TABtoSpaces(numSpaces);
+            }
+            catch
+            {
+                MessageBox.Show("Please enter the number of spaces in 'Tab Size' field", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                return;
+            }
+            
         }
 
         
@@ -2706,7 +2020,7 @@ Para buscar por contenido";
 
                 if (hSql.ErrorExiste)
                 {
-                    MessageBox.Show(hSql.ErrorString, "Error conectándose a la Base de Datos");
+                    MessageBox.Show($"Error connecting to Database ! \r\n {hSql.ErrorString}", "Oh Nooooo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     hSql.ErrorClear();
                     return;
                 }
@@ -2719,9 +2033,9 @@ Para buscar por contenido";
                 Load_cbObjetos();
             }
             if (hSql.ConnectionStatus)
-                MessageBox.Show("Re-Conectado");
+                MessageBox.Show("Re-Connected");
             else
-                MessageBox.Show("No Re-Conectado");
+                MessageBox.Show("No Re-Connected");
         }
 
 
@@ -2732,7 +2046,7 @@ Para buscar por contenido";
         /// <param name="e"></param>
         private void autoCompleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            autoCompleteEnabled = !autoCompleteEnabled;
+            scintillaC.AutoCompleteEnabled = !scintillaC.AutoCompleteEnabled;
             SetAutocompleteMenuItemText();
         }
 
@@ -2750,13 +2064,43 @@ Para buscar por contenido";
         /// <param name="e"></param>
         private void btIndentShow_Click(object sender, EventArgs e)
         {
-            scintilla__IndentationGuides();
+            //scintilla__IndentationGuides();
+            scintillaC.MostrarGuiaIndentacion();
         }
 
         
         private void txtSql_TextChanged(object sender, EventArgs e)
         {
-            scintilla__TextChanged();
+            textChanged();
+        }
+
+
+
+        /// <summary>
+        /// Llamado por el evento de Scintilla
+        /// </summary>
+        /// <param name="tssLaStat"></param>
+        /// <param name="_maxLineNumberCharLength"></param>
+        public void textChanged()
+        {
+            if (txtSql.Modified && tssLaStat.Text != "File Modified...")
+                tssLaStat.Text = "File Modified...";
+
+            if (txtSql.Margins[0].Width == 3)
+                return;
+
+            // Did the number of characters in the line number display change?
+            // i.e. nnn VS nn, or nnnn VS nn, etc...
+            var maxLineNumberCharLength = txtSql.Lines.Count.ToString().Length;
+            if (maxLineNumberCharLength == scintillaC._maxLineNumberCharLength)
+                return;
+
+            // Calculate the width required to display the last line number
+            // and include some padding for good measure.
+            const int padding = 2;
+            txtSql.Margins[0].Width = txtSql.TextWidth(Style.LineNumber, new string('9', maxLineNumberCharLength + 1)) + padding;
+            scintillaC._maxLineNumberCharLength = maxLineNumberCharLength;
+
         }
 
 
@@ -2787,7 +2131,7 @@ Para buscar por contenido";
         /// <param name="e"></param>
         private void previousBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            txtSql_PreviousBookmark();
+            scintillaC.PreviousBookmark();
         }
 
 
@@ -2798,7 +2142,7 @@ Para buscar por contenido";
         /// <param name="e"></param>
         private void toggleBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            txtSql_ToogleBookmark();
+            scintillaC.ToogleBookmark();
         }
 
 
@@ -2809,7 +2153,7 @@ Para buscar por contenido";
         /// <param name="e"></param>
         private void goToNextBookmarkToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            txtSql_NextBookmark();
+            scintillaC.NextBookmark();
         }
 
 
@@ -2820,7 +2164,8 @@ Para buscar por contenido";
         /// <param name="e"></param>
         private void completarSnippetToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            complete_snippet();
+            //complete_snippet();
+            scintillaC.complete_snippet();
         }
 
   
@@ -2852,7 +2197,7 @@ Para buscar por contenido";
             if (lsColumnas.SelectedIndices.Count == 0) return;
 
             string Elementos = "";
-            var space_num = txtSql.GetColumn(Math.Min(txtSql.SelectionStart, txtSql.SelectionEnd));
+            var space_num = scintillaC.CurrentMinColumn;
             var fill = new string(' ', space_num-1 < 0? 0: space_num-1);
 
             for (int x = 0; x < lsColumnas.Items.Count; ++x)
@@ -2875,7 +2220,7 @@ Para buscar por contenido";
             if (QueryController.sql_spid == 0 && QueryController.hSqlQuery != null && !QueryController.InQuery)
             {
                 QueryController.CancelQuery = true;
-                MessageBox.Show("Query finalizada, la data está en proceso de Carga, ya no es posible Cancelar...", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Query ended, data is beeing loaded, cannot Cancel...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -2892,13 +2237,13 @@ Para buscar por contenido";
                 QueryController.CancelQuery = true;
                 if (hSql.ErrorExiste || hSql.Messages != "")
                 {
-                    MessageBox.Show($"Error\r\n{hSql.ErrorString}\r\n{hSql.Messages}", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"SQL Connection with Error: {EOL}{hSql.ErrorString}{EOL}{EOL}{hSql.Messages}", "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else
             {
                 DisposeTimer();
-                MessageBox.Show($"No existe un proceso de Consulta activo", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show($"There is no running Query", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             if (threadQuery != null)
@@ -2910,6 +2255,11 @@ Para buscar por contenido";
         }
 
 
+        /// <summary>
+        /// formatSQLCodeToolStripMenuItem_Click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void formatSQLCodeToolStripMenuItem_Click(object sender, EventArgs e)
         {    
             var SQLFormatter = new SQLFormatter();
@@ -2922,15 +2272,15 @@ Para buscar por contenido";
             
             if (sqlErrors.Count > 0)
             {
-                HighlightErrorClean();
+                scintillaC.HighlightErrorClean();
                 
                 string sErrors = "";
                 foreach (var error in sqlErrors)
                 {
                     sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}\n";
-                    HighlightError(error.line - 1, error.column);
+                    scintillaC.HighlightError(error.line - 1, error.column);
                 }
-                MessageBox.Show(sErrors, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(sErrors, "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
@@ -2943,12 +2293,17 @@ Para buscar por contenido";
         }
 
 
+        /// <summary>
+        /// checkSQLCodeToolStripMenuItem_Click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void checkSQLCodeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var sqlcheck = new SQLCheck();
             List<SQLParseError> sqlErrors;
 
-            HighlightErrorClean();
+            scintillaC.HighlightErrorClean();
 
             if (txtSql.SelectedText != "")
                 sqlErrors = sqlcheck.RunCheck(txtSql.SelectedText);
@@ -2959,100 +2314,22 @@ Para buscar por contenido";
             foreach (var error in sqlErrors)
             {
                 sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}\n";
-                HighlightError(error.line-1, error.column);
+                scintillaC.HighlightError(error.line-1, error.column);
             }
             if (sErrors != "")
-                MessageBox.Show(sErrors, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(sErrors, "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             else
             {
-                HighlightErrorClean();
-                MessageBox.Show("Sintaxis OK", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                scintillaC.HighlightErrorClean();
+                MessageBox.Show("Sintaxis is OK", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
 
-        private void HighlightErrorClean()
-        {
-            const int NUM = 8;
-            txtSql.IndicatorCurrent = NUM;
-            txtSql.IndicatorClearRange(0, txtSql.TextLength);
-        }
-
-
-        private void HighlightError(int row, int col)
-        {
-            
-            // Indicators 0-7 could be in use by a lexer
-            // so we'll use indicator 8 to highlight words.
-            const int NUM = 8;
-            // Remove all uses of our indicator
-            txtSql.IndicatorCurrent = NUM;
-
-            // Update indicator appearance
-            txtSql.Indicators[NUM].Style = IndicatorStyle.StraightBox;
-            txtSql.Indicators[NUM].Under = true;
-            txtSql.Indicators[NUM].ForeColor = Color.Magenta;
-            txtSql.Indicators[NUM].OutlineAlpha = 80;
-            txtSql.Indicators[NUM].Alpha = 80;
-
-            // Search the document
-            txtSql.SearchFlags = SearchFlags.None;
-            int _row = 0;
-
-            if (txtSql.SelectedText != "")
-            {
-                _row = txtSql.LineFromPosition(txtSql.SelectionStart);
-            }
-            else
-            {
-                _row = 0;
-            }
-
-            int end_pos = 0;
-            int start_pos = txtSql.Lines[_row + row].Position + col -1;
-            for (int i = start_pos; i < txtSql.TextLength && txtSql.Text.Substring(i, 1) != " "; i++)
-                end_pos = i;
-
-            txtSql.IndicatorFillRange(start_pos, end_pos - start_pos +1);
-            txtSql.SelectionStart = start_pos;
-            txtSql.SelectionEnd = start_pos;
-        }
-
-
-        private void splitByComma()
-        {
-            int row = txtSql.LineFromPosition(txtSql.SelectionStart);
-            int pos_ini = txtSql.Lines[row].Position;
-            //int pos_fin = txtSql.Lines[row].EndPosition;
-
-            for (int i = pos_ini; i < txtSql.TextLength ; i++)
-            {
-                if ( i+1  >= txtSql.TextLength )
-                    break;
-
-                if (txtSql.Text.Substring(i, 2) == "\r\n")
-                    break;
-
-                if (txtSql.Text.Substring(i, 1) == ",")
-                {
-                    i++;
-                    int len = 0;
-                    txtSql.SelectionStart = i;
-
-                    while (txtSql.Text.Substring(i + len, 1) == " ")
-                        len++;
-
-                    txtSql.SelectionEnd = i + len;
-                    txtSql.ReplaceSelection("\r\n");
-                    i = txtSql.SelectionStart;
-
-                }
-                
-            }
-
-        }
-
-
+        /// <summary>
+        /// RemoveMultiSpaces
+        /// Wipe spaces until next no-space character or EOL
+        /// </summary>
         private void RemoveMultiSpaces()
         {
             int pos_ini = txtSql.SelectionStart;
@@ -3069,15 +2346,28 @@ Para buscar por contenido";
         }
 
 
+
+        /// <summary>
+        /// splitCommasToolStripMenuItem_Click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void splitCommasToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            splitByComma();
+            scintillaC.splitByComma();
         }
 
 
+
+        /// <summary>
+        /// removeMultiSpacesToolStripMenuItem_Click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void removeMultiSpacesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RemoveMultiSpaces();
         }
+
     }
 }

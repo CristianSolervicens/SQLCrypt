@@ -46,6 +46,7 @@
             this.laMessages = new System.Windows.Forms.Label();
             this.btBuscar = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
+            this.txtMessages = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -104,62 +105,62 @@
             this.siguienteResultSetToolStripMenuItem,
             this.previoResultSetToolStripMenuItem});
             this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
-            this.archivoToolStripMenuItem.Size = new System.Drawing.Size(60, 23);
-            this.archivoToolStripMenuItem.Text = "Archivo";
+            this.archivoToolStripMenuItem.Size = new System.Drawing.Size(37, 23);
+            this.archivoToolStripMenuItem.Text = "File";
             // 
             // salirToolStripMenuItem
             // 
             this.salirToolStripMenuItem.Name = "salirToolStripMenuItem";
-            this.salirToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.salirToolStripMenuItem.Text = "Salir";
+            this.salirToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.salirToolStripMenuItem.Text = "Close";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(219, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(213, 6);
             // 
             // grabarJSONToolStripMenuItem
             // 
             this.grabarJSONToolStripMenuItem.Name = "grabarJSONToolStripMenuItem";
-            this.grabarJSONToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.grabarJSONToolStripMenuItem.Text = "Grabar JSON";
+            this.grabarJSONToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.grabarJSONToolStripMenuItem.Text = "Save Result as JSON";
             this.grabarJSONToolStripMenuItem.Click += new System.EventHandler(this.grabarJSONToolStripMenuItem_Click);
             // 
             // grabarExcellToolStripMenuItem
             // 
             this.grabarExcellToolStripMenuItem.Name = "grabarExcellToolStripMenuItem";
-            this.grabarExcellToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.grabarExcellToolStripMenuItem.Text = "Grabar Excell";
+            this.grabarExcellToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.grabarExcellToolStripMenuItem.Text = "Save Result as Excell";
             this.grabarExcellToolStripMenuItem.Click += new System.EventHandler(this.grabarExcellToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(219, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(213, 6);
             // 
             // verMensajesToolStripMenuItem
             // 
             this.verMensajesToolStripMenuItem.Name = "verMensajesToolStripMenuItem";
             this.verMensajesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
-            this.verMensajesToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.verMensajesToolStripMenuItem.Text = "Ver Mensajes";
+            this.verMensajesToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.verMensajesToolStripMenuItem.Text = "Show Messages";
             this.verMensajesToolStripMenuItem.Click += new System.EventHandler(this.verMensajesToolStripMenuItem_Click);
             // 
             // siguienteResultSetToolStripMenuItem
             // 
             this.siguienteResultSetToolStripMenuItem.Name = "siguienteResultSetToolStripMenuItem";
             this.siguienteResultSetToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.siguienteResultSetToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.siguienteResultSetToolStripMenuItem.Text = "Siguiente Result-Set";
+            this.siguienteResultSetToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.siguienteResultSetToolStripMenuItem.Text = "Next Result-Set";
             this.siguienteResultSetToolStripMenuItem.Click += new System.EventHandler(this.siguienteResultSetToolStripMenuItem_Click);
             // 
             // previoResultSetToolStripMenuItem
             // 
             this.previoResultSetToolStripMenuItem.Name = "previoResultSetToolStripMenuItem";
             this.previoResultSetToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.previoResultSetToolStripMenuItem.Size = new System.Drawing.Size(222, 22);
-            this.previoResultSetToolStripMenuItem.Text = "Previo Result-Set";
+            this.previoResultSetToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.previoResultSetToolStripMenuItem.Text = "Previous Result-Set";
             this.previoResultSetToolStripMenuItem.Click += new System.EventHandler(this.previoResultSetToolStripMenuItem_Click);
             // 
             // toolStripTextBox1
@@ -171,8 +172,8 @@
             // ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem
             // 
             this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem.Name = "ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem";
-            this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem.Size = new System.Drawing.Size(328, 23);
-            this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem.Text = "[Ctrl] [N] Siguiente Result Set       [Ctrl] [P] Previo Result Set";
+            this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem.Size = new System.Drawing.Size(316, 23);
+            this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem.Text = "[Ctrl] [N] Next Result Set       [Ctrl] [P] Previous Result Set";
             // 
             // laMessages
             // 
@@ -186,20 +187,36 @@
             // 
             // btBuscar
             // 
-            this.btBuscar.Location = new System.Drawing.Point(636, 3);
+            this.btBuscar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btBuscar.Location = new System.Drawing.Point(639, 3);
             this.btBuscar.Name = "btBuscar";
-            this.btBuscar.Size = new System.Drawing.Size(75, 23);
+            this.btBuscar.Size = new System.Drawing.Size(61, 22);
             this.btBuscar.TabIndex = 19;
-            this.btBuscar.Text = "&Search";
+            this.btBuscar.Text = "&Find";
             this.btBuscar.UseVisualStyleBackColor = true;
             this.btBuscar.Click += new System.EventHandler(this.btBuscar_Click);
             // 
             // txtSearch
             // 
-            this.txtSearch.Location = new System.Drawing.Point(716, 4);
+            this.txtSearch.Location = new System.Drawing.Point(705, 4);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(197, 20);
+            this.txtSearch.Size = new System.Drawing.Size(210, 20);
             this.txtSearch.TabIndex = 20;
+            // 
+            // txtMessages
+            // 
+            this.txtMessages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtMessages.BackColor = System.Drawing.Color.Olive;
+            this.txtMessages.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtMessages.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMessages.Location = new System.Drawing.Point(199, 93);
+            this.txtMessages.Multiline = true;
+            this.txtMessages.Name = "txtMessages";
+            this.txtMessages.ReadOnly = true;
+            this.txtMessages.Size = new System.Drawing.Size(767, 442);
+            this.txtMessages.TabIndex = 21;
             // 
             // frmDespliegue
             // 
@@ -207,6 +224,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btSalir;
             this.ClientSize = new System.Drawing.Size(1139, 621);
+            this.Controls.Add(this.txtMessages);
             this.Controls.Add(this.txtSearch);
             this.Controls.Add(this.btBuscar);
             this.Controls.Add(this.laMessages);
@@ -217,7 +235,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "frmDespliegue";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Despliegue de resultados";
+            this.Text = "Result Sets";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmDespliegue_Closing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmDespliegue_Closed);
             this.Load += new System.EventHandler(this.frmDespliegue_Load);
@@ -248,6 +266,7 @@
         private System.Windows.Forms.Label laMessages;
         private System.Windows.Forms.Button btBuscar;
         private System.Windows.Forms.TextBox txtSearch;
+        private System.Windows.Forms.TextBox txtMessages;
     }
    
 }
