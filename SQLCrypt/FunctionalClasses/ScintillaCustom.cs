@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ScintillaNET;
 using System.Drawing;
 using System.Reflection.Emit;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using System.Media;
 using System.IO;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 
 namespace SQLCrypt.FunctionalClasses
@@ -19,8 +19,8 @@ namespace SQLCrypt.FunctionalClasses
     {
         private const int BOOKMARK_MARGIN = 1; // Conventionally the symbol margin
         private const int BOOKMARK_MARKER = 3; // Arbitrary. Any valid index would work.
-        private const int NUM = 8;
-        private const string EOL = "\r\n";
+        private const int ERROR_INDICATOR = 8; // Indicator used For Error Syntax Marking
+        private const string EOL = "\r\n";     // End Of Line CONSTANT
 
         private bool scintilla_end_mode = false;
         private string autoCompleteKeywords = "";
@@ -31,7 +31,6 @@ namespace SQLCrypt.FunctionalClasses
         private string keyWords2;
 
         public int _maxLineNumberCharLength { get; internal set; }
-
         private ScintillaNET.Scintilla scintillaCtrl { get; set; }
         public bool AutoCompleteEnabled { get; set; }
 
@@ -54,6 +53,50 @@ namespace SQLCrypt.FunctionalClasses
               }
         }
 
+
+        public int CurrentMinLine
+        {
+            get
+            {
+                return scintillaCtrl.LineFromPosition(Math.Min(scintillaCtrl.SelectionStart, scintillaCtrl.SelectionEnd));
+            }
+        }
+
+
+        public int CurrentMaxLine
+        {
+            get
+            {
+                return scintillaCtrl.LineFromPosition(Math.Max(scintillaCtrl.SelectionStart, scintillaCtrl.SelectionEnd));
+            }
+
+        }
+
+
+        public string EndOfLine
+        {
+            get
+            {
+                string _EOL = "";
+                switch (scintillaCtrl.EolMode)
+                {
+                    case Eol.Lf:
+                        _EOL = "\n";
+                        break;
+                    case Eol.Cr:
+                        _EOL = "\r";
+                        break;
+                    case Eol.CrLf:
+                        _EOL = "\r\n";
+                        break;
+                    default:
+                        _EOL = "\r\n";
+                        break;
+                }
+                return _EOL;
+            }
+        }
+        
 
         public int CurrentColumn
         {
@@ -145,15 +188,15 @@ namespace SQLCrypt.FunctionalClasses
             scintillaCtrl.MarginClick += txtSql_MarginClick;
 
             //------------------
-            // Remove all uses of our indicator
-            scintillaCtrl.IndicatorCurrent = NUM;
+            // Constante de Indicador usado para Marcado de Errores
+            scintillaCtrl.IndicatorCurrent = ERROR_INDICATOR;
 
             // Update indicator appearance
-            scintillaCtrl.Indicators[NUM].Style = IndicatorStyle.StraightBox;
-            scintillaCtrl.Indicators[NUM].Under = true;
-            scintillaCtrl.Indicators[NUM].ForeColor = Color.Magenta;
-            scintillaCtrl.Indicators[NUM].OutlineAlpha = 80;
-            scintillaCtrl.Indicators[NUM].Alpha = 80;
+            scintillaCtrl.Indicators[ERROR_INDICATOR].Style = IndicatorStyle.StraightBox;
+            scintillaCtrl.Indicators[ERROR_INDICATOR].Under = true;
+            scintillaCtrl.Indicators[ERROR_INDICATOR].ForeColor = Color.Magenta;
+            scintillaCtrl.Indicators[ERROR_INDICATOR].OutlineAlpha = 80;
+            scintillaCtrl.Indicators[ERROR_INDICATOR].Alpha = 80;
 
         }
 
@@ -162,6 +205,8 @@ namespace SQLCrypt.FunctionalClasses
         {
             if (File.Exists(keywordFile))
                 keyWords = File.ReadAllText(keywordFile);
+            else
+                return;
 
             keyWords = keyWords.Replace(EOL, " ");
         }
@@ -171,6 +216,8 @@ namespace SQLCrypt.FunctionalClasses
         {
             if (File.Exists(keyword2File))
                 keyWords2 = File.ReadAllText(keyword2File);
+            else
+                return;
 
             keyWords2 = keyWords2.Replace(EOL, " ");
         }
@@ -246,14 +293,13 @@ namespace SQLCrypt.FunctionalClasses
         {
             int row = scintillaCtrl.CurrentLine;
             int pos_ini = scintillaCtrl.Lines[row].Position;
-            //int pos_fin = txtSql.Lines[row].EndPosition;
 
             for (int i = pos_ini; i < scintillaCtrl.TextLength; i++)
             {
                 if (i + 1 >= scintillaCtrl.TextLength)
                     break;
 
-                if (scintillaCtrl.Text.Substring(i, 2) == EOL)
+                if (scintillaCtrl.Text.Substring(i, 2) == EOL || scintillaCtrl.Text.Substring(i, 1) == "\n" )
                     break;
 
                 if (scintillaCtrl.Text.Substring(i, 1) == ",")
@@ -268,27 +314,26 @@ namespace SQLCrypt.FunctionalClasses
                     scintillaCtrl.SelectionEnd = i + len;
                     scintillaCtrl.ReplaceSelection(EOL);
                     i = scintillaCtrl.SelectionStart;
-
                 }
-
             }
-
         }
 
 
 
         /// <summary>
-        /// HighlightErrorClean  OK
+        /// HighlightErrorClean
+        /// Clean all marks of the type ERROR_INDICATOR, Used for Syntax Errors Higlight
         /// </summary>
         public void HighlightErrorClean()
         {
-            scintillaCtrl.IndicatorCurrent = NUM;
+            scintillaCtrl.IndicatorCurrent = ERROR_INDICATOR;
             scintillaCtrl.IndicatorClearRange(0, scintillaCtrl.TextLength);
         }
 
 
         /// <summary>
-        /// HighlightError  OK
+        /// HighlightError
+        /// Mark Syntax Error word by position
         /// </summary>
         /// <param name="row"></param>
         /// <param name="col"></param>
@@ -301,7 +346,7 @@ namespace SQLCrypt.FunctionalClasses
 
             if (scintillaCtrl.SelectedText != "")
             {
-                _row = scintillaCtrl.LineFromPosition(scintillaCtrl.SelectionStart);
+                _row = CurrentMinLine;
             }
             else
             {
@@ -310,8 +355,14 @@ namespace SQLCrypt.FunctionalClasses
 
             int end_pos = 0;
             int start_pos = scintillaCtrl.Lines[_row + row].Position + col - 1;
-            for (int i = start_pos; i < scintillaCtrl.TextLength && scintillaCtrl.Text.Substring(i, 1) != " "; i++)
+            
+            for (int i = start_pos;
+                i < scintillaCtrl.TextLength && scintillaCtrl.Text.Substring(i, 1) != " " && scintillaCtrl.Text.Substring(i,2) != EOL && scintillaCtrl.Text.Substring(i, 1) != "\n"; i++)
                 end_pos = i;
+            
+            // Si no hubiera nada que marcar hacia adelante, marco 4 posiciones hacia atrás!
+            if (end_pos == start_pos )
+                start_pos -= 4;
 
             scintillaCtrl.IndicatorFillRange(start_pos, end_pos - start_pos + 1);
             scintillaCtrl.SelectionStart = start_pos;
@@ -390,15 +441,16 @@ namespace SQLCrypt.FunctionalClasses
 
             if (scintillaCtrl.SelectedText.Length > 0)
             {
-                int f = scintillaCtrl.LineFromPosition(scintillaCtrl.SelectionStart);
-                int t = scintillaCtrl.LineFromPosition(scintillaCtrl.SelectionEnd);
+                //Initial & Final Lines
+                int initialLine = CurrentMinLine;
+                int endLine = CurrentMaxLine;
 
-                for (int i = f; i <= t; i++)
+                for (int i = initialLine; i <= endLine; i++)
                 {
                     scintillaCtrl.InsertText(scintillaCtrl.Lines[i].Position, "--");
                 }
-                scintillaCtrl.SelectionStart = scintillaCtrl.Lines[f].Position;
-                scintillaCtrl.SelectionEnd = scintillaCtrl.Lines[t].EndPosition - 1;
+                scintillaCtrl.SelectionStart = scintillaCtrl.Lines[initialLine].Position;
+                scintillaCtrl.SelectionEnd = scintillaCtrl.Lines[endLine].EndPosition - 1;
             }
         }
 
@@ -410,10 +462,10 @@ namespace SQLCrypt.FunctionalClasses
         {
             if (scintillaCtrl.SelectedText.Length > 0)
             {
-                int f = scintillaCtrl.LineFromPosition(scintillaCtrl.SelectionStart);
-                int t = scintillaCtrl.LineFromPosition(scintillaCtrl.SelectionEnd);
+                int initialLine = CurrentMinLine;
+                int endLine = CurrentMaxLine;
 
-                for (int i = f; i <= t; i++)
+                for (int i = initialLine; i <= endLine; i++)
                 {
                     string s = scintillaCtrl.Lines[i].Text;
                     if (s.TrimStart().StartsWith("--"))
@@ -427,8 +479,8 @@ namespace SQLCrypt.FunctionalClasses
                         scintillaCtrl.ReplaceSelection(newText);
                     }
                 }
-                scintillaCtrl.SelectionStart = scintillaCtrl.Lines[f].Position;
-                scintillaCtrl.SelectionEnd = scintillaCtrl.Lines[t].EndPosition - 1;
+                scintillaCtrl.SelectionStart = scintillaCtrl.Lines[initialLine].Position;
+                scintillaCtrl.SelectionEnd = scintillaCtrl.Lines[endLine].EndPosition - 1;
             }
         }
 
@@ -602,9 +654,73 @@ namespace SQLCrypt.FunctionalClasses
         }
 
 
+
+        /// <summary>
+        /// Save Scintilla Text to File
+        /// </summary>
+        /// <param name="fileName"></param>
         public void SaveFile(string fileName)
         {
+            //byte[] bytes = Encoding.Default.GetBytes(scintillaCtrl.Text);
+            //Encoding.UTF8.GetString(bytes);
+            //System.IO.File.WriteAllText(fileName, Encoding.UTF8.GetString(bytes));
+            
             System.IO.File.WriteAllText(fileName, scintillaCtrl.Text);
+            
+        }
+
+
+
+        /// <summary>
+        /// Lee Archivo UTF-8 en Scintilla
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void LoadFile(string fileName)
+        {
+            Encoding encoding = GetEncoding(fileName);
+
+            byte[] data = System.IO.File.ReadAllBytes(fileName);
+            scintillaCtrl.Text = encoding.GetString(data);
+
+            // scintillaCtrl.Text = System.IO.File.ReadAllText(fileName);
+        }
+
+        //public static Encoding GetStringEncoding(string text)
+        //{
+        //    var bom = new byte[4];
+        //    using (var reader = new StringReader(text))
+        //    {
+        //        bom = reader.Read(bom, 0, 4);
+        //    }
+        //}
+
+
+        /// <summary>
+        /// GetEncoding
+        /// Get File Encoding
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static Encoding GetEncoding(string filename)
+        {
+            // Read the BOM
+            var bom = new byte[4];
+            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+            {
+                file.Read(bom, 0, 4);
+            }
+
+            // Analyze the BOM
+            if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return Encoding.UTF7;
+            if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return Encoding.UTF8;
+            if (bom[0] == 0xff && bom[1] == 0xfe && bom[2] == 0 && bom[3] == 0) return Encoding.UTF32; //UTF-32LE
+            if (bom[0] == 0xff && bom[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
+            if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
+            if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return new UTF32Encoding(true, true);  //UTF-32BE
+
+            // We actually have no idea what the encoding is if we reach this point, so
+            // you may wish to return null instead of defaulting to ASCII
+            return Encoding.ASCII;
         }
 
 
@@ -751,6 +867,10 @@ namespace SQLCrypt.FunctionalClasses
 
 
 
+        /// <summary>
+        /// BraceHighLight
+        /// Brace Matching Highlight based on current position
+        /// </summary>
         public void BraceHighLight()
         {
             // Has the caret changed position?
@@ -788,7 +908,8 @@ namespace SQLCrypt.FunctionalClasses
 
 
         /// <summary>
-        /// TABtoSpaces   OJO
+        /// TABtoSpaces
+        /// Change Tab Ocurrence by their corresponding spaces.
         /// </summary>
         public void TABtoSpaces(int TabSpaces)
         {

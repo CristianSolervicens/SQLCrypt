@@ -1,4 +1,6 @@
-﻿namespace SQLCrypt
+﻿using System.Windows.Forms;
+
+namespace SQLCrypt
 {
    partial class frmDespliegue
    {
@@ -28,6 +30,9 @@
       /// </summary>
       private void InitializeComponent()
       {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDespliegue));
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.btSalir = new System.Windows.Forms.Button();
@@ -56,15 +61,30 @@
             this.dataGridView.AllowUserToAddRows = false;
             this.dataGridView.AllowUserToDeleteRows = false;
             this.dataGridView.AllowUserToOrderColumns = true;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            this.dataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            this.dataGridView.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
+            this.dataGridView.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGridView.Location = new System.Drawing.Point(0, 27);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.ReadOnly = true;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            this.dataGridView.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            this.dataGridView.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.SystemColors.Control;
             this.dataGridView.RowTemplate.Height = 24;
+            this.dataGridView.ShowCellErrors = false;
+            this.dataGridView.ShowRowErrors = false;
             this.dataGridView.Size = new System.Drawing.Size(1139, 594);
             this.dataGridView.TabIndex = 0;
             this.dataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dataGridView_DataError);
@@ -72,17 +92,19 @@
             // 
             // btSalir
             // 
+            this.btSalir.BackColor = System.Drawing.SystemColors.Control;
             this.btSalir.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btSalir.Location = new System.Drawing.Point(12, 59);
             this.btSalir.Name = "btSalir";
             this.btSalir.Size = new System.Drawing.Size(41, 21);
             this.btSalir.TabIndex = 15;
             this.btSalir.Text = "Salir";
-            this.btSalir.UseVisualStyleBackColor = true;
+            this.btSalir.UseVisualStyleBackColor = false;
             this.btSalir.Click += new System.EventHandler(this.btSalir_Click);
             // 
             // menuStrip1
             // 
+            this.menuStrip1.BackColor = System.Drawing.SystemColors.Control;
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.archivoToolStripMenuItem,
             this.toolStripTextBox1,
@@ -165,6 +187,7 @@
             // 
             // toolStripTextBox1
             // 
+            this.toolStripTextBox1.BackColor = System.Drawing.SystemColors.Control;
             this.toolStripTextBox1.Enabled = false;
             this.toolStripTextBox1.Name = "toolStripTextBox1";
             this.toolStripTextBox1.Size = new System.Drawing.Size(240, 23);
@@ -178,6 +201,7 @@
             // laMessages
             // 
             this.laMessages.AutoSize = true;
+            this.laMessages.BackColor = System.Drawing.SystemColors.Control;
             this.laMessages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.laMessages.Location = new System.Drawing.Point(922, 8);
             this.laMessages.Name = "laMessages";
@@ -187,17 +211,19 @@
             // 
             // btBuscar
             // 
+            this.btBuscar.BackColor = System.Drawing.SystemColors.Control;
             this.btBuscar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btBuscar.Location = new System.Drawing.Point(639, 3);
             this.btBuscar.Name = "btBuscar";
             this.btBuscar.Size = new System.Drawing.Size(61, 22);
             this.btBuscar.TabIndex = 19;
             this.btBuscar.Text = "&Find";
-            this.btBuscar.UseVisualStyleBackColor = true;
+            this.btBuscar.UseVisualStyleBackColor = false;
             this.btBuscar.Click += new System.EventHandler(this.btBuscar_Click);
             // 
             // txtSearch
             // 
+            this.txtSearch.BackColor = System.Drawing.SystemColors.Control;
             this.txtSearch.Location = new System.Drawing.Point(705, 4);
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(210, 20);
@@ -208,9 +234,10 @@
             this.txtMessages.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtMessages.BackColor = System.Drawing.Color.Olive;
+            this.txtMessages.BackColor = System.Drawing.Color.DimGray;
             this.txtMessages.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtMessages.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMessages.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtMessages.ForeColor = System.Drawing.SystemColors.Info;
             this.txtMessages.Location = new System.Drawing.Point(199, 93);
             this.txtMessages.Multiline = true;
             this.txtMessages.Name = "txtMessages";

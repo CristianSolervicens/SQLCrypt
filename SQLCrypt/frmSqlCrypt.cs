@@ -223,6 +223,7 @@ to Search Objects by their content";
         private void txtSql_DragDrop(object sender, DragEventArgs e)
         {
 
+            // Drag de Objetos y Columnas
             if (e.Data.GetDataPresent(DataFormats.Text))
             {
                 var cadena = (string)e.Data.GetData(DataFormats.Text);
@@ -255,6 +256,7 @@ to Search Objects by their content";
                 return;
             }
 
+            // Drag de Archivos
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             bool encriptado = false;
 
@@ -277,7 +279,8 @@ to Search Objects by their content";
                 tssLaPath.Text = WorkPath;
 
                 this.Text = $"SQLCrypt - {CurrentFile}";
-                txtSql.Text = System.IO.File.ReadAllText(files[0]);
+                //txtSql.Text = System.IO.File.ReadAllText(files[0]);
+                scintillaC.LoadFile(CurrentFile);
                 cerrarToolStripMenuItem.Enabled = true;
             }
 
@@ -327,7 +330,8 @@ to Search Objects by their content";
                     this.Text = $"SQLCrypt - {CurrentFile}";
                 }
                 catch {
-                    txtSql.Text = System.IO.File.ReadAllText(CurrentFile);
+                    // txtSql.Text = System.IO.File.ReadAllText(CurrentFile);
+                    scintillaC.LoadFile(CurrentFile);
                     this.Text = CurrentFile;
                     this.Text = $"SQLCrypt - {CurrentFile}";
                 }
@@ -338,7 +342,8 @@ to Search Objects by their content";
             {
                 CurrentFile = fileName;
                 IsEncrypted = false;
-                txtSql.Text = System.IO.File.ReadAllText(CurrentFile);
+                //txtSql.Text = System.IO.File.ReadAllText(CurrentFile);
+                scintillaC.LoadFile(CurrentFile);
                 this.Text = CurrentFile;
                 this.Text = $"SQLCrypt - {CurrentFile}";
                 grabarComoToolStripMenuItem.Enabled = true;

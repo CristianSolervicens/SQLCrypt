@@ -610,15 +610,21 @@ namespace SQLCrypt
             if (dataGridView.SelectedCells.Count > 0)
             {
                 selRow = dataGridView.SelectedCells[0].RowIndex;
-                selCol = dataGridView.SelectedCells[0].ColumnIndex;
+
+                if (dataGridView.SelectedCells[0].ColumnIndex +1 < dataGridView.Columns.Count)
+                    selCol = dataGridView.SelectedCells[0].ColumnIndex+1;
+                else
+                    selRow++;
+
             }
             else
             {
                 dataGridView.Rows[selRow].Cells[selCol].Selected = true;
             }
-            for (int row = selRow; row < dataGridView.Rows.Count; ++row)
+
+            for (int row = selRow; row < dataGridView.Rows.Count; row++)
             {
-                for (int col = selCol; col < dataGridView.Columns.Count; ++col)
+                for (int col = selCol; col < dataGridView.Columns.Count; col++)
                 {
                     if (dataGridView.Rows[row].Cells[col].Value.ToString().ToLower().Contains(txtSearch.Text.ToLower()) )
                     {
@@ -628,7 +634,9 @@ namespace SQLCrypt
                         return;
                     }
                 }
+                selCol = 0;
             }
+
             if (!found)
             {
                 MessageBox.Show("No matching value...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
