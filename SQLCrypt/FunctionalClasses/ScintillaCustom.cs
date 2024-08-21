@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Media;
 using System.IO;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
+using Ude;
 
 
 namespace SQLCrypt.FunctionalClasses
@@ -660,13 +661,8 @@ namespace SQLCrypt.FunctionalClasses
         /// </summary>
         /// <param name="fileName"></param>
         public void SaveFile(string fileName)
-        {
-            //byte[] bytes = Encoding.Default.GetBytes(scintillaCtrl.Text);
-            //Encoding.UTF8.GetString(bytes);
-            //System.IO.File.WriteAllText(fileName, Encoding.UTF8.GetString(bytes));
-            
-            System.IO.File.WriteAllText(fileName, scintillaCtrl.Text);
-            
+        {            
+            System.IO.File.WriteAllText(fileName, scintillaCtrl.Text, Encoding.UTF8);   
         }
 
 
@@ -675,53 +671,133 @@ namespace SQLCrypt.FunctionalClasses
         /// Lee Archivo UTF-8 en Scintilla
         /// </summary>
         /// <param name="fileName"></param>
-        public void LoadFile(string fileName)
+        public string LoadFile(string fileName)
         {
-            Encoding encoding = GetEncoding(fileName);
-
-            byte[] data = System.IO.File.ReadAllBytes(fileName);
-            scintillaCtrl.Text = encoding.GetString(data);
-
-            // scintillaCtrl.Text = System.IO.File.ReadAllText(fileName);
+            Encoding encoding = EncodingDetector.DetectEncoding(fileName);
+            //MessageBox.Show(encoding.ToString());
+            scintillaCtrl.Text = System.IO.File.ReadAllText(fileName, encoding);
+            return encoding.ToString();
         }
 
-        //public static Encoding GetStringEncoding(string text)
+
+
+        #region ----------   E N C O D I N G   --------------
+
+
+
+        ///// <summary>
+        ///// GetEncoding
+        ///// Llama a varias alternativas para identificar el Encoding
+        ///// </summary>
+        ///// <param name="filename"></param>
+        ///// <returns></returns>
+        //public Encoding GetEncoding(string filename)
         //{
-        //    var bom = new byte[4];
-        //    using (var reader = new StringReader(text))
-        //    {
-        //        bom = reader.Read(bom, 0, 4);
-        //    }
+        //    var encodingByBOM = GetEncodingByBOM(filename);
+        //    if (encodingByBOM != null)
+        //        return encodingByBOM;
+
+        //    var encodingByParsing1252 = GetEncodingByParsing(filename, Encoding.GetEncoding("Windows-1252"));
+        //    if (encodingByParsing1252 != null)
+        //        return encodingByParsing1252;
+
+        //    // BOM not found :(, so try to parse characters into several encodings
+        //    var encodingByParsingUTF8 = GetEncodingByParsing(filename, Encoding.UTF8);
+        //    if (encodingByParsingUTF8 != null)
+        //        return encodingByParsingUTF8;
+
+        //    var encodingByParsing1250 = GetEncodingByParsing(filename, Encoding.GetEncoding("Windows-1250"));
+        //    if (encodingByParsing1250 != null)
+        //        return encodingByParsing1250;
+
+        //    var encodingByParsing1251 = GetEncodingByParsing(filename, Encoding.GetEncoding("Windows-1251"));
+        //    if (encodingByParsing1251 != null)
+        //        return encodingByParsing1251;
+
+        //    var encodingByParsing1254 = GetEncodingByParsing(filename, Encoding.GetEncoding("Windows-1254"));
+        //    if (encodingByParsing1254 != null)
+        //        return encodingByParsing1254;
+
+        //    var encodingByParsing1257 = GetEncodingByParsing(filename, Encoding.GetEncoding("Windows-1257"));
+        //    if (encodingByParsing1257 != null)
+        //        return encodingByParsing1257;
+
+        //    var encodingByParsing1258 = GetEncodingByParsing(filename, Encoding.GetEncoding("Windows-1258"));
+        //    if (encodingByParsing1258 != null)
+        //        return encodingByParsing1258;
+
+        //    var encodingByParsingUTF7 = GetEncodingByParsing(filename, Encoding.UTF7);
+        //    if (encodingByParsingUTF7 != null)
+        //        return encodingByParsingUTF7;
+
+        //    var encodingByParsingLatin2 = GetEncodingByParsing(filename, Encoding.GetEncoding("iso-8859-2"));
+        //    if (encodingByParsingLatin2 != null)
+        //        return encodingByParsingLatin2;
+
+        //    var encodingByParsingLatin1 = GetEncodingByParsing(filename, Encoding.GetEncoding("iso-8859-1"));
+        //    if (encodingByParsingLatin1 != null)
+        //        return encodingByParsingLatin1;
+
+        //    return Encoding.ASCII;
         //}
 
 
-        /// <summary>
-        /// GetEncoding
-        /// Get File Encoding
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <returns></returns>
-        public static Encoding GetEncoding(string filename)
-        {
-            // Read the BOM
-            var bom = new byte[4];
-            using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
-            {
-                file.Read(bom, 0, 4);
-            }
+        ///// <summary>
+        ///// GetEncodingByBOM
+        ///// </summary>
+        ///// <param name="filename"></param>
+        ///// <returns></returns>
+        //private Encoding GetEncodingByBOM(string filename)
+        //{
+        //    // Read the BOM
+        //    var byteOrderMark = new byte[4];
+        //    using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
+        //    {
+        //        file.Read(byteOrderMark, 0, 4);
+        //    }
 
-            // Analyze the BOM
-            if (bom[0] == 0x2b && bom[1] == 0x2f && bom[2] == 0x76) return Encoding.UTF7;
-            if (bom[0] == 0xef && bom[1] == 0xbb && bom[2] == 0xbf) return Encoding.UTF8;
-            if (bom[0] == 0xff && bom[1] == 0xfe && bom[2] == 0 && bom[3] == 0) return Encoding.UTF32; //UTF-32LE
-            if (bom[0] == 0xff && bom[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
-            if (bom[0] == 0xfe && bom[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
-            if (bom[0] == 0 && bom[1] == 0 && bom[2] == 0xfe && bom[3] == 0xff) return new UTF32Encoding(true, true);  //UTF-32BE
+        //    // Analyze the BOM
+        //    if (byteOrderMark[0] == 0x2b && byteOrderMark[1] == 0x2f && byteOrderMark[2] == 0x76) return Encoding.UTF7;
+        //    if (byteOrderMark[0] == 0xef && byteOrderMark[1] == 0xbb && byteOrderMark[2] == 0xbf) return Encoding.UTF8;
+        //    if (byteOrderMark[0] == 0xff && byteOrderMark[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
+        //    if (byteOrderMark[0] == 0xfe && byteOrderMark[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
+        //    if (byteOrderMark[0] == 0 && byteOrderMark[1] == 0 && byteOrderMark[2] == 0xfe && byteOrderMark[3] == 0xff) return Encoding.UTF32;
 
-            // We actually have no idea what the encoding is if we reach this point, so
-            // you may wish to return null instead of defaulting to ASCII
-            return Encoding.ASCII;
-        }
+        //    return null;    // no BOM found
+        //}
+
+
+        ///// <summary>
+        ///// GetEncodingByParsing
+        ///// </summary>
+        ///// <param name="filename"></param>
+        ///// <param name="encoding"></param>
+        ///// <returns></returns>
+        //private Encoding GetEncodingByParsing(string filename, Encoding encoding)
+        //{
+        //    var encodingVerifier = Encoding.GetEncoding(encoding.BodyName, new EncoderExceptionFallback(), new DecoderExceptionFallback());
+
+        //    try
+        //    {
+        //        using (var textReader = new StreamReader(filename, encodingVerifier, detectEncodingFromByteOrderMarks: true))
+        //        {
+        //            while (!textReader.EndOfStream)
+        //            {
+        //                textReader.ReadLine();   // in order to increment the stream position
+        //            }
+
+        //            // all text parsed ok
+        //            return textReader.CurrentEncoding;
+        //        }
+        //    }
+        //    catch (Exception ex) { }
+
+        //    return null;
+        //}
+
+
+        #endregion
+
 
 
         /// <summary>

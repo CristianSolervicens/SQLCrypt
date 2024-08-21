@@ -279,13 +279,11 @@ to Search Objects by their content";
                 tssLaPath.Text = WorkPath;
 
                 this.Text = $"SQLCrypt - {CurrentFile}";
-                //txtSql.Text = System.IO.File.ReadAllText(files[0]);
                 scintillaC.LoadFile(CurrentFile);
                 cerrarToolStripMenuItem.Enabled = true;
             }
 
             this.TopMost = true;
-            // System.Threading.Thread.Sleep(500);
             this.TopMost = false;
             this.BringToFront();
             txtSql.SetSavePoint();

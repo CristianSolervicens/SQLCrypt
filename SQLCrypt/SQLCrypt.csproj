@@ -65,9 +65,7 @@
       <HintPath>..\packages\EPPlus.4.5.3.3\lib\net40\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.TransactSql.ScriptDom, Version=16.1.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.SqlServer.TransactSql.ScriptDom.161.9123.0\lib\net462\Microsoft.SqlServer.TransactSql.ScriptDom.dll</HintPath>
-      <ExcludeAssets>All</ExcludeAssets>
-      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.SqlServer.TransactSql.ScriptDom.161.9135.0\lib\net462\Microsoft.SqlServer.TransactSql.ScriptDom.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -85,6 +83,9 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="Ude.NetStandard, Version=1.0.2.0, Culture=neutral, PublicKeyToken=103cb45fc06c90e4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ude.NetStandard.1.2.0\lib\net45\Ude.NetStandard.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="frmUtiles\AboutBox1.cs">
@@ -106,6 +107,7 @@
       <DependentUpon>frmSnippets.cs</DependentUpon>
     </Compile>
     <Compile Include="FunctionalClasses\DataTableHelper.cs" />
+    <Compile Include="FunctionalClasses\EncodingDetector.cs" />
     <Compile Include="FunctionalClasses\QueryController.cs" />
     <Compile Include="FunctionalClasses\ScintillaCustom.cs" />
     <Compile Include="FunctionalClasses\SQLCheck.cs" />
@@ -262,7 +264,6 @@
     <None Include="Resources\DBMonitor.ico" />
     <None Include="Resources\Connect3.ico" />
     <None Include="Resources\refresh2.png" />
-    <Content Include=".gitignore" />
     <Content Include="_Frog Full.ico" />
   </ItemGroup>
   <ItemGroup>
