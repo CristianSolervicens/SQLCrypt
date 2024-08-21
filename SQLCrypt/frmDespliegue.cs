@@ -30,6 +30,7 @@ namespace SQLCrypt
 
         const int MESSAGE_WIDTH = 760;
         const int MESSAGE_HEIGHT = 450;
+        const int ROW_HEADER_WIDTH = 55;
 
 
         public frmDespliegue(MySql _hSql)
@@ -49,6 +50,7 @@ namespace SQLCrypt
 
             dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
             dataGridView.MultiSelect = false;
+            dataGridView.ReadOnly = true;
 
             txtMessages.Visible = false;
             txtMessages.SendToBack();
@@ -216,7 +218,18 @@ namespace SQLCrypt
             // DESPLIEGUE DE DATOS
             current_ds = 0;
             if (ds.Tables.Count > 0)
+            {
+                dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
+                dataGridView.RowHeadersVisible = false;
+                dataGridView.AutoSize = false;
+                
                 dataGridView.DataSource = ds.Tables[current_ds];
+                
+                dataGridView.RowHeadersVisible = true;
+                dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
+                dataGridView.RowHeadersWidth = ROW_HEADER_WIDTH;
+                dataGridView.AutoSize = true;
+            }
             else
             {
                 MessageBox.Show("No results for your SQL Command", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -312,6 +325,7 @@ namespace SQLCrypt
 
             var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
             e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
+            //dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
         }
 
 
@@ -576,8 +590,18 @@ namespace SQLCrypt
             if (ds.Tables.Count > current_ds+1)
                 current_ds++;
 
+
+            dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
+            dataGridView.RowHeadersVisible = false;
+            dataGridView.AutoSize = false;
+
             dataGridView.DataSource = ds.Tables[current_ds];
             toolStripTextBox1.Text = string.Format($"Rows: {dataGridView.Rows.Count}  Result Set {current_ds+1}/{ds.Tables.Count}");
+
+            dataGridView.RowHeadersVisible = true;
+            dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
+            dataGridView.RowHeadersWidth = ROW_HEADER_WIDTH;
+            dataGridView.AutoSize = true;
         }
 
 
@@ -585,9 +609,18 @@ namespace SQLCrypt
         {
             if (current_ds > 0)
                 current_ds--;
-            
+
+            dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
+            dataGridView.RowHeadersVisible = false;
+            dataGridView.AutoSize = false;
+
             dataGridView.DataSource = ds.Tables[current_ds];
             toolStripTextBox1.Text = string.Format($"Rows: {dataGridView.Rows.Count}  Result Set {current_ds+1}/{ds.Tables.Count}");
+
+            dataGridView.RowHeadersVisible = true;
+            dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
+            dataGridView.RowHeadersWidth = ROW_HEADER_WIDTH;
+            dataGridView.AutoSize = true;
         }
 
         private void grabarJSONToolStripMenuItem_Click(object sender, EventArgs e)
