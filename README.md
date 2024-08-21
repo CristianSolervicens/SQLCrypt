@@ -10,6 +10,10 @@
 [Wiki del proyecyo](https://github.com/CristianSolervicens/SQLCrypt/wiki)
 
 ***
+
+### **NOTE:**
+The Application requires .NET Framework 4.8 otherwise it will fail !
+
 ### **Comentarios:** 
 
 Este es un antigüo proyecto de Cliente SQL, a veces lo he dejado por años, pero recientemente le agregué

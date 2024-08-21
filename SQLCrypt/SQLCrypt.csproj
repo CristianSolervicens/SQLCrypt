@@ -258,7 +258,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="README.md" />
     <None Include="Resources\Binoculr-x16.ico" />
     <None Include="Resources\0RecycleRed.ico" />
     <None Include="Resources\DBMonitor.ico" />
