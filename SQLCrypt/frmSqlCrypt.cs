@@ -495,7 +495,7 @@ to Search Objects by their content";
         {
             if (txtSql.Modified)
             {
-                var res = MessageBox.Show("The Document has been modified.\n¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var res = MessageBox.Show($"The Document has been modified.{EOL}¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (res == DialogResult.Yes)
                 {
                     if (CurrentFile == "")
@@ -773,7 +773,7 @@ to Search Objects by their content";
         {
             if (txtSql.Modified)
             {
-                var res = MessageBox.Show("The Document has been modified.\n¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var res = MessageBox.Show($"The Document has been modified.{EOL}¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (res == DialogResult.Yes)
                 {
                     if (CurrentFile == "")
@@ -972,7 +972,7 @@ to Search Objects by their content";
 
             if (!hSql.SetDatabase(databasesToolStripMenuItem.Text))
             {
-                MessageBox.Show(hSql.ErrorString, $"Error Opening Database\n{hSql.ErrorString}");
+                MessageBox.Show(hSql.ErrorString, $"Error Opening Database{EOL}{hSql.ErrorString}");
                 hSql.ErrorClear();
                 databasesToolStripMenuItem.Text = hSql.GetCurrentDatabase();
                 return;
@@ -1074,7 +1074,7 @@ to Search Objects by their content";
                 if (hSql.Data == null)
                     if (hSql.ErrorExiste)
                     {
-                        MessageBox.Show(this, $"SQL Error\n{hSql.ErrorString}", "Attention", MessageBoxButtons.OK);
+                        MessageBox.Show(this, $"SQL Error{EOL}{hSql.ErrorString}", "Attention", MessageBoxButtons.OK);
                         hSql.ErrorClear();
                         return;
                     }
@@ -1380,7 +1380,7 @@ to Search Objects by their content";
             string Elementos = "";
             foreach (var item in lstObjetos.SelectedItems)
             {
-                Elementos += (Elementos != "" ? "\n" : "") + lstObjetos.GetItemText(item);
+                Elementos += (Elementos != "" ? EOL : "") + lstObjetos.GetItemText(item);
             }
             
             if (Elementos != "")
@@ -1404,7 +1404,7 @@ to Search Objects by their content";
             for(int x = 0; x < lsColumnas.Items.Count; ++x)
             {
                 if (lsColumnas.Items[x].Selected)
-                    Elementos += (Elementos != "" ? "\n" : "") + $"{lsColumnas.Items[x].Text} {lsColumnas.Items[x].SubItems[1].Text} {lsColumnas.Items[x].SubItems[2].Text}";
+                    Elementos += (Elementos != "" ? EOL : "") + $"{lsColumnas.Items[x].Text} {lsColumnas.Items[x].SubItems[1].Text} {lsColumnas.Items[x].SubItems[2].Text}";
             }
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
@@ -1427,7 +1427,7 @@ to Search Objects by their content";
             for (int x = 0; x < lsColumnas.Items.Count; ++x)
             {
                 if (lsColumnas.Items[x].Selected)
-                    Elementos += (Elementos != "" ? "\n" : "") + $"{lsColumnas.Items[x].Text}";
+                    Elementos += (Elementos != "" ? EOL : "") + $"{lsColumnas.Items[x].Text}";
             }
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
@@ -1535,15 +1535,15 @@ to Search Objects by their content";
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append($"\nSchema    : {DBObj.schema_name}\n");
-            sb.Append($"Nombre    : {DBObj.name}\n");
-            sb.Append($"Id        : {DBObj.object_id}\n");
-            sb.Append($"Type      : {DBObj.type}\n")    ;
-            sb.Append($"Type Desc : {DBObj.type_desc}\n")   ;
-            sb.Append($"Creado    : {DBObj.create_date}\n");
-            sb.Append($"Modificado: {DBObj.modify_date}\n");
-            sb.Append($"Schema Id : {DBObj.schema_id}\n");
-            sb.Append($"Parrent Id: {DBObj.parent_object_id}\n");
+            sb.Append($"{EOL}Schema    : {DBObj.schema_name}{EOL}");
+            sb.Append($"Nombre    : {DBObj.name}{EOL}");
+            sb.Append($"Id        : {DBObj.object_id}{EOL}");
+            sb.Append($"Type      : {DBObj.type}{EOL}")    ;
+            sb.Append($"Type Desc : {DBObj.type_desc}{EOL}")   ;
+            sb.Append($"Creado    : {DBObj.create_date}{EOL}");
+            sb.Append($"Modificado: {DBObj.modify_date}{EOL}");
+            sb.Append($"Schema Id : {DBObj.schema_id}{EOL}");
+            sb.Append($"Parrent Id: {DBObj.parent_object_id}{EOL}");
 
             Clipboard.Clear();
             Clipboard.SetText(sb.ToString());
@@ -2023,7 +2023,7 @@ to Search Objects by their content";
 
                 if (hSql.ErrorExiste)
                 {
-                    MessageBox.Show($"Error connecting to Database ! \r\n {hSql.ErrorString}", "Oh Nooooo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show($"Error connecting to Database ! {EOL} {hSql.ErrorString}", "Oh Nooooo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     hSql.ErrorClear();
                     return;
                 }
@@ -2206,7 +2206,7 @@ to Search Objects by their content";
             for (int x = 0; x < lsColumnas.Items.Count; ++x)
             {
                 if (lsColumnas.Items[x].Selected)
-                    Elementos += (Elementos != "" ? $"\n{fill}," : "") + $"{lsColumnas.Items[x].Text}";
+                    Elementos += (Elementos != "" ? $"{EOL}{fill}," : "") + $"{lsColumnas.Items[x].Text}";
             }
             txtSql.ReplaceSelection(Elementos);
             txtSql.Select();
@@ -2280,7 +2280,7 @@ to Search Objects by their content";
                 string sErrors = "";
                 foreach (var error in sqlErrors)
                 {
-                    sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}\n";
+                    sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{EOL}";
                     scintillaC.HighlightError(error.line - 1, error.column);
                 }
                 MessageBox.Show(sErrors, "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -2316,7 +2316,7 @@ to Search Objects by their content";
             string sErrors = "";
             foreach (var error in sqlErrors)
             {
-                sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}\n";
+                sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{EOL}";
                 scintillaC.HighlightError(error.line-1, error.column);
             }
             if (sErrors != "")

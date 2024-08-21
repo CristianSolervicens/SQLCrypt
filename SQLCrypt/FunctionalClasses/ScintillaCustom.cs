@@ -99,11 +99,22 @@ namespace SQLCrypt.FunctionalClasses
         }
         
 
+
         public int CurrentColumn
         {
             get {
                 return scintillaCtrl.GetColumn(scintillaCtrl.CurrentPosition);
             }
+        }
+
+
+        public int LineLastEditablePosition(int line)
+        {
+            if (scintillaCtrl.Lines[line].Text.Contains(EOL))
+                return scintillaCtrl.Lines[line].EndPosition - EOL.Length;
+            if (scintillaCtrl.Lines[line].Text.Contains("\n") || scintillaCtrl.Lines[line].Text.Contains("\r"))
+                return scintillaCtrl.Lines[line].EndPosition - 1;
+            return scintillaCtrl.Lines[line].EndPosition;
         }
 
 
@@ -202,6 +213,10 @@ namespace SQLCrypt.FunctionalClasses
         }
 
 
+        /// <summary>
+        /// LoadKeywords
+        /// </summary>
+        /// <param name="keywordFile"></param>
         public void LoadKeywords(string keywordFile)
         {
             if (File.Exists(keywordFile))
@@ -213,6 +228,10 @@ namespace SQLCrypt.FunctionalClasses
         }
 
 
+        /// <summary>
+        /// LoadKeywords2
+        /// </summary>
+        /// <param name="keyword2File"></param>
         public void LoadKeywords2(string keyword2File)
         {
             if (File.Exists(keyword2File))
@@ -487,7 +506,7 @@ namespace SQLCrypt.FunctionalClasses
 
 
         /// <summary>
-        /// _CharAdded      OK
+        /// _CharAdded
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -556,7 +575,8 @@ namespace SQLCrypt.FunctionalClasses
                 {
                     omit_key = false;
                     var l = scintillaCtrl.LineFromPosition(sel.Start);
-                    var end_pos = scintillaCtrl.Lines[l].EndPosition - 2;
+                    var end_pos = LineLastEditablePosition(l);
+
                     sel.Start = end_pos;
                     sel.End = end_pos;
                     sel.Caret = end_pos;
@@ -571,7 +591,8 @@ namespace SQLCrypt.FunctionalClasses
                 foreach (var sel in scintillaCtrl.Selections)
                 {
                     var l = scintillaCtrl.LineFromPosition(sel.Start);
-                    var end_pos = scintillaCtrl.Lines[l].EndPosition - 2;
+                    var end_pos = LineLastEditablePosition(l);
+
                     sel.Start = end_pos;
                     sel.End = end_pos;
                     sel.Caret = end_pos;
