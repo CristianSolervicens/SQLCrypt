@@ -52,6 +52,9 @@ namespace SQLCrypt
             this.btBuscar = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.txtMessages = new System.Windows.Forms.TextBox();
+            this.autoSizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.manualSizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -63,7 +66,6 @@ namespace SQLCrypt
             this.dataGridView.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
             this.dataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells;
             this.dataGridView.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
@@ -127,7 +129,10 @@ namespace SQLCrypt
             this.toolStripSeparator1,
             this.verMensajesToolStripMenuItem,
             this.siguienteResultSetToolStripMenuItem,
-            this.previoResultSetToolStripMenuItem});
+            this.previoResultSetToolStripMenuItem,
+            this.toolStripSeparator3,
+            this.autoSizeColumnsToolStripMenuItem,
+            this.manualSizeColumnsToolStripMenuItem});
             this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
             this.archivoToolStripMenuItem.Size = new System.Drawing.Size(37, 23);
             this.archivoToolStripMenuItem.Text = "File";
@@ -135,39 +140,39 @@ namespace SQLCrypt
             // salirToolStripMenuItem
             // 
             this.salirToolStripMenuItem.Name = "salirToolStripMenuItem";
-            this.salirToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.salirToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.salirToolStripMenuItem.Text = "Close";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(213, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(226, 6);
             // 
             // grabarJSONToolStripMenuItem
             // 
             this.grabarJSONToolStripMenuItem.Name = "grabarJSONToolStripMenuItem";
-            this.grabarJSONToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.grabarJSONToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.grabarJSONToolStripMenuItem.Text = "Save Result as JSON";
             this.grabarJSONToolStripMenuItem.Click += new System.EventHandler(this.grabarJSONToolStripMenuItem_Click);
             // 
             // grabarExcellToolStripMenuItem
             // 
             this.grabarExcellToolStripMenuItem.Name = "grabarExcellToolStripMenuItem";
-            this.grabarExcellToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.grabarExcellToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.grabarExcellToolStripMenuItem.Text = "Save Result as Excell";
             this.grabarExcellToolStripMenuItem.Click += new System.EventHandler(this.grabarExcellToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(213, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(226, 6);
             // 
             // verMensajesToolStripMenuItem
             // 
             this.verMensajesToolStripMenuItem.Name = "verMensajesToolStripMenuItem";
             this.verMensajesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
-            this.verMensajesToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.verMensajesToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.verMensajesToolStripMenuItem.Text = "Show Messages";
             this.verMensajesToolStripMenuItem.Click += new System.EventHandler(this.verMensajesToolStripMenuItem_Click);
             // 
@@ -175,7 +180,7 @@ namespace SQLCrypt
             // 
             this.siguienteResultSetToolStripMenuItem.Name = "siguienteResultSetToolStripMenuItem";
             this.siguienteResultSetToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.siguienteResultSetToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.siguienteResultSetToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.siguienteResultSetToolStripMenuItem.Text = "Next Result-Set";
             this.siguienteResultSetToolStripMenuItem.Click += new System.EventHandler(this.siguienteResultSetToolStripMenuItem_Click);
             // 
@@ -183,7 +188,7 @@ namespace SQLCrypt
             // 
             this.previoResultSetToolStripMenuItem.Name = "previoResultSetToolStripMenuItem";
             this.previoResultSetToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.previoResultSetToolStripMenuItem.Size = new System.Drawing.Size(216, 22);
+            this.previoResultSetToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.previoResultSetToolStripMenuItem.Text = "Previous Result-Set";
             this.previoResultSetToolStripMenuItem.Click += new System.EventHandler(this.previoResultSetToolStripMenuItem_Click);
             // 
@@ -247,6 +252,27 @@ namespace SQLCrypt
             this.txtMessages.Size = new System.Drawing.Size(767, 442);
             this.txtMessages.TabIndex = 21;
             // 
+            // autoSizeColumnsToolStripMenuItem
+            // 
+            this.autoSizeColumnsToolStripMenuItem.Name = "autoSizeColumnsToolStripMenuItem";
+            this.autoSizeColumnsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.autoSizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.autoSizeColumnsToolStripMenuItem.Text = "Auto Size Columns";
+            this.autoSizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.autoSizeColumnsToolStripMenuItem_Click);
+            // 
+            // manualSizeColumnsToolStripMenuItem
+            // 
+            this.manualSizeColumnsToolStripMenuItem.Name = "manualSizeColumnsToolStripMenuItem";
+            this.manualSizeColumnsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.manualSizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.manualSizeColumnsToolStripMenuItem.Text = "Manual Size Columns";
+            this.manualSizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.manualSizeColumnsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(226, 6);
+            // 
             // frmDespliegue
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -296,6 +322,9 @@ namespace SQLCrypt
         private System.Windows.Forms.Button btBuscar;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.TextBox txtMessages;
+        private ToolStripMenuItem autoSizeColumnsToolStripMenuItem;
+        private ToolStripMenuItem manualSizeColumnsToolStripMenuItem;
+        private ToolStripSeparator toolStripSeparator3;
     }
    
 }

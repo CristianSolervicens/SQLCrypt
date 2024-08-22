@@ -28,6 +28,9 @@ namespace SQLCrypt
         List<string> listMensajes = new List<string>();
         List<string> listErrores = new List<string>();
 
+        const string EOL = "\r\n";
+        const string SHORTCUT_MSG = "\r\n\r\n[Ctrl] + [M] - To Hide this Messages\r\n\r\n[Ctrl] + [A] - Auto Adjust Column Width\r\n[Ctrl] + [Z] - Manual Adjust Column Width\r\n       [Esc] - Close Results Window";
+
         const int MESSAGE_WIDTH = 760;
         const int MESSAGE_HEIGHT = 450;
         const int ROW_HEADER_WIDTH = 55;
@@ -228,7 +231,9 @@ namespace SQLCrypt
                 dataGridView.RowHeadersVisible = true;
                 dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
                 dataGridView.RowHeadersWidth = ROW_HEADER_WIDTH;
-                dataGridView.AutoSize = true;
+                dataGridView.Refresh();
+                dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+                dataGridView.Refresh();
             }
             else
             {
@@ -325,7 +330,6 @@ namespace SQLCrypt
 
             var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
             e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
-            //dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
         }
 
 
@@ -531,12 +535,12 @@ namespace SQLCrypt
                 foreach (var error in listMensajes)
                     msg += error + "\r\n\r\n";
 
-                msg += "\r\nPress [Ctrl] + [M] To Hide Messages";
+                msg += SHORTCUT_MSG;
                 txtMessages.Text = msg;
             }
             else
             {
-                txtMessages.Text = "\r\n\r\n      There are no Errors or Messages";
+                txtMessages.Text = $"{EOL}{EOL}      There are no Errors or Messages{EOL}{EOL}" + SHORTCUT_MSG;
             }
         }
 
@@ -590,7 +594,6 @@ namespace SQLCrypt
             if (ds.Tables.Count > current_ds+1)
                 current_ds++;
 
-
             dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
             dataGridView.RowHeadersVisible = false;
             dataGridView.AutoSize = false;
@@ -601,7 +604,9 @@ namespace SQLCrypt
             dataGridView.RowHeadersVisible = true;
             dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
             dataGridView.RowHeadersWidth = ROW_HEADER_WIDTH;
-            dataGridView.AutoSize = true;
+            dataGridView.Refresh();
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            dataGridView.Refresh();
         }
 
 
@@ -620,7 +625,9 @@ namespace SQLCrypt
             dataGridView.RowHeadersVisible = true;
             dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
             dataGridView.RowHeadersWidth = ROW_HEADER_WIDTH;
-            dataGridView.AutoSize = true;
+            dataGridView.Refresh();
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            dataGridView.Refresh();
         }
 
         private void grabarJSONToolStripMenuItem_Click(object sender, EventArgs e)
@@ -675,6 +682,21 @@ namespace SQLCrypt
                 MessageBox.Show("No matching value...", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 dataGridView.Select();
             }
+        }
+
+        private void autoSizeColumnsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dataGridView.Refresh();
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            dataGridView.Refresh();
+        }
+
+        private void manualSizeColumnsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dataGridView.Refresh();
         }
     }
 
