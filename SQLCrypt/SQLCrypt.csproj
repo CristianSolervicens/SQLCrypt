@@ -106,6 +106,7 @@
     <Compile Include="frmUtiles\frmSnippets.Designer.cs">
       <DependentUpon>frmSnippets.cs</DependentUpon>
     </Compile>
+    <Compile Include="FunctionalClasses\Config.cs" />
     <Compile Include="FunctionalClasses\DataTableHelper.cs" />
     <Compile Include="FunctionalClasses\EncodingDetector.cs" />
     <Compile Include="FunctionalClasses\QueryController.cs" />
@@ -285,7 +286,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_StartDate="2009/1/1" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" />
+      <UserProperties BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_StartDate="2009/1/1" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -38,6 +38,7 @@ namespace SQLCrypt
 
         Thread threadQuery = null;
         private qTimer queryTimer = new qTimer();
+        private Config cfg;
 
         private DbObjects Objetos;
         private System.Windows.Forms.ToolTip MytoolTip = new System.Windows.Forms.ToolTip();
@@ -45,7 +46,6 @@ namespace SQLCrypt
 
         string CurrentFile = "";
         bool IsEncrypted = false;
-        public string WorkPath = "";
         private string Server = "";
         private int TextLimit = 0;
 
@@ -69,6 +69,9 @@ namespace SQLCrypt
         public FrmSqlCrypt(MySql hSql, string fileName)
         {
             InitializeComponent();
+
+            cfg = new Config();
+            cfg = Config.LoadFromJson();
 
             scintillaC = new ScintillaCustom(txtSql, "keywords.cfg", "keywords2.cfg");
 
@@ -275,8 +278,8 @@ to Search Objects by their content";
             {
                 IsEncrypted = false;
                 CurrentFile = files[0];
-                WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
-                tssLaPath.Text = WorkPath;
+                cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
+                tssLaPath.Text = cfg.WorkingDirectory;
 
                 this.Text = $"SQLCrypt - {CurrentFile}";
                 scintillaC.LoadFile(CurrentFile);
@@ -317,8 +320,7 @@ to Search Objects by their content";
         {
             txtSql.Text = "";
 
-            if (string.Compare(System.IO.Path.GetExtension(fileName).ToLower(), ".sqc", true) == 0
-                || string.Compare(System.IO.Path.GetExtension(fileName).ToLower(), ".cfg", true) == 0)
+            if (string.Compare(System.IO.Path.GetExtension(fileName).ToLower(), ".sqc", true) == 0)
             {
                 CurrentFile = fileName;
                 IsEncrypted = true;
@@ -328,13 +330,12 @@ to Search Objects by their content";
                     this.Text = $"SQLCrypt - {CurrentFile}";
                 }
                 catch {
-                    // txtSql.Text = System.IO.File.ReadAllText(CurrentFile);
                     scintillaC.LoadFile(CurrentFile);
                     this.Text = CurrentFile;
                     this.Text = $"SQLCrypt - {CurrentFile}";
                 }
                 grabarComoToolStripMenuItem.Enabled = true;
-                WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
+                cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
             }
             else
             {
@@ -345,7 +346,7 @@ to Search Objects by their content";
                 this.Text = CurrentFile;
                 this.Text = $"SQLCrypt - {CurrentFile}";
                 grabarComoToolStripMenuItem.Enabled = true;
-                WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
+                cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
             }
 
             tssLaStat.Text = "Archivo Abierto...";
@@ -458,12 +459,12 @@ to Search Objects by their content";
         {
             CurrentFile = sFileName;
             IsEncrypted = true;
-            WorkPath = System.IO.Path.GetDirectoryName(CurrentFile);
-            tssLaPath.Text = WorkPath;
+            cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
 
             txtSql.Text = hSql.DecryptFiletoString(CurrentFile);
 
             this.Text = $"SQLCrypt - {CurrentFile}";
+            tssLaPath.Text = cfg.WorkingDirectory;
             cerrarToolStripMenuItem.Enabled = true;
         }
 
@@ -523,7 +524,6 @@ to Search Objects by their content";
         {
             tssLaFile.Text = "";
             tssLaPath.Text = "";
-            WorkPath = System.Windows.Forms.Application.StartupPath;
         }
 
 
@@ -814,7 +814,7 @@ to Search Objects by their content";
             txtSql.Text = "";
 
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.InitialDirectory = WorkPath;
+            ofd.InitialDirectory = cfg.WorkingDirectory;
             ofd.Filter = "Sql Files (*.sql;*.sqc)|*.sql;*.sqc|Text Files (*.txt)|*.txt|Config Files (*.cfg)|*.cfg|Any File (*.*)|*.*";
             ofd.FilterIndex = 1;
             ofd.FileName = CurrentFile;
@@ -822,6 +822,12 @@ to Search Objects by their content";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 OpenFileInEditor(ofd.FileName);
+                CurrentFile = ofd.FileName;
+                cfg.AddOpenedFile(CurrentFile);
+                BuildMenuItems();
+                cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
+                this.Text = $"SQLCrypt - {CurrentFile}";
+                tssLaPath.Text = cfg.WorkingDirectory;
             }
             else
             {
@@ -1145,7 +1151,7 @@ to Search Objects by their content";
             if (CurrentFile == "" || bSaveAs)
             {
                 SaveFileDialog sfd = new SaveFileDialog();
-                sfd.InitialDirectory = WorkPath;
+                sfd.InitialDirectory = cfg.WorkingDirectory;
                 sfd.Filter = "Sql Crypt Files (*.sqc)|*.sqc";
                 sfd.Filter = "Sql Files (*.sql)|*.sql|Text Files (*.txt)|*.txt|Sql Crypt Files (*.sqc)|*.sqc";
 
@@ -1157,6 +1163,9 @@ to Search Objects by their content";
                         IsEncrypted = true;
 
                     CurrentFile = sfd.FileName;
+                    cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
+                    this.Text = $"SQLCrypt - {CurrentFile}";
+                    tssLaPath.Text = cfg.WorkingDirectory;
                     this.Text = "SQLCrypt - " + CurrentFile;
                 }
                 else
@@ -1938,6 +1947,10 @@ to Search Objects by their content";
         /// <param name="e"></param>
         private void FrmSqlCrypt_FormClosing(object sender, FormClosingEventArgs e)
         {
+            
+            //Guardo el último Estado de la App
+            cfg.SaveToJson();
+
             if (AlCerrarElFormulario() == DialogResult.Cancel)
                 e.Cancel = true;
 
@@ -2370,6 +2383,56 @@ to Search Objects by their content";
         private void removeMultiSpacesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             RemoveMultiSpaces();
+        }
+
+
+
+        /// <summary>
+        /// BuildMenuItems
+        /// Agrega Elementos al ToolStripMenuItem "Recent Files" (lastOpenedFilesToolStripMenuItem)
+        /// </summary>
+        private void BuildMenuItems()
+        {
+            if (cfg.LastOpenedFiles.Count == 0)
+                return;
+
+            ToolStripMenuItem[] items = new ToolStripMenuItem[cfg.LastOpenedFiles.Count]; // You would obviously calculate this value at runtime
+            for (int i = 0; i < items.Length; i++)
+            {
+                items[i] = new ToolStripMenuItem();
+                items[i].Name = i.ToString();
+                items[i].Tag = "specialDataHere";
+                items[i].Text = cfg.LastOpenedFiles[i];
+                items[i].Click += new EventHandler(MenuItemClickHandler);
+            }
+
+            lastOpenedFilesToolStripMenuItem.DropDownItems.Clear();
+            lastOpenedFilesToolStripMenuItem.DropDownItems.AddRange(items);
+        }
+
+
+
+        /// <summary>
+        /// Handler para la carga de "Recent Files"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItemClickHandler(object sender, EventArgs e)
+        {
+            ToolStripMenuItem clickedItem = (ToolStripMenuItem)sender;
+            string fileName = clickedItem.Text;
+
+            if (fileName == "(empty)")
+                return;
+
+            if (File.Exists(fileName))
+            {
+                OpenFileInEditor(fileName);
+            }
+            else
+            {
+                cfg.LastOpenedFiles.Remove(fileName);
+            }
         }
 
     }

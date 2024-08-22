@@ -35,6 +35,9 @@ namespace SQLCrypt.FunctionalClasses
         private ScintillaNET.Scintilla scintillaCtrl { get; set; }
         public bool AutoCompleteEnabled { get; set; }
 
+        public string CurrentFile { get; internal set; }
+        public Encoding CurrentEncoding { get; internal set; }
+
 
         /// <summary>
         /// Constructor
@@ -45,6 +48,7 @@ namespace SQLCrypt.FunctionalClasses
             this.scintillaCtrl = scintillaCtrl;
             LoadKeywords(keywordFile);
             LoadKeywords2(keyword2File);
+            CurrentEncoding = Encoding.UTF8;
         }
 
 
@@ -678,12 +682,16 @@ namespace SQLCrypt.FunctionalClasses
 
 
         /// <summary>
-        /// Save Scintilla Text to File
+        /// Save Scintilla Text to Files
+        /// Se conserva el Encoding Original (si lo había)
         /// </summary>
         /// <param name="fileName"></param>
         public void SaveFile(string fileName)
-        {            
-            System.IO.File.WriteAllText(fileName, scintillaCtrl.Text, Encoding.UTF8);   
+        {   
+            if(fileName == CurrentFile )
+                System.IO.File.WriteAllText(fileName, scintillaCtrl.Text, CurrentEncoding);
+            else
+                System.IO.File.WriteAllText(fileName, scintillaCtrl.Text, Encoding.UTF8);
         }
 
 
@@ -692,12 +700,14 @@ namespace SQLCrypt.FunctionalClasses
         /// Lee Archivo UTF-8 en Scintilla
         /// </summary>
         /// <param name="fileName"></param>
-        public string LoadFile(string fileName)
+        public void LoadFile(string fileName)
         {
             Encoding encoding = EncodingDetector.DetectEncoding(fileName);
             //MessageBox.Show(encoding.ToString());
             scintillaCtrl.Text = System.IO.File.ReadAllText(fileName, encoding);
-            return encoding.ToString();
+            
+            CurrentFile = fileName;
+            CurrentEncoding = encoding;
         }
 
 

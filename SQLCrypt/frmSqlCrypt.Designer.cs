@@ -49,6 +49,8 @@
             this.salidaATextoGrillaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cerrarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lastOpenedFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.emptyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findReplaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findNextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -155,6 +157,7 @@
             this.abrirToolStripMenuItem,
             this.grabarToolStripMenuItem,
             this.grabarComoToolStripMenuItem,
+            this.lastOpenedFilesToolStripMenuItem,
             this.toolStripSeparator2,
             this.salidaATextoGrillaToolStripMenuItem,
             this.cerrarToolStripMenuItem,
@@ -297,6 +300,20 @@
             this.salirToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
             this.salirToolStripMenuItem.Text = "Quit";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
+            // 
+            // lastOpenedFilesToolStripMenuItem
+            // 
+            this.lastOpenedFilesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.emptyToolStripMenuItem});
+            this.lastOpenedFilesToolStripMenuItem.Name = "lastOpenedFilesToolStripMenuItem";
+            this.lastOpenedFilesToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
+            this.lastOpenedFilesToolStripMenuItem.Text = "Recent Files";
+            // 
+            // emptyToolStripMenuItem
+            // 
+            this.emptyToolStripMenuItem.Name = "emptyToolStripMenuItem";
+            this.emptyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.emptyToolStripMenuItem.Text = "(empty)";
             // 
             // editToolStripMenuItem
             // 
@@ -1025,6 +1042,8 @@
         private System.Windows.Forms.ToolStripMenuItem splitCommasToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem removeMultiSpacesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem lastOpenedFilesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem emptyToolStripMenuItem;
     }
 }
 
