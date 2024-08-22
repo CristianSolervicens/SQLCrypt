@@ -73,6 +73,8 @@ namespace SQLCrypt
             cfg = new Config();
             cfg = Config.LoadFromJson();
 
+            BuildMenuItems();
+
             scintillaC = new ScintillaCustom(txtSql, "keywords.cfg", "keywords2.cfg");
 
             QueryController.Prepare();

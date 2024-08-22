@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
+using System.Collections;
 
 
 namespace SQLCrypt.FunctionalClasses
@@ -14,7 +16,7 @@ namespace SQLCrypt.FunctionalClasses
 
     internal class Config
     {
-        private static string CONFIG_FILE = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "config.json";
+        private static string CONFIG_FILE = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\config.json";
 
         public string WorkingDirectory { get; set; }
         public string CurrentConnection { get; set; }
@@ -32,10 +34,15 @@ namespace SQLCrypt.FunctionalClasses
 
         public void AddOpenedFile(string filename)
         {
+            //Si el archivo ya existe en la lista, lo saco y quedará en primer lugar
+            while (LastOpenedFiles.Contains(filename))
+                LastOpenedFiles.Remove(filename);
+
             LastOpenedFiles.Add(filename);
             
+            //Saco el último elemento de la lista si es que hay más de 15
             while (LastOpenedFiles.Count > 15)
-                LastOpenedFiles.RemoveAt(LastOpenedFiles.Count - 1);
+                LastOpenedFiles.RemoveAt(1);
         }
 
 

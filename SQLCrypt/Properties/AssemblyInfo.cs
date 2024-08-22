@@ -30,6 +30,6 @@ using System.Resources;
 //      Número de versión de compilación
 //      Revisión
 //
-[assembly: AssemblyVersion("1.2.0.5")]
-[assembly: AssemblyFileVersion("1.2.0.5")]
+[assembly: AssemblyVersion("1.2.1.1")]
+[assembly: AssemblyFileVersion("1.2.1.1")]
 [assembly: NeutralResourcesLanguageAttribute( "es-CL" )]
