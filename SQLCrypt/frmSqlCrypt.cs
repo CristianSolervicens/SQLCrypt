@@ -73,12 +73,13 @@ namespace SQLCrypt
             cfg = new Config();
             cfg = Config.LoadFromJson();
 
+            cfg.SetFormLocation(this);
             BuildMenuItems();
 
             scintillaC = new ScintillaCustom(txtSql, "keywords.cfg", "keywords2.cfg");
 
             QueryController.Prepare();
-
+            
             // ---------------------------------------------
             laDataLoadStatus.Text = "";
             laDataLoadStatus.Visible = false;
@@ -130,11 +131,10 @@ to Search Objects by their content";
 
             FindMan = new SearchManager();
             FindMan.TextArea = txtSql;
-            
+
             // Inicialización de Scintilla
             scintillaC.InitSyntaxColoring();
             txtSql_TextChanged(null, null);
-
             SetAutocompleteMenuItemText();
 
             if (fileName != "")
@@ -142,6 +142,14 @@ to Search Objects by their content";
 
             txtSql.Select();
         }
+
+
+        private void frmSqlCrypt_Load(object sender, EventArgs e)
+        {
+            tssLaFile.Text = "";
+            tssLaPath.Text = "";
+        }
+
 
 
         /// <summary>
@@ -522,12 +530,6 @@ to Search Objects by their content";
         }
 
 
-        private void frmSqlCrypt_Load(object sender, EventArgs e)
-        {
-            tssLaFile.Text = "";
-            tssLaPath.Text = "";
-        }
-
 
         //Ejecutar !!! ejecutarComandoToolStripMenuItem_Click
         private void ejecutarComandoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -545,7 +547,7 @@ to Search Objects by their content";
                 return;
             }
 
-            ExecuteAlternative();
+            ExecuteSqlInNewThread();
 
         }
 
@@ -553,7 +555,7 @@ to Search Objects by their content";
         /// <summary>
         /// Ejecución de Query
         /// </summary>
-        private void ExecuteAlternative()
+        private void ExecuteSqlInNewThread()
         {
             if (threadQuery != null)
             {
@@ -1949,8 +1951,9 @@ to Search Objects by their content";
         /// <param name="e"></param>
         private void FrmSqlCrypt_FormClosing(object sender, FormClosingEventArgs e)
         {
-            
+
             //Guardo el último Estado de la App
+            cfg.GetFormLocation(this);
             cfg.SaveToJson();
 
             if (AlCerrarElFormulario() == DialogResult.Cancel)

@@ -20,6 +20,7 @@ namespace SQLCrypt
     public partial class frmDespliegue:Form
     {
 
+        private bool withTread = false;
         private DataSet ds = new DataSet();
         int current_ds = -1;
         public MySql hSql = null;
@@ -50,7 +51,7 @@ namespace SQLCrypt
         public frmDespliegue(string connectionString, string Database, string commandString, Dictionary<string, string> DictParam)
         {
             InitializeComponent();
-
+            withTread = true;
             dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
             dataGridView.MultiSelect = false;
             dataGridView.ReadOnly = true;
@@ -161,7 +162,7 @@ namespace SQLCrypt
 
             string currentDb = "";
 
-            if (QueryController.CancelQuery)
+            if (QueryController.CancelQuery && withTread)
             {
                 currentDb = hSql.GetCurrentDatabase();
                 if (currentDb != "")
@@ -199,7 +200,7 @@ namespace SQLCrypt
                 try
                 {
                     LoadData();
-                    if (QueryController.CancelQuery)
+                    if (QueryController.CancelQuery && withTread)
                     {
                         this.Close();
                         return;
@@ -250,12 +251,15 @@ namespace SQLCrypt
             else
                 toolStripTextBox1.Text = string.Format($"Rows: {dataGridView.Rows.Count}  Result Set 0/0");
 
-            currentDb = hSql.GetCurrentDatabase();
-            if (currentDb != "")
-                QueryController.DataBase = currentDb;
+            if (withTread)
+            {
+                currentDb = hSql.GetCurrentDatabase();
+                if (currentDb != "")
+                    QueryController.DataBase = currentDb;
 
-            QueryController.hSqlQuery = null;
-            QueryController.InQuery = false;
+                QueryController.hSqlQuery = null;
+                QueryController.InQuery = false;
+            }
 
             //Mostrar Mensajes si hay
             if (listErrores.Count + listMensajes.Count > 0)
@@ -282,12 +286,13 @@ namespace SQLCrypt
                 {
                     try
                     {
-                        if (QueryController.CancelQuery)
+                        if (QueryController.CancelQuery && withTread)
                             return;
 
                         DataTable dt = new DataTable();
                         dt.Load(hSql.Data);
-                        if (QueryController.CancelQuery)
+                        
+                        if (QueryController.CancelQuery && withTread)
                             return;
 
                         ds.Tables.Add(dt);
@@ -393,8 +398,7 @@ namespace SQLCrypt
                     MessageBox.Show("Cannot delete existing File.\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
-            }
-                
+            }   
 
             FileInfo newFile = new FileInfo(saveForm.FileName);
             
@@ -415,7 +419,6 @@ namespace SQLCrypt
                         ws.Column(c + 1).Style.Numberformat.Format = dateFormat;
                     }
                 }
-
 
                 // Color de Fondo de las Filas de Dato
                 for (int i = 0; i < dt.Rows.Count; i++)
@@ -449,7 +452,6 @@ namespace SQLCrypt
 
                 ws.Cells.AutoFitColumns();
 
-
                 pck.Save();
             }
         }
@@ -479,7 +481,23 @@ namespace SQLCrypt
         {
             // Program.hSql.DataClose();
             // Parent.LoadDatabaseList();
-            QueryController.sql_spid = 0;
+            if (withTread)
+                QueryController.sql_spid = 0;
+
+            foreach (DataTable dt in ds.Tables)
+            {
+                dt.Clear();
+                dt.Dispose();
+            }
+
+            ds.Clear();
+            ds.Dispose();
+
+            try
+            {
+                dataGridView.Dispose();
+            }
+            catch { }
         }
 
         //------------------------
@@ -487,14 +505,16 @@ namespace SQLCrypt
         //------------------------
         private void frmDespliegue_Closed(object sender, FormClosedEventArgs e)
         {
-            foreach (DataTable dt in ds.Tables)
-                dt.Clear();
-
-            ds.Clear();
-            ds.Dispose();
-            QueryController.hSqlQuery = null;
-            QueryController.sql_spid = 0;
-            QueryController.CancelQuery = false;
+            if (withTread)
+            {
+                try{hSql.Data.Close();}catch { }
+                hSql.Data = null;
+                try { hSql.CloseDBConn(); }catch { }
+                QueryController.hSqlQuery = null;
+                QueryController.sql_spid = 0;
+                QueryController.CancelQuery = false;
+            }
+            System.GC.Collect();
         }
 
 

@@ -12,6 +12,7 @@ using System.Media;
 using System.IO;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Ude;
+using System.Reflection;
 
 
 namespace SQLCrypt.FunctionalClasses
@@ -45,9 +46,10 @@ namespace SQLCrypt.FunctionalClasses
         /// <param name="scintillaCtrl"></param>
         public ScintillaCustom(ScintillaNET.Scintilla scintillaCtrl, string keywordFile, string keyword2File)
         {
+            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             this.scintillaCtrl = scintillaCtrl;
-            LoadKeywords(keywordFile);
-            LoadKeywords2(keyword2File);
+            LoadKeywords($"{path}\\{keywordFile}");
+            LoadKeywords2($"{path}\\{keyword2File}");
             CurrentEncoding = Encoding.UTF8;
         }
 

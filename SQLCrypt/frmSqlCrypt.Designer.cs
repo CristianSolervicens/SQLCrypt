@@ -45,12 +45,12 @@
             this.abrirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grabarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grabarComoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lastOpenedFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.emptyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.salidaATextoGrillaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cerrarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lastOpenedFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.emptyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findReplaceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findNextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -272,6 +272,20 @@
             this.grabarComoToolStripMenuItem.Text = "Save File As...";
             this.grabarComoToolStripMenuItem.Click += new System.EventHandler(this.grabarComoToolStripMenuItem_Click);
             // 
+            // lastOpenedFilesToolStripMenuItem
+            // 
+            this.lastOpenedFilesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.emptyToolStripMenuItem});
+            this.lastOpenedFilesToolStripMenuItem.Name = "lastOpenedFilesToolStripMenuItem";
+            this.lastOpenedFilesToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
+            this.lastOpenedFilesToolStripMenuItem.Text = "Recent Files";
+            // 
+            // emptyToolStripMenuItem
+            // 
+            this.emptyToolStripMenuItem.Name = "emptyToolStripMenuItem";
+            this.emptyToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.emptyToolStripMenuItem.Text = "(empty)";
+            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -300,20 +314,6 @@
             this.salirToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
             this.salirToolStripMenuItem.Text = "Quit";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
-            // 
-            // lastOpenedFilesToolStripMenuItem
-            // 
-            this.lastOpenedFilesToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.emptyToolStripMenuItem});
-            this.lastOpenedFilesToolStripMenuItem.Name = "lastOpenedFilesToolStripMenuItem";
-            this.lastOpenedFilesToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
-            this.lastOpenedFilesToolStripMenuItem.Text = "Recent Files";
-            // 
-            // emptyToolStripMenuItem
-            // 
-            this.emptyToolStripMenuItem.Name = "emptyToolStripMenuItem";
-            this.emptyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.emptyToolStripMenuItem.Text = "(empty)";
             // 
             // editToolStripMenuItem
             // 
@@ -940,7 +940,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.MinimumSize = new System.Drawing.Size(1173, 622);
             this.Name = "FrmSqlCrypt";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Sql Crypt";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmSqlCrypt_FormClosing);
             this.Load += new System.EventHandler(this.frmSqlCrypt_Load);
