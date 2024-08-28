@@ -13,6 +13,7 @@ using System.IO;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Ude;
 using System.Reflection;
+using System.Security.Cryptography;
 
 
 namespace SQLCrypt.FunctionalClasses
@@ -127,8 +128,6 @@ namespace SQLCrypt.FunctionalClasses
         /// <summary>
         /// Inicialización del Objeto
         /// </summary>
-        /// <param name="keyWords"></param>
-        /// <param name="keyWords2"></param>
         public void InitSyntaxColoring()
         {
 
@@ -203,7 +202,9 @@ namespace SQLCrypt.FunctionalClasses
             scintillaCtrl.KeyDown += new System.Windows.Forms.KeyEventHandler(txtSql_KeyDown);
             scintillaCtrl.KeyUp += new System.Windows.Forms.KeyEventHandler(txtSql_KeyUp);
             scintillaCtrl.KeyPress += new System.Windows.Forms.KeyPressEventHandler(_KeyPress);
-            scintillaCtrl.MarginClick += txtSql_MarginClick;
+            
+            // HABILITAR PARA MARCAR LOS BOOKMARKS CON EL MOUSE
+            //scintillaCtrl.MarginClick += txtSql_MarginClick;
 
             //------------------
             // Constante de Indicador usado para Marcado de Errores
@@ -226,11 +227,11 @@ namespace SQLCrypt.FunctionalClasses
         public void LoadKeywords(string keywordFile)
         {
             if (File.Exists(keywordFile))
-                keyWords = File.ReadAllText(keywordFile);
-            else
-                return;
-
-            keyWords = keyWords.Replace(EOL, " ");
+            {
+                List<string> lista = File.ReadAllText(keywordFile).Replace(EOL, " ").Split(' ').ToList();
+                lista.Sort();
+                keyWords = String.Join(" ", lista.ToArray()).Trim();
+            }
         }
 
 
@@ -241,12 +242,212 @@ namespace SQLCrypt.FunctionalClasses
         public void LoadKeywords2(string keyword2File)
         {
             if (File.Exists(keyword2File))
-                keyWords2 = File.ReadAllText(keyword2File);
-            else
+            {
+                List<string> lista = File.ReadAllText(keyword2File).Replace(EOL, " ").Split(' ').ToList();
+                lista.Sort();
+                keyWords2 = String.Join(" ", lista.ToArray()).Trim();
+            }
+        }
+
+
+
+        #region ================= KEYS  =======================
+
+
+        /// <summary>
+        /// txtSql_KeyDown           OK
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtSql_KeyDown(object sender, KeyEventArgs e)
+        {
+            omit_key = false;
+
+            //Completar Snippets
+            if (e.Control && (e.KeyCode == Keys.Tab || e.KeyCode == Keys.OemMinus))
+            {
+                omit_key = true;
+                e.Handled = true;
+                complete_snippet();
+                return;
+            }
+
+            // Modo Fin de Linea para Bloques
+            if (scintillaCtrl.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
+            {
+                foreach (var sel in scintillaCtrl.Selections)
+                {
+                    omit_key = false;
+                    var l = scintillaCtrl.LineFromPosition(sel.Start);
+                    var end_pos = LineLastEditablePosition(l);
+
+                    sel.Start = end_pos;
+                    sel.End = end_pos;
+                    sel.Caret = end_pos;
+                }
+            }
+
+            // Modo Fin de Linea para Bloques
+            if (scintillaCtrl.Selections.Count > 1 && e.KeyCode == Keys.End)
+            {
+                omit_key = false;
+                scintilla_end_mode = true;
+                foreach (var sel in scintillaCtrl.Selections)
+                {
+                    var l = scintillaCtrl.LineFromPosition(sel.Start);
+                    var end_pos = LineLastEditablePosition(l);
+
+                    sel.Start = end_pos;
+                    sel.End = end_pos;
+                    sel.Caret = end_pos;
+                }
+                e.Handled = true;
+            }
+
+            // Salir de Modo Fin de Linea para Bloques
+            if (scintilla_end_mode && scintillaCtrl.Selections.Count <= 1)
+            {
+                scintilla_end_mode = false;
+            }
+        }
+
+
+        /// <summary>
+        /// Control para permitir Edición en modo Fin de Línea       OK
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtSql_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (omit_key)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (scintillaCtrl.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
+            {
+                foreach (var sel in scintillaCtrl.Selections)
+                {
+                    var l = scintillaCtrl.LineFromPosition(sel.Start);
+                    var end_pos = scintillaCtrl.Lines[l].EndPosition - 2;
+                    sel.Start = end_pos;
+                    sel.End = end_pos;
+                    sel.Caret = end_pos;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Brace matching en modo INSERT     OK
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void _KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (omit_key)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (scintillaCtrl.Selections.Count > 1)
                 return;
 
-            keyWords2 = keyWords2.Replace(EOL, " ");
+            if (scintillaCtrl.SelectedText.Length > 0)
+            {
+                var selected = scintillaCtrl.SelectedText;
+                switch (e.KeyChar)
+                {
+                    case '"':
+                        scintillaCtrl.ReplaceSelection($"\"{selected}\"");
+                        e.Handled = true;
+                        break;
+                    case '\'':
+                        scintillaCtrl.ReplaceSelection($"'{selected}'");
+                        e.Handled = true;
+                        break;
+                    case '(':
+                        scintillaCtrl.ReplaceSelection($"({selected})");
+                        e.Handled = true;
+                        break;
+                    case '{':
+                        scintillaCtrl.ReplaceSelection("{" + selected + "}");
+                        e.Handled = true;
+                        break;
+                    case '[':
+                        scintillaCtrl.ReplaceSelection($"[{selected}]");
+                        e.Handled = true;
+                        break;
+                }
+            }
+            else
+            {
+                //switch (e.Char)
+                switch (e.KeyChar)
+                {
+                    case '"':
+                        scintillaCtrl.InsertText(scintillaCtrl.CurrentPosition, "\"");
+                        break;
+                    case '\'':
+                        scintillaCtrl.InsertText(scintillaCtrl.CurrentPosition, "'");
+                        break;
+                    case '(':
+                        scintillaCtrl.InsertText(scintillaCtrl.CurrentPosition, ")");
+                        break;
+                    case '{':
+                        scintillaCtrl.InsertText(scintillaCtrl.CurrentPosition, "}");
+                        break;
+                    case '[':
+                        scintillaCtrl.InsertText(scintillaCtrl.CurrentPosition, "]");
+                        break;
+                }
+            }
         }
+
+
+        #endregion
+
+
+        //
+        // ==============    LOAD AND SAVE FILES
+        //
+
+
+
+        /// <summary>
+        /// Lee Archivo UTF-8 en Scintilla
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void LoadFile(string fileName)
+        {
+            Encoding encoding = EncodingDetector.DetectEncoding(fileName);
+            //MessageBox.Show(encoding.ToString());
+            scintillaCtrl.Text = System.IO.File.ReadAllText(fileName, encoding);
+
+            CurrentFile = fileName;
+            CurrentEncoding = encoding;
+        }
+
+
+        /// <summary>
+        /// Save Scintilla Text to Files
+        /// Se conserva el Encoding Original (si lo había)
+        /// </summary>
+        /// <param name="fileName"></param>
+        public void SaveFile(string fileName)
+        {
+            if (fileName == CurrentFile)
+                System.IO.File.WriteAllText(fileName, scintillaCtrl.Text, CurrentEncoding);
+            else
+                System.IO.File.WriteAllText(fileName, scintillaCtrl.Text, Encoding.UTF8);
+        }
+
+
+
+        // ================= AFFECTING SELECTION  ================
+
 
 
         /// <summary>
@@ -254,6 +455,8 @@ namespace SQLCrypt.FunctionalClasses
         /// </summary>
         public void SelectionLowercase()
         {
+            if (scintillaCtrl.Selections.Count > 1)
+               return;
 
             // save the selection
             int start = scintillaCtrl.SelectionStart;
@@ -272,7 +475,9 @@ namespace SQLCrypt.FunctionalClasses
         /// </summary>
         public void SelectionUppercase()
         {
-
+            if (scintillaCtrl.Selections.Count > 1)
+               return;
+            
             // save the selection
             int start = scintillaCtrl.SelectionStart;
             int end = scintillaCtrl.SelectionEnd;
@@ -283,6 +488,67 @@ namespace SQLCrypt.FunctionalClasses
             // preserve the original selection
             scintillaCtrl.SetSelection(start, end);
         }
+
+
+        /// <summary>
+        /// CommentSelection
+        /// </summary>
+        public void CommentSelection()
+        {
+
+            if (scintillaCtrl.Selections.Count > 1)
+                return;
+
+            if (scintillaCtrl.SelectedText.Length > 0)
+            {
+                //Initial & Final Lines
+                int initialLine = CurrentMinLine;
+                int endLine = CurrentMaxLine;
+
+                for (int i = initialLine; i <= endLine; i++)
+                {
+                    scintillaCtrl.InsertText(scintillaCtrl.Lines[i].Position, "--");
+                }
+                scintillaCtrl.SelectionStart = scintillaCtrl.Lines[initialLine].Position;
+                scintillaCtrl.SelectionEnd = scintillaCtrl.Lines[endLine].EndPosition - 1;
+            }
+        }
+
+
+        /// <summary>
+        /// UnCommentSelection
+        /// </summary>
+        public void UnCommentSelection()
+        {
+            if (scintillaCtrl.Selections.Count > 1)
+                return;
+
+            if (scintillaCtrl.SelectedText.Length > 0)
+            {
+                int initialLine = CurrentMinLine;
+                int endLine = CurrentMaxLine;
+
+                for (int i = initialLine; i <= endLine; i++)
+                {
+                    string s = scintillaCtrl.Lines[i].Text;
+                    if (s.TrimStart().StartsWith("--"))
+                    {
+                        var regex = new Regex(Regex.Escape("--"));
+                        var newText = regex.Replace(s, "", 1);
+                        int x = scintillaCtrl.Lines[i].Position;
+                        int y = scintillaCtrl.Lines[i].EndPosition;
+                        scintillaCtrl.SelectionStart = x;
+                        scintillaCtrl.SelectionEnd = y;
+                        scintillaCtrl.ReplaceSelection(newText);
+                    }
+                }
+                scintillaCtrl.SelectionStart = scintillaCtrl.Lines[initialLine].Position;
+                scintillaCtrl.SelectionEnd = scintillaCtrl.Lines[endLine].EndPosition - 1;
+            }
+        }
+
+
+        // =====================    BOOK MARKS  =====================
 
 
         /// <summary>
@@ -309,6 +575,137 @@ namespace SQLCrypt.FunctionalClasses
                 }
             }
         }
+
+
+
+        /// <summary>
+        /// txtSql_PreviousBookmark
+        /// </summary>
+        public void PreviousBookmark()
+        {
+            var line = scintillaCtrl.CurrentLine;
+            var prevLine = scintillaCtrl.Lines[--line].MarkerPrevious(1 << BOOKMARK_MARKER);
+            if (prevLine != -1)
+                scintillaCtrl.Lines[prevLine].Goto();
+        }
+
+
+        /// <summary>
+        /// txtSql_NextBookmark
+        /// </summary>
+        public void NextBookmark()
+        {
+            var line = scintillaCtrl.CurrentLine;
+            var nextLine = scintillaCtrl.Lines[++line].MarkerNext(1 << BOOKMARK_MARKER);
+            if (nextLine != -1)
+                scintillaCtrl.Lines[nextLine].Goto();
+        }
+
+
+        /// <summary>
+        /// txtSql_ToogleBookmark
+        /// </summary>
+        public void ToogleBookmark()
+        {
+            const uint mask = (1 << BOOKMARK_MARKER);
+            var line = scintillaCtrl.Lines[scintillaCtrl.CurrentLine];
+            if ((line.MarkerGet() & mask) > 0)
+            {
+                // Remove existing bookmark
+                line.MarkerDelete(BOOKMARK_MARKER);
+            }
+            else
+            {
+                // Add bookmark
+                line.MarkerAdd(BOOKMARK_MARKER);
+            }
+        }
+
+
+
+        /// <summary>
+        /// MostrarGuiaIndentacion
+        /// </summary>
+        public void MostrarGuiaIndentacion()
+        {
+            if (scintillaCtrl.IndentationGuides == IndentView.None)
+                scintillaCtrl.IndentationGuides = IndentView.LookBoth;
+            else
+                scintillaCtrl.IndentationGuides = IndentView.None;
+        }
+
+
+        /// <summary>
+        /// MostrarNumerosDeLinea
+        /// </summary>
+        public void MostrarNumerosDeLinea()
+        {
+            if (scintillaCtrl.Margins[0].Width != 3)
+                scintillaCtrl.Margins[0].Width = 3;
+            else
+            {
+                const int padding = 2;
+                scintillaCtrl.Margins[0].Width = scintillaCtrl.TextWidth(Style.LineNumber, new string('9', _maxLineNumberCharLength + 1)) + padding;
+            }
+        }
+
+
+        /// <summary>
+        /// MostrarEspacios
+        /// </summary>
+        public void MostrarEspacios()
+        {
+            if (scintillaCtrl.ViewWhitespace == WhitespaceMode.Invisible)
+                scintillaCtrl.ViewWhitespace = WhitespaceMode.VisibleAlways;
+            else
+                scintillaCtrl.ViewWhitespace = WhitespaceMode.Invisible;
+        }
+
+
+        // ===========  MODIFICACION DEL TEXTO  =============
+
+
+        /// <summary>
+        /// TABtoSpaces
+        /// Change Tab Ocurrence by their corresponding spaces.
+        /// </summary>
+        public void TABtoSpaces(int TabSpaces)
+        {
+            string spaces = new string(' ', TabSpaces);
+
+            StringBuilder strB = new StringBuilder();
+
+            for (int i = 0; i < scintillaCtrl.Lines.Count; i++)
+            {
+                // Get the text of the current line
+                string lineText = scintillaCtrl.Lines[i].Text;
+                // Remove trailing spaces from the line
+                strB.AppendLine(lineText.TrimEnd().Replace("\t", spaces));
+            }
+            scintillaCtrl.Text = strB.ToString();
+        }
+
+
+        /// <summary>
+        /// Elimina Espacios al final de las líneas
+        /// </summary>
+        public void CutTrailingSpaces()
+        {
+            StringBuilder strB = new StringBuilder();
+
+            for (int i = 0; i < scintillaCtrl.Lines.Count; i++)
+            {
+                // Get the text of the current line
+                string lineText = scintillaCtrl.Lines[i].Text;
+                // Remove trailing spaces from the line
+                strB.AppendLine(lineText.TrimEnd());
+            }
+            scintillaCtrl.Text = strB.ToString();
+        }
+
+
+
+        // ===============================================================
 
 
 
@@ -431,86 +828,7 @@ namespace SQLCrypt.FunctionalClasses
         }
 
 
-
-        /// <summary>
-        /// MostrarGuiaIndentacion
-        /// </summary>
-        public void MostrarGuiaIndentacion()
-        {
-            if (scintillaCtrl.IndentationGuides == IndentView.None)
-                scintillaCtrl.IndentationGuides = IndentView.LookBoth;
-            else
-                scintillaCtrl.IndentationGuides = IndentView.None;
-        }
-
-
-        /// <summary>
-        /// MostrarNumerosDeLinea
-        /// </summary>
-        public void MostrarNumerosDeLinea()
-        {
-            if (scintillaCtrl.Margins[0].Width != 3)
-                scintillaCtrl.Margins[0].Width = 3;
-            else
-            {
-                const int padding = 2;
-                scintillaCtrl.Margins[0].Width = scintillaCtrl.TextWidth(Style.LineNumber, new string('9', _maxLineNumberCharLength + 1)) + padding;
-            }
-        }
-
-
-        /// <summary>
-        /// CommentSelection
-        /// </summary>
-        public void CommentSelection()
-        {
-
-            if (scintillaCtrl.SelectedText.Length > 0)
-            {
-                //Initial & Final Lines
-                int initialLine = CurrentMinLine;
-                int endLine = CurrentMaxLine;
-
-                for (int i = initialLine; i <= endLine; i++)
-                {
-                    scintillaCtrl.InsertText(scintillaCtrl.Lines[i].Position, "--");
-                }
-                scintillaCtrl.SelectionStart = scintillaCtrl.Lines[initialLine].Position;
-                scintillaCtrl.SelectionEnd = scintillaCtrl.Lines[endLine].EndPosition - 1;
-            }
-        }
-
-
-        /// <summary>
-        /// UnCommentSelection
-        /// </summary>
-        public void UnCommentSelection()
-        {
-            if (scintillaCtrl.SelectedText.Length > 0)
-            {
-                int initialLine = CurrentMinLine;
-                int endLine = CurrentMaxLine;
-
-                for (int i = initialLine; i <= endLine; i++)
-                {
-                    string s = scintillaCtrl.Lines[i].Text;
-                    if (s.TrimStart().StartsWith("--"))
-                    {
-                        var regex = new Regex(Regex.Escape("--"));
-                        var newText = regex.Replace(s, "", 1);
-                        int x = scintillaCtrl.Lines[i].Position;
-                        int y = scintillaCtrl.Lines[i].EndPosition;
-                        scintillaCtrl.SelectionStart = x;
-                        scintillaCtrl.SelectionEnd = y;
-                        scintillaCtrl.ReplaceSelection(newText);
-                    }
-                }
-                scintillaCtrl.SelectionStart = scintillaCtrl.Lines[initialLine].Position;
-                scintillaCtrl.SelectionEnd = scintillaCtrl.Lines[endLine].EndPosition - 1;
-            }
-        }
-
-
+        
         /// <summary>
         /// _CharAdded
         /// </summary>
@@ -519,7 +837,7 @@ namespace SQLCrypt.FunctionalClasses
         private void _CharAdded(object sender, CharAddedEventArgs e)
         {
 
-            if (!AutoCompleteEnabled || scintilla_end_mode)
+            if (!AutoCompleteEnabled || scintilla_end_mode || scintillaCtrl.Selections.Count > 1)
                 return;
 
             // Find the word start
@@ -556,115 +874,7 @@ namespace SQLCrypt.FunctionalClasses
         }
 
 
-        /// <summary>
-        /// txtSql_KeyDown           OK
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void txtSql_KeyDown(object sender, KeyEventArgs e)
-        {
-            omit_key = false;
-
-            //Completar Snippets
-            if (e.Control && (e.KeyCode == Keys.Tab || e.KeyCode == Keys.OemMinus))
-            {
-                omit_key = true;
-                e.Handled = true;
-                complete_snippet();
-                return;
-            }
-
-            // Modo Fin de Linea para Bloques
-            if (scintillaCtrl.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
-            {
-                foreach (var sel in scintillaCtrl.Selections)
-                {
-                    omit_key = false;
-                    var l = scintillaCtrl.LineFromPosition(sel.Start);
-                    var end_pos = LineLastEditablePosition(l);
-
-                    sel.Start = end_pos;
-                    sel.End = end_pos;
-                    sel.Caret = end_pos;
-                }
-            }
-
-            // Modo Fin de Linea para Bloques
-            if (scintillaCtrl.Selections.Count > 1 && e.KeyCode == Keys.End)
-            {
-                omit_key = false;
-                scintilla_end_mode = true;
-                foreach (var sel in scintillaCtrl.Selections)
-                {
-                    var l = scintillaCtrl.LineFromPosition(sel.Start);
-                    var end_pos = LineLastEditablePosition(l);
-
-                    sel.Start = end_pos;
-                    sel.End = end_pos;
-                    sel.Caret = end_pos;
-                }
-                e.Handled = true;
-            }
-
-            // Salir de Modo Fin de Linea para Bloques
-            if (scintilla_end_mode && scintillaCtrl.Selections.Count <= 1)
-            {
-                scintilla_end_mode = false;
-            }
-        }
-
-
-        /// <summary>
-        /// txtSql_PreviousBookmark
-        /// </summary>
-        public void PreviousBookmark()
-        {
-            var line = scintillaCtrl.CurrentLine;
-            var prevLine = scintillaCtrl.Lines[--line].MarkerPrevious(1 << BOOKMARK_MARKER);
-            if (prevLine != -1)
-                scintillaCtrl.Lines[prevLine].Goto();
-        }
-
-
-        /// <summary>
-        /// txtSql_NextBookmark
-        /// </summary>
-        public void NextBookmark()
-        {
-            var line = scintillaCtrl.CurrentLine;
-            var nextLine = scintillaCtrl.Lines[++line].MarkerNext(1 << BOOKMARK_MARKER);
-            if (nextLine != -1)
-                scintillaCtrl.Lines[nextLine].Goto();
-        }
-
-
-        /// <summary>
-        /// Control para permitir Edición en modo Fin de Línea       OK
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void txtSql_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (omit_key)
-            {
-                e.Handled = true;
-                return;
-            }
-
-            if (scintillaCtrl.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
-            {
-                foreach (var sel in scintillaCtrl.Selections)
-                {
-                    var l = scintillaCtrl.LineFromPosition(sel.Start);
-                    var end_pos = scintillaCtrl.Lines[l].EndPosition - 2;
-                    sel.Start = end_pos;
-                    sel.End = end_pos;
-                    sel.Caret = end_pos;
-                }
-            }
-        }
-
-
+        
         /// <summary>
         /// HELPER - retorna el número de Espacios al inicio de la línea actual en "scintilla"
         /// </summary>
@@ -680,156 +890,6 @@ namespace SQLCrypt.FunctionalClasses
             }
             return count;
         }
-
-
-
-        /// <summary>
-        /// Save Scintilla Text to Files
-        /// Se conserva el Encoding Original (si lo había)
-        /// </summary>
-        /// <param name="fileName"></param>
-        public void SaveFile(string fileName)
-        {   
-            if(fileName == CurrentFile )
-                System.IO.File.WriteAllText(fileName, scintillaCtrl.Text, CurrentEncoding);
-            else
-                System.IO.File.WriteAllText(fileName, scintillaCtrl.Text, Encoding.UTF8);
-        }
-
-
-
-        /// <summary>
-        /// Lee Archivo UTF-8 en Scintilla
-        /// </summary>
-        /// <param name="fileName"></param>
-        public void LoadFile(string fileName)
-        {
-            Encoding encoding = EncodingDetector.DetectEncoding(fileName);
-            //MessageBox.Show(encoding.ToString());
-            scintillaCtrl.Text = System.IO.File.ReadAllText(fileName, encoding);
-            
-            CurrentFile = fileName;
-            CurrentEncoding = encoding;
-        }
-
-
-
-        #region ----------   E N C O D I N G   --------------
-
-
-
-        ///// <summary>
-        ///// GetEncoding
-        ///// Llama a varias alternativas para identificar el Encoding
-        ///// </summary>
-        ///// <param name="filename"></param>
-        ///// <returns></returns>
-        //public Encoding GetEncoding(string filename)
-        //{
-        //    var encodingByBOM = GetEncodingByBOM(filename);
-        //    if (encodingByBOM != null)
-        //        return encodingByBOM;
-
-        //    var encodingByParsing1252 = GetEncodingByParsing(filename, Encoding.GetEncoding("Windows-1252"));
-        //    if (encodingByParsing1252 != null)
-        //        return encodingByParsing1252;
-
-        //    // BOM not found :(, so try to parse characters into several encodings
-        //    var encodingByParsingUTF8 = GetEncodingByParsing(filename, Encoding.UTF8);
-        //    if (encodingByParsingUTF8 != null)
-        //        return encodingByParsingUTF8;
-
-        //    var encodingByParsing1250 = GetEncodingByParsing(filename, Encoding.GetEncoding("Windows-1250"));
-        //    if (encodingByParsing1250 != null)
-        //        return encodingByParsing1250;
-
-        //    var encodingByParsing1251 = GetEncodingByParsing(filename, Encoding.GetEncoding("Windows-1251"));
-        //    if (encodingByParsing1251 != null)
-        //        return encodingByParsing1251;
-
-        //    var encodingByParsing1254 = GetEncodingByParsing(filename, Encoding.GetEncoding("Windows-1254"));
-        //    if (encodingByParsing1254 != null)
-        //        return encodingByParsing1254;
-
-        //    var encodingByParsing1257 = GetEncodingByParsing(filename, Encoding.GetEncoding("Windows-1257"));
-        //    if (encodingByParsing1257 != null)
-        //        return encodingByParsing1257;
-
-        //    var encodingByParsing1258 = GetEncodingByParsing(filename, Encoding.GetEncoding("Windows-1258"));
-        //    if (encodingByParsing1258 != null)
-        //        return encodingByParsing1258;
-
-        //    var encodingByParsingUTF7 = GetEncodingByParsing(filename, Encoding.UTF7);
-        //    if (encodingByParsingUTF7 != null)
-        //        return encodingByParsingUTF7;
-
-        //    var encodingByParsingLatin2 = GetEncodingByParsing(filename, Encoding.GetEncoding("iso-8859-2"));
-        //    if (encodingByParsingLatin2 != null)
-        //        return encodingByParsingLatin2;
-
-        //    var encodingByParsingLatin1 = GetEncodingByParsing(filename, Encoding.GetEncoding("iso-8859-1"));
-        //    if (encodingByParsingLatin1 != null)
-        //        return encodingByParsingLatin1;
-
-        //    return Encoding.ASCII;
-        //}
-
-
-        ///// <summary>
-        ///// GetEncodingByBOM
-        ///// </summary>
-        ///// <param name="filename"></param>
-        ///// <returns></returns>
-        //private Encoding GetEncodingByBOM(string filename)
-        //{
-        //    // Read the BOM
-        //    var byteOrderMark = new byte[4];
-        //    using (var file = new FileStream(filename, FileMode.Open, FileAccess.Read))
-        //    {
-        //        file.Read(byteOrderMark, 0, 4);
-        //    }
-
-        //    // Analyze the BOM
-        //    if (byteOrderMark[0] == 0x2b && byteOrderMark[1] == 0x2f && byteOrderMark[2] == 0x76) return Encoding.UTF7;
-        //    if (byteOrderMark[0] == 0xef && byteOrderMark[1] == 0xbb && byteOrderMark[2] == 0xbf) return Encoding.UTF8;
-        //    if (byteOrderMark[0] == 0xff && byteOrderMark[1] == 0xfe) return Encoding.Unicode; //UTF-16LE
-        //    if (byteOrderMark[0] == 0xfe && byteOrderMark[1] == 0xff) return Encoding.BigEndianUnicode; //UTF-16BE
-        //    if (byteOrderMark[0] == 0 && byteOrderMark[1] == 0 && byteOrderMark[2] == 0xfe && byteOrderMark[3] == 0xff) return Encoding.UTF32;
-
-        //    return null;    // no BOM found
-        //}
-
-
-        ///// <summary>
-        ///// GetEncodingByParsing
-        ///// </summary>
-        ///// <param name="filename"></param>
-        ///// <param name="encoding"></param>
-        ///// <returns></returns>
-        //private Encoding GetEncodingByParsing(string filename, Encoding encoding)
-        //{
-        //    var encodingVerifier = Encoding.GetEncoding(encoding.BodyName, new EncoderExceptionFallback(), new DecoderExceptionFallback());
-
-        //    try
-        //    {
-        //        using (var textReader = new StreamReader(filename, encodingVerifier, detectEncodingFromByteOrderMarks: true))
-        //        {
-        //            while (!textReader.EndOfStream)
-        //            {
-        //                textReader.ReadLine();   // in order to increment the stream position
-        //            }
-
-        //            // all text parsed ok
-        //            return textReader.CurrentEncoding;
-        //        }
-        //    }
-        //    catch (Exception ex) { }
-
-        //    return null;
-        //}
-
-
-        #endregion
 
 
 
@@ -855,127 +915,8 @@ namespace SQLCrypt.FunctionalClasses
                 scintillaCtrl.SetSel(scintillaCtrl.TargetStart, scintillaCtrl.TargetEnd);
         }
 
-
-
-        /// <summary>
-        /// txtSql_ToogleBookmark
-        /// </summary>
-        public void ToogleBookmark()
-        {
-            const uint mask = (1 << BOOKMARK_MARKER);
-            var line = scintillaCtrl.Lines[scintillaCtrl.CurrentLine];
-            if ((line.MarkerGet() & mask) > 0)
-            {
-                // Remove existing bookmark
-                line.MarkerDelete(BOOKMARK_MARKER);
-            }
-            else
-            {
-                // Add bookmark
-                line.MarkerAdd(BOOKMARK_MARKER);
-            }
-        }
-
-
-
-        /// <summary>
-        /// Brace matching en modo INSERT     OK
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void _KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (omit_key)
-            {
-                e.Handled = true;
-                return;
-            }
-
-            if (scintillaCtrl.SelectedText.Length > 0)
-            {
-                var selected = scintillaCtrl.SelectedText;
-                switch (e.KeyChar)
-                {
-                    case '"':
-                        scintillaCtrl.ReplaceSelection($"\"{selected}\"");
-                        e.Handled = true;
-                        break;
-                    case '\'':
-                        scintillaCtrl.ReplaceSelection($"'{selected}'");
-                        e.Handled = true;
-                        break;
-                    case '(':
-                        scintillaCtrl.ReplaceSelection($"({selected})");
-                        e.Handled = true;
-                        break;
-                    case '{':
-                        scintillaCtrl.ReplaceSelection("{" + selected + "}");
-                        e.Handled = true;
-                        break;
-                    case '[':
-                        scintillaCtrl.ReplaceSelection($"[{selected}]");
-                        e.Handled = true;
-                        break;
-                }
-            }
-            else
-            {
-                //switch (e.Char)
-                switch (e.KeyChar)
-                {
-                    case '"':
-                        scintillaCtrl.InsertText(scintillaCtrl.CurrentPosition, "\"");
-                        break;
-                    case '\'':
-                        scintillaCtrl.InsertText(scintillaCtrl.CurrentPosition, "'");
-                        break;
-                    case '(':
-                        scintillaCtrl.InsertText(scintillaCtrl.CurrentPosition, ")");
-                        break;
-                    case '{':
-                        scintillaCtrl.InsertText(scintillaCtrl.CurrentPosition, "}");
-                        break;
-                    case '[':
-                        scintillaCtrl.InsertText(scintillaCtrl.CurrentPosition, "]");
-                        break;
-                }
-            }
-        }
-
-
-
-        /// <summary>
-        /// MostrarEspacios
-        /// </summary>
-        public void MostrarEspacios()
-        {
-            if (scintillaCtrl.ViewWhitespace == WhitespaceMode.Invisible)
-                scintillaCtrl.ViewWhitespace = WhitespaceMode.VisibleAlways;
-            else
-                scintillaCtrl.ViewWhitespace = WhitespaceMode.Invisible;
-        }
-
-
         
-        /// <summary>
-        /// Elimina Espacios al final de las líneas
-        /// </summary>
-        public void CutTrailingSpaces()
-        {
-            StringBuilder strB = new StringBuilder();
-
-            for (int i = 0; i < scintillaCtrl.Lines.Count; i++)
-            {
-                // Get the text of the current line
-                string lineText = scintillaCtrl.Lines[i].Text;
-                // Remove trailing spaces from the line
-                strB.AppendLine(lineText.TrimEnd());
-            }
-            scintillaCtrl.Text = strB.ToString();
-        }
-
-
-
+        
         /// <summary>
         /// BraceHighLight
         /// Brace Matching Highlight based on current position
@@ -1014,27 +955,6 @@ namespace SQLCrypt.FunctionalClasses
 
         }
 
-
-
-        /// <summary>
-        /// TABtoSpaces
-        /// Change Tab Ocurrence by their corresponding spaces.
-        /// </summary>
-        public void TABtoSpaces(int TabSpaces)
-        {
-            string spaces = new string(' ', TabSpaces);
-            
-            StringBuilder strB = new StringBuilder();
-
-            for (int i = 0; i < scintillaCtrl.Lines.Count; i++)
-            {
-                // Get the text of the current line
-                string lineText = scintillaCtrl.Lines[i].Text;
-                // Remove trailing spaces from the line
-                strB.AppendLine(lineText.TrimEnd().Replace("\t", spaces));
-            }
-            scintillaCtrl.Text = strB.ToString();
-        }
 
 
         // this.txtSql.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.txtSql_SelectionChanged);  OK

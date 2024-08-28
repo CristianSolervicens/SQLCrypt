@@ -60,17 +60,18 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(13, 61);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(40, 13);
+            this.label3.Size = new System.Drawing.Size(32, 13);
             this.label3.TabIndex = 6;
-            this.label3.Text = "Página";
+            this.label3.Text = "Page";
             // 
             // btConsultar
             // 
+            this.btConsultar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btConsultar.Location = new System.Drawing.Point(79, 95);
             this.btConsultar.Name = "btConsultar";
             this.btConsultar.Size = new System.Drawing.Size(75, 23);
             this.btConsultar.TabIndex = 3;
-            this.btConsultar.Text = "Consultar";
+            this.btConsultar.Text = "Find";
             this.btConsultar.UseVisualStyleBackColor = true;
             this.btConsultar.Click += new System.EventHandler(this.btConsultar_Click);
             // 

@@ -506,7 +506,10 @@ to Search Objects by their content";
         {
             if (txtSql.Modified)
             {
-                var res = MessageBox.Show($"The Document has been modified.{EOL}¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var res = MessageBox.Show($"The Document has been modified.{EOL}¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (res == DialogResult.Cancel)
+                    return res;
+
                 if (res == DialogResult.Yes)
                 {
                     if (CurrentFile == "")
@@ -517,8 +520,6 @@ to Search Objects by their content";
                     if (txtSql.Modified)
                         return DialogResult.Cancel;
                 }
-                else if (res == DialogResult.Cancel)
-                    return DialogResult.Cancel;
                 else if (res == DialogResult.No)
                     return DialogResult.Yes;
             }
@@ -546,6 +547,30 @@ to Search Objects by their content";
                 MessageBox.Show(this, "You should be connected to a Database. ;)", "Attention", MessageBoxButtons.OK);
                 return;
             }
+
+            // ========== REVISION DE SINTAXIS ==========
+            var sqlcheck = new SQLCheck();
+            List<SQLParseError> sqlErrors;
+
+            scintillaC.HighlightErrorClean();
+
+            if (txtSql.SelectedText != "")
+                sqlErrors = sqlcheck.RunCheck(txtSql.SelectedText);
+            else
+                sqlErrors = sqlcheck.RunCheck(txtSql.Text);
+
+            string sErrors = "";
+            foreach (var error in sqlErrors)
+            {
+                sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{EOL}";
+                scintillaC.HighlightError(error.line - 1, error.column);
+            }
+            if (sErrors != "")
+            {
+                MessageBox.Show(sErrors, "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+            // ========================================
 
             ExecuteSqlInNewThread();
 
@@ -777,7 +802,7 @@ to Search Objects by their content";
         {
             if (txtSql.Modified)
             {
-                var res = MessageBox.Show($"The Document has been modified.{EOL}¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var res = MessageBox.Show($"The Document has been modified.{EOL}¿Do you want to Save befor close the file?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (res == DialogResult.Yes)
                 {
                     if (CurrentFile == "")
@@ -1264,10 +1289,16 @@ to Search Objects by their content";
                     }
                 }
                 EnBusqueda= false;
+                
+                lsColumnas.Items.Clear();
 
                 if (lstObjetos.SelectedIndices.Count > 0)
                 {
                     lstObjetos.TopIndex = lstObjetos.SelectedIndices[0];
+                    if (lstObjetos.SelectedIndices.Count == 1)
+                    {
+                        lstObjetos_SelectedIndexChanged(null, null);
+                    }
                 }
                 else
                     lstObjetos.TopIndex = 0;

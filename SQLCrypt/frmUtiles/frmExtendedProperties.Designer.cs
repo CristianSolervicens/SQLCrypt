@@ -69,8 +69,8 @@
             this.splitContainer.Panel2.Controls.Add(this.btGrabar);
             this.splitContainer.Panel2.Controls.Add(this.panelDisplay);
             this.splitContainer.Panel2.Controls.Add(this.btSalir);
-            this.splitContainer.Size = new System.Drawing.Size(1287, 602);
-            this.splitContainer.SplitterDistance = 247;
+            this.splitContainer.Size = new System.Drawing.Size(1229, 602);
+            this.splitContainer.SplitterDistance = 235;
             this.splitContainer.SplitterWidth = 3;
             this.splitContainer.TabIndex = 0;
             // 
@@ -81,17 +81,18 @@
             this.dbObjs.Location = new System.Drawing.Point(0, 0);
             this.dbObjs.Margin = new System.Windows.Forms.Padding(2);
             this.dbObjs.Name = "dbObjs";
-            this.dbObjs.Size = new System.Drawing.Size(247, 602);
+            this.dbObjs.Size = new System.Drawing.Size(235, 602);
             this.dbObjs.TabIndex = 0;
             this.dbObjs.DoubleClick += new System.EventHandler(this.dbObjs_DoubleClick);
             // 
             // cbLabel
             // 
+            this.cbLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbLabel.FormattingEnabled = true;
             this.cbLabel.Items.AddRange(new object[] {
             "MS_Description",
             "Seguridad"});
-            this.cbLabel.Location = new System.Drawing.Point(866, 40);
+            this.cbLabel.Location = new System.Drawing.Point(704, 58);
             this.cbLabel.Margin = new System.Windows.Forms.Padding(2);
             this.cbLabel.Name = "cbLabel";
             this.cbLabel.Size = new System.Drawing.Size(161, 21);
@@ -99,8 +100,9 @@
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(864, 19);
+            this.label2.Location = new System.Drawing.Point(701, 38);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(116, 13);
@@ -111,7 +113,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(249, 49);
+            this.label1.Location = new System.Drawing.Point(128, 49);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(60, 13);
@@ -120,17 +122,19 @@
             // 
             // txtObjDescription
             // 
-            this.txtObjDescription.Location = new System.Drawing.Point(321, 8);
+            this.txtObjDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtObjDescription.Location = new System.Drawing.Point(191, 13);
             this.txtObjDescription.Margin = new System.Windows.Forms.Padding(2);
             this.txtObjDescription.Multiline = true;
             this.txtObjDescription.Name = "txtObjDescription";
-            this.txtObjDescription.Size = new System.Drawing.Size(535, 68);
+            this.txtObjDescription.Size = new System.Drawing.Size(489, 68);
             this.txtObjDescription.TabIndex = 1;
             // 
             // laObjDescription
             // 
             this.laObjDescription.AutoSize = true;
-            this.laObjDescription.Location = new System.Drawing.Point(7, 14);
+            this.laObjDescription.Location = new System.Drawing.Point(11, 10);
             this.laObjDescription.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.laObjDescription.Name = "laObjDescription";
             this.laObjDescription.Size = new System.Drawing.Size(38, 13);
@@ -139,7 +143,8 @@
             // 
             // btGrabar
             // 
-            this.btGrabar.Location = new System.Drawing.Point(67, 40);
+            this.btGrabar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btGrabar.Location = new System.Drawing.Point(8, 40);
             this.btGrabar.Margin = new System.Windows.Forms.Padding(2);
             this.btGrabar.Name = "btGrabar";
             this.btGrabar.Size = new System.Drawing.Size(101, 31);
@@ -154,11 +159,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelDisplay.Controls.Add(this.dgObject);
-            this.panelDisplay.Location = new System.Drawing.Point(2, 78);
+            this.panelDisplay.Location = new System.Drawing.Point(2, 90);
             this.panelDisplay.Margin = new System.Windows.Forms.Padding(2);
             this.panelDisplay.Name = "panelDisplay";
             this.panelDisplay.Padding = new System.Windows.Forms.Padding(0, 65, 0, 0);
-            this.panelDisplay.Size = new System.Drawing.Size(1036, 522);
+            this.panelDisplay.Size = new System.Drawing.Size(987, 510);
             this.panelDisplay.TabIndex = 2;
             // 
             // dgObject
@@ -170,18 +175,20 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dgObject.BackgroundColor = System.Drawing.SystemColors.ButtonFace;
             this.dgObject.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgObject.Location = new System.Drawing.Point(0, 0);
+            this.dgObject.Location = new System.Drawing.Point(2, 0);
             this.dgObject.Margin = new System.Windows.Forms.Padding(2);
             this.dgObject.Name = "dgObject";
             this.dgObject.RowHeadersWidth = 62;
             this.dgObject.RowTemplate.Height = 28;
-            this.dgObject.Size = new System.Drawing.Size(1036, 520);
+            this.dgObject.Size = new System.Drawing.Size(981, 507);
             this.dgObject.TabIndex = 2;
             // 
             // btSalir
             // 
+            this.btSalir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btSalir.AutoEllipsis = true;
-            this.btSalir.Location = new System.Drawing.Point(5, 40);
+            this.btSalir.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btSalir.Location = new System.Drawing.Point(920, 10);
             this.btSalir.Margin = new System.Windows.Forms.Padding(2);
             this.btSalir.Name = "btSalir";
             this.btSalir.Size = new System.Drawing.Size(59, 31);
@@ -194,10 +201,11 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1287, 602);
+            this.ClientSize = new System.Drawing.Size(1229, 602);
             this.Controls.Add(this.splitContainer);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
+            this.MinimumSize = new System.Drawing.Size(1200, 500);
             this.Name = "frmExtendedProperties";
             this.Text = "Extended Properties Editor";
             this.splitContainer.Panel1.ResumeLayout(false);
