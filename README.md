@@ -47,7 +47,7 @@ You can edit your file while you're executing a query, query output is very fast
 resultsets and many resultsets. While a query is running you can still use your stored queries and object
 navigation.
 
-The sentences separated by **GO** are executed together.
+The sentences separated by **GO** are executed separatelly.
 
 
 Cristian Solervicéns.
