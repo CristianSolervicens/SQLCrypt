@@ -1940,28 +1940,6 @@ to Search Objects by their content";
             scintillaC.CutTrailingSpaces();
         }
 
-        /// <summary>
-        /// Convertir Selección a Mayúsculas
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void selecciónAMayúsculasToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            scintillaC.SelectionUppercase();
-
-        }
-
-
-        /// <summary>
-        /// Convertir Selección a Minúsculas
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void selecciónAMinúsculasToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            scintillaC.SelectionLowercase();
-        }
-
 
         /// <summary>
         /// Abrir el Diálogo de Find & Replace 

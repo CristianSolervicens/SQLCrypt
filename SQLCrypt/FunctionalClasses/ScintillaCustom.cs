@@ -170,7 +170,7 @@ namespace SQLCrypt.FunctionalClasses
             scintillaCtrl.Styles[Style.Sql.CommentDocKeyword].ForeColor = IntToColor(0xB3D991);
             scintillaCtrl.Styles[Style.Sql.CommentDocKeywordError].ForeColor = IntToColor(0xFF0000);
 
-            scintillaCtrl.Lexer = Lexer.Sql;
+            scintillaCtrl.LexerName = "sql";
 
             scintillaCtrl.SetKeywords(0, keyWords);
             scintillaCtrl.SetKeywords(1, keyWords2);
@@ -445,49 +445,7 @@ namespace SQLCrypt.FunctionalClasses
         }
 
 
-
         // ================= AFFECTING SELECTION  ================
-
-
-
-        /// <summary>
-        /// Selección "scintilla" a LOWERCASE
-        /// </summary>
-        public void SelectionLowercase()
-        {
-            if (scintillaCtrl.Selections.Count > 1)
-               return;
-
-            // save the selection
-            int start = scintillaCtrl.SelectionStart;
-            int end = scintillaCtrl.SelectionEnd;
-
-            // modify the selected text
-            scintillaCtrl.ReplaceSelection(scintillaCtrl.GetTextRange(start, end - start).ToLower());
-
-            // preserve the original selection
-            scintillaCtrl.SetSelection(start, end);
-        }
-
-
-        /// <summary>
-        /// Selección "scintilla" a UPPERCASE
-        /// </summary>
-        public void SelectionUppercase()
-        {
-            if (scintillaCtrl.Selections.Count > 1)
-               return;
-            
-            // save the selection
-            int start = scintillaCtrl.SelectionStart;
-            int end = scintillaCtrl.SelectionEnd;
-
-            // modify the selected text
-            scintillaCtrl.ReplaceSelection(scintillaCtrl.GetTextRange(start, end - start).ToUpper());
-
-            // preserve the original selection
-            scintillaCtrl.SetSelection(start, end);
-        }
 
 
         /// <summary>
@@ -962,5 +920,11 @@ namespace SQLCrypt.FunctionalClasses
         // this.txtSql.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtSql_DragDrop);
         // this.txtSql.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtSql_DragEnter);
 
+    }
+
+    public struct SelectionItem
+    {
+        public int start;
+        public int end;
     }
 }

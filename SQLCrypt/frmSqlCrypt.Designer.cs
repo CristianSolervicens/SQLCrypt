@@ -65,8 +65,6 @@
             this.goToNextBookmarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previousBookmarkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.selecciónAMayúsculasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.selecciónAMinúsculasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.commentSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.uncommentSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -302,9 +300,9 @@
             // cerrarToolStripMenuItem
             // 
             this.cerrarToolStripMenuItem.Name = "cerrarToolStripMenuItem";
-            this.cerrarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.L)));
+            this.cerrarToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.K)));
             this.cerrarToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
-            this.cerrarToolStripMenuItem.Text = "Close File (Clean)";
+            this.cerrarToolStripMenuItem.Text = "Close File (Klean)";
             this.cerrarToolStripMenuItem.Click += new System.EventHandler(this.cerrarToolStripMenuItem_Click);
             // 
             // salirToolStripMenuItem
@@ -331,8 +329,6 @@
             this.goToNextBookmarkToolStripMenuItem,
             this.previousBookmarkToolStripMenuItem,
             this.toolStripSeparator4,
-            this.selecciónAMayúsculasToolStripMenuItem,
-            this.selecciónAMinúsculasToolStripMenuItem,
             this.commentSelectionToolStripMenuItem,
             this.uncommentSelectionToolStripMenuItem,
             this.toolStripSeparator1,
@@ -437,23 +433,6 @@
             // 
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(266, 6);
-            // 
-            // selecciónAMayúsculasToolStripMenuItem
-            // 
-            this.selecciónAMayúsculasToolStripMenuItem.Name = "selecciónAMayúsculasToolStripMenuItem";
-            this.selecciónAMayúsculasToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.U)));
-            this.selecciónAMayúsculasToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
-            this.selecciónAMayúsculasToolStripMenuItem.Text = "Uppercase Selection";
-            this.selecciónAMayúsculasToolStripMenuItem.Click += new System.EventHandler(this.selecciónAMayúsculasToolStripMenuItem_Click);
-            // 
-            // selecciónAMinúsculasToolStripMenuItem
-            // 
-            this.selecciónAMinúsculasToolStripMenuItem.Name = "selecciónAMinúsculasToolStripMenuItem";
-            this.selecciónAMinúsculasToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.U)));
-            this.selecciónAMinúsculasToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
-            this.selecciónAMinúsculasToolStripMenuItem.Text = "Lowercase Selection";
-            this.selecciónAMinúsculasToolStripMenuItem.Click += new System.EventHandler(this.selecciónAMinúsculasToolStripMenuItem_Click);
             // 
             // commentSelectionToolStripMenuItem
             // 
@@ -846,8 +825,9 @@
             // 
             // txtSql
             // 
-            this.txtSql.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtSql.BorderStyle = ScintillaNET.BorderStyle.FixedSingle;
             this.txtSql.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtSql.LexerName = null;
             this.txtSql.Location = new System.Drawing.Point(3, 3);
             this.txtSql.Name = "txtSql";
             this.txtSql.Size = new System.Drawing.Size(863, 563);
@@ -1008,8 +988,6 @@
         private System.Windows.Forms.ToolStripMenuItem eliminarEspaciosFinDeLíneaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tabSizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripTextBox toolStripTextBox1;
-        private System.Windows.Forms.ToolStripMenuItem selecciónAMayúsculasToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem selecciónAMinúsculasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findReplaceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem numerosDeLíneaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem commentSelectionToolStripMenuItem;
