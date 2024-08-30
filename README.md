@@ -1,13 +1,13 @@
 # SQLCrypt
-## Cliente SQL para Desarrolladores
+## SQL Client for Developers
 
 ***
 
-### **Autor:** _Cristian Solervicéns C._
+### **Author:** _Cristian Solervicéns C._
 
 ***
 
-[Wiki del proyecyo](https://github.com/CristianSolervicens/SQLCrypt/wiki)
+[Project Wiki](https://github.com/CristianSolervicens/SQLCrypt/wiki)
 
 ***
 
