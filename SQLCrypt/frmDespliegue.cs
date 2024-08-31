@@ -111,7 +111,7 @@ namespace SQLCrypt
                 {
                     try
                     {
-                        if (!hSql.Data.HasRows)
+                        if (hSql.Data.FieldCount == 0)
                         {
                             if (hSql.Messages != "")
                             {
@@ -132,9 +132,7 @@ namespace SQLCrypt
                     {
                         LoadData();
                         if (QueryController.CancelQuery)
-                        {
                             return;
-                        }
                     }
                     catch { }
                 }
@@ -178,7 +176,7 @@ namespace SQLCrypt
             {
                 try
                 {
-                    if (!hSql.Data.HasRows)
+                    if (hSql.Data.FieldCount == 0)
                     {
                         if (hSql.Messages != "")
                         {
@@ -282,7 +280,7 @@ namespace SQLCrypt
         {
             try
             {
-                while (hSql.Data.HasRows)
+                while (hSql.Data.FieldCount != 0)
                 {
                     try
                     {
@@ -304,7 +302,6 @@ namespace SQLCrypt
                         return;
                     }
                     
-                    //hSql.Data.NextResult();
                     if (hSql.Data.IsClosed)
                         return;
                 }
@@ -314,6 +311,7 @@ namespace SQLCrypt
                 return;
             }
         }
+
 
 
         /// <summary>

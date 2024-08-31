@@ -256,6 +256,8 @@ namespace SQLCrypt.FunctionalClasses
                     return 0;
                 }
 
+                Data = null;
+
                 //Si no es una cadena correctamente compuesta, la asignación levanta un error.
                 try
                 {
@@ -303,8 +305,10 @@ namespace SQLCrypt.FunctionalClasses
             {
                 if (ConnectionStatus)
                 {
-                    Conn.Close();
-                    Conn.Dispose();
+                    DataClose();
+                    Data = null;
+                    try { Conn.Close(); } catch { }
+                    try { Conn.Dispose(); } catch { }
                     Conn = null;
                     return 1;
                 }
@@ -384,7 +388,6 @@ namespace SQLCrypt.FunctionalClasses
                 catch (Exception exw)
                 {
                     sError = $"Error: {exw.Message}";
-                    this.CloseDBConn();
                     Command.Dispose();
                     Command = null;
                     return false;
