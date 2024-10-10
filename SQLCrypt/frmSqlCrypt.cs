@@ -1192,6 +1192,7 @@ to Search Objects by their content";
                         IsEncrypted = true;
 
                     CurrentFile = sfd.FileName;
+                    cfg.AddOpenedFile(CurrentFile);
                     cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
                     this.Text = $"SQLCrypt - {CurrentFile}";
                     tssLaPath.Text = cfg.WorkingDirectory;
@@ -1199,31 +1200,21 @@ to Search Objects by their content";
                 }
                 else
                     return;
-
             }
 
             if (IsEncrypted)
             {
-                hSql.EncryptStringtoFile(txtSql.Text.ToString(), CurrentFile);
+                hSql.EncryptStringtoFile(txtSql.Text, CurrentFile);
             }
             else
             {
-                txtSql_SaveFile();
+                scintillaC.SaveFile(CurrentFile);
             }
 
             txtSql.SetSavePoint();
             txtSql.EmptyUndoBuffer();
             tssLaStat.Text = "Archivo Grabado...";
 
-        }
-
-
-        /// <summary>
-        /// Llamada a Grabación de Archivo en Edición
-        /// </summary>
-        private void txtSql_SaveFile()
-        {
-            scintillaC.SaveFile(CurrentFile);
         }
 
 

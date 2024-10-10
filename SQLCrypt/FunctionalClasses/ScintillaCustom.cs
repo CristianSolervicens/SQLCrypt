@@ -415,7 +415,6 @@ namespace SQLCrypt.FunctionalClasses
         //
 
 
-
         /// <summary>
         /// Lee Archivo UTF-8 en Scintilla
         /// </summary>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLCrypt.FunctionalClasses.MySql;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,7 +31,7 @@ namespace SQLCrypt
                 return;
             }
 
-            txClaveEncriptada.Text = Crypto.Cryptus.EncryptStringToString(txClaveClara.Text);
+            txClaveEncriptada.Text = MySql.EncryptStringToString(txClaveClara.Text);
             Clipboard.Clear();
             Clipboard.SetText(txClaveEncriptada.Text); 
         }
@@ -44,7 +45,7 @@ namespace SQLCrypt
                 return;
             }
 
-            txClaveEncriptada.Text=Crypto.Cryptus.DecryptStringToString(txClaveClara.Text);
+            txClaveEncriptada.Text= MySql.DecryptStringToString(txClaveClara.Text);
             Clipboard.Clear();
             Clipboard.SetText(txClaveEncriptada.Text);
         }

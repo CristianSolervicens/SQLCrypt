@@ -53,7 +53,7 @@ namespace SQLCrypt
             InitializeComponent();
             withTread = true;
             dataGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
-            dataGridView.MultiSelect = false;
+            // dataGridView.MultiSelect = false;
             dataGridView.ReadOnly = true;
 
             txtMessages.Visible = false;
