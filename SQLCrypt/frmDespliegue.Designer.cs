@@ -30,9 +30,9 @@ namespace SQLCrypt
       /// </summary>
       private void InitializeComponent()
       {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDespliegue));
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.btSalir = new System.Windows.Forms.Button();
@@ -46,15 +46,17 @@ namespace SQLCrypt
             this.verMensajesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.siguienteResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previoResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.autoSizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.manualSizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.ctrlNSiguienteResultSetCtrlPPrevioResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.laMessages = new System.Windows.Forms.Label();
             this.btBuscar = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.txtMessages = new System.Windows.Forms.TextBox();
-            this.autoSizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.manualSizeColumnsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+            this.findToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -64,26 +66,26 @@ namespace SQLCrypt
             this.dataGridView.AllowUserToAddRows = false;
             this.dataGridView.AllowUserToDeleteRows = false;
             this.dataGridView.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            this.dataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            this.dataGridView.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridView.BackgroundColor = System.Drawing.SystemColors.Control;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView.DefaultCellStyle = dataGridViewCellStyle5;
             this.dataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dataGridView.Location = new System.Drawing.Point(0, 27);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.ReadOnly = true;
             this.dataGridView.RowHeadersWidth = 70;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            this.dataGridView.RowsDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            this.dataGridView.RowsDefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridView.RowTemplate.DefaultCellStyle.BackColor = System.Drawing.SystemColors.Control;
             this.dataGridView.RowTemplate.Height = 24;
             this.dataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
@@ -132,7 +134,9 @@ namespace SQLCrypt
             this.previoResultSetToolStripMenuItem,
             this.toolStripSeparator3,
             this.autoSizeColumnsToolStripMenuItem,
-            this.manualSizeColumnsToolStripMenuItem});
+            this.manualSizeColumnsToolStripMenuItem,
+            this.toolStripSeparator4,
+            this.findToolStripMenuItem});
             this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
             this.archivoToolStripMenuItem.Size = new System.Drawing.Size(37, 23);
             this.archivoToolStripMenuItem.Text = "File";
@@ -191,6 +195,27 @@ namespace SQLCrypt
             this.previoResultSetToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
             this.previoResultSetToolStripMenuItem.Text = "Previous Result-Set";
             this.previoResultSetToolStripMenuItem.Click += new System.EventHandler(this.previoResultSetToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator3
+            // 
+            this.toolStripSeparator3.Name = "toolStripSeparator3";
+            this.toolStripSeparator3.Size = new System.Drawing.Size(226, 6);
+            // 
+            // autoSizeColumnsToolStripMenuItem
+            // 
+            this.autoSizeColumnsToolStripMenuItem.Name = "autoSizeColumnsToolStripMenuItem";
+            this.autoSizeColumnsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.autoSizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.autoSizeColumnsToolStripMenuItem.Text = "Auto Size Columns";
+            this.autoSizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.autoSizeColumnsToolStripMenuItem_Click);
+            // 
+            // manualSizeColumnsToolStripMenuItem
+            // 
+            this.manualSizeColumnsToolStripMenuItem.Name = "manualSizeColumnsToolStripMenuItem";
+            this.manualSizeColumnsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+            this.manualSizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.manualSizeColumnsToolStripMenuItem.Text = "Manual Size Columns";
+            this.manualSizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.manualSizeColumnsToolStripMenuItem_Click);
             // 
             // toolStripTextBox1
             // 
@@ -252,26 +277,18 @@ namespace SQLCrypt
             this.txtMessages.Size = new System.Drawing.Size(767, 442);
             this.txtMessages.TabIndex = 21;
             // 
-            // autoSizeColumnsToolStripMenuItem
+            // toolStripSeparator4
             // 
-            this.autoSizeColumnsToolStripMenuItem.Name = "autoSizeColumnsToolStripMenuItem";
-            this.autoSizeColumnsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.autoSizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.autoSizeColumnsToolStripMenuItem.Text = "Auto Size Columns";
-            this.autoSizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.autoSizeColumnsToolStripMenuItem_Click);
+            this.toolStripSeparator4.Name = "toolStripSeparator4";
+            this.toolStripSeparator4.Size = new System.Drawing.Size(226, 6);
             // 
-            // manualSizeColumnsToolStripMenuItem
+            // findToolStripMenuItem
             // 
-            this.manualSizeColumnsToolStripMenuItem.Name = "manualSizeColumnsToolStripMenuItem";
-            this.manualSizeColumnsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this.manualSizeColumnsToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
-            this.manualSizeColumnsToolStripMenuItem.Text = "Manual Size Columns";
-            this.manualSizeColumnsToolStripMenuItem.Click += new System.EventHandler(this.manualSizeColumnsToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator3
-            // 
-            this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size(226, 6);
+            this.findToolStripMenuItem.Name = "findToolStripMenuItem";
+            this.findToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.findToolStripMenuItem.Size = new System.Drawing.Size(229, 22);
+            this.findToolStripMenuItem.Text = "Find";
+            this.findToolStripMenuItem.Click += new System.EventHandler(this.findToolStripMenuItem_Click);
             // 
             // frmDespliegue
             // 
@@ -325,6 +342,8 @@ namespace SQLCrypt
         private ToolStripMenuItem autoSizeColumnsToolStripMenuItem;
         private ToolStripMenuItem manualSizeColumnsToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator3;
+        private ToolStripSeparator toolStripSeparator4;
+        private ToolStripMenuItem findToolStripMenuItem;
     }
    
 }

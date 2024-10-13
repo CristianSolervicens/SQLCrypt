@@ -37,6 +37,10 @@ namespace SQLCrypt
         const int ROW_HEADER_WIDTH = 55;
 
 
+        /// <summary>
+        /// frmDespliegue   CONSTRUCTOR SIN THREAD
+        /// </summary>
+        /// <param name="_hSql"></param>
         public frmDespliegue(MySql _hSql)
         {
             this.hSql = _hSql;
@@ -48,6 +52,13 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// frmDespliegue   CONSTRUCTOR CON THREAD
+        /// </summary>
+        /// <param name="connectionString"></param>
+        /// <param name="Database"></param>
+        /// <param name="commandString"></param>
+        /// <param name="DictParam"></param>
         public frmDespliegue(string connectionString, string Database, string commandString, Dictionary<string, string> DictParam)
         {
             InitializeComponent();
@@ -155,6 +166,11 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// frmDespliegue_Load    LOAD DEL FORMULARIO
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void frmDespliegue_Load(object sender, EventArgs e)
         {
 
@@ -342,30 +358,37 @@ namespace SQLCrypt
         private void saveCurrentToJson()
         {
             // Selección del Archivo de Salida
-            SaveFileDialog saveForm = new SaveFileDialog();
-            saveForm.RestoreDirectory = true;
-            saveForm.Filter = "Json File|*.json";
-            saveForm.Title = "Save As Json File";
-            saveForm.ShowDialog();
-
-            if (saveForm.FileName == "")
-                return;
-
-            if (File.Exists(saveForm.FileName))
+            using (SaveFileDialog saveForm = new SaveFileDialog())
             {
-                try
+                saveForm.RestoreDirectory = true;
+                saveForm.Filter = "Json File|*.json";
+                saveForm.Title = "Save As Json File";
+                saveForm.ShowDialog();
+
+                if (saveForm.FileName == "")
                 {
-                    File.Delete(saveForm.FileName);
-                }
-                catch
-                {
-                    MessageBox.Show("Cannot delete existing File.\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
+
+                Cursor.Current = Cursors.WaitCursor;
+
+                if (File.Exists(saveForm.FileName))
+                {
+                    try
+                    {
+                        File.Delete(saveForm.FileName);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Cannot delete existing File.\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
+                }
+
+                ds.Tables[current_ds].SaveToFile(saveForm.FileName);
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show($"Archivo {saveForm.FileName} grabado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-
-            ds.Tables[current_ds].SaveToFile(saveForm.FileName);
-
         }
 
 
@@ -376,81 +399,92 @@ namespace SQLCrypt
         {
 
             // Selección del Archivo de Salida
-            SaveFileDialog saveForm = new SaveFileDialog();
-            saveForm.RestoreDirectory = true;
-            saveForm.Filter = "Excell File|*.xlsx";
-            saveForm.Title = "Save As Excell File";
-            saveForm.ShowDialog();
-
-            if (saveForm.FileName == "")
-                return;
-
-            if (File.Exists(saveForm.FileName))
+            using (SaveFileDialog saveForm = new SaveFileDialog())
             {
-                try
+                saveForm.RestoreDirectory = true;
+                saveForm.Filter = "Excell File|*.xlsx";
+                saveForm.Title = "Save As Excell File";
+                saveForm.ShowDialog();
+
+                if (saveForm.FileName == "")
                 {
-                    File.Delete(saveForm.FileName);
-                }
-                catch
-                {
-                    MessageBox.Show("Cannot delete existing File.\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     return;
                 }
-            }   
 
-            FileInfo newFile = new FileInfo(saveForm.FileName);
-            
-            // Obtener Formato de Fecha desde el Sistema
-            string dateFormat = $"{CultureInfo.CurrentUICulture.DateTimeFormat.ShortDatePattern} HH:MM:SS";
-            //string dateFormat = "MM-dd-yyyy HH:MM:SS";
 
-            // Salida a Excel
-            var dt = ds.Tables[current_ds];
-            using (ExcelPackage pck = new ExcelPackage(newFile))
-            {
-                ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Report");
-                ws.Cells["A1"].LoadFromDataTable( dt, true);
-                for (int c = 0; c < dt.Columns.Count; c++)
+                if (File.Exists(saveForm.FileName))
                 {
-                    if (dt.Columns[c].DataType == typeof(DateTime))
+                    try
                     {
-                        ws.Column(c + 1).Style.Numberformat.Format = dateFormat;
+                        File.Delete(saveForm.FileName);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Cannot delete existing File.\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
                     }
                 }
 
-                // Color de Fondo de las Filas de Dato
-                for (int i = 0; i < dt.Rows.Count; i++)
+                Cursor.Current = Cursors.WaitCursor;
+                FileInfo newFile = new FileInfo(saveForm.FileName);
+
+                // Obtener Formato de Fecha desde el Sistema
+                string dateFormat = $"{CultureInfo.CurrentUICulture.DateTimeFormat.ShortDatePattern} HH:MM:SS";
+                //string dateFormat = "MM-dd-yyyy HH:MM:SS";
+
+                // Salida a Excel
+                var dt = ds.Tables[current_ds];
+                using (ExcelPackage pck = new ExcelPackage(newFile))
                 {
-                    var row = ws.Cells[i + 2, 1, i + 2, dt.Columns.Count];
-                    row.Style.Font.Color.SetColor(Color.Black);
-                    if (i % 2 != 0)
+                    ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Report");
+                    ws.Cells["A1"].LoadFromDataTable(dt, true);
+                    for (int c = 0; c < dt.Columns.Count; c++)
                     {
-                        row.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                        row.Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
-
+                        if (dt.Columns[c].DataType == typeof(DateTime))
+                        {
+                            ws.Column(c + 1).Style.Numberformat.Format = dateFormat;
+                        }
                     }
-                    ApplyBorders(row, Color.LightGray);
+
+                    // Color de Fondo de las Filas de Dato
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        var row = ws.Cells[i + 2, 1, i + 2, dt.Columns.Count];
+                        row.Style.Font.Color.SetColor(Color.Black);
+                        if (i % 2 != 0)
+                        {
+                            row.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                            row.Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
+
+                        }
+                        ApplyBorders(row, Color.LightGray);
+                    }
+
+                    // Formateo de Header + Auto Filter, y Freeze de la primera Fila
+                    using (var range = ws.Cells[1, 1, 1, dt.Columns.Count])
+                    {
+                        range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        range.Style.Fill.BackgroundColor.SetColor(Color.CornflowerBlue);
+                        range.Style.Font.Color.SetColor(Color.AliceBlue);
+                        range.Style.Font.Bold = true;
+                        ApplyBorders(range, Color.Black);
+                    }
+
+                    // Apply auto filter to the first row
+                    ws.Cells[1, 1, 1, dt.Columns.Count].AutoFilter = true;
+
+                    // Freeze the first row
+                    ws.View.FreezePanes(2, 1);
+
+                    ws.Cells.AutoFitColumns();
+
+                    pck.Save();
+                    pck.Dispose();
                 }
-
-                // Formateo de Header + Auto Filter, y Freeze de la primera Fila
-                using (var range = ws.Cells[1, 1, 1, dt.Columns.Count])
-                {
-                    range.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                    range.Style.Fill.BackgroundColor.SetColor(Color.CornflowerBlue);
-                    range.Style.Font.Color.SetColor(Color.AliceBlue);
-                    range.Style.Font.Bold = true;
-                    ApplyBorders(range, Color.Black);
-                }
-
-                // Apply auto filter to the first row
-                ws.Cells[1, 1, 1, dt.Columns.Count].AutoFilter = true;
-
-                // Freeze the first row
-                ws.View.FreezePanes(2, 1);
-
-                ws.Cells.AutoFitColumns();
-
-                pck.Save();
+                dt = null;
+                System.GC.Collect();
+                Cursor.Current = Cursors.Default;
+                MessageBox.Show($"Archivo [{newFile.Name}] grabado", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -471,6 +505,7 @@ namespace SQLCrypt
             range.Style.Border.Left.Color.SetColor(color);
             range.Style.Border.Right.Color.SetColor(color);
         }
+
 
         //------------------------
         //frmDespliegue_Closing
@@ -494,9 +529,11 @@ namespace SQLCrypt
             try
             {
                 dataGridView.Dispose();
+                dataGridView = null;
             }
             catch { }
         }
+
 
         //------------------------
         //frmDespliegue_Closed
@@ -516,22 +553,44 @@ namespace SQLCrypt
         }
 
 
+        /// <summary>
+        /// btSalir_Click   -   BOTÓN DE SALIDA DEL FORMULARIO
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btSalir_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
+
+        /// <summary>
+        /// grabarExcellToolStripMenuItem_Click    GRABAR SALIDA A EXCEL
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void grabarExcellToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveToExcel();
             System.GC.Collect();
         }
 
+
+        /// <summary>
+        /// salirToolStripMenuItem_Click    -    CERRAR FORMULARIO
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void salirToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
+        /// <summary>
+        /// verMensajesToolStripMenuItem_Click   MUESTRA/OCULTA EL PANEL DE MENSAJES
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void verMensajesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (txtMessages.Visible)
@@ -594,19 +653,31 @@ namespace SQLCrypt
         }
 
 
-
+        /// <summary>
+        /// siguienteResultSetToolStripMenuItem_Click    MENU SIGUIENTE RESULT-SET
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void siguienteResultSetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             nextResultSet();
         }
 
 
+        /// <summary>
+        /// previoResultSetToolStripMenuItem_Click    MENU PREVIO RESULT-SET
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void previoResultSetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             previousResultSet();
         }
 
 
+        /// <summary>
+        /// nextResultSet      IR AL RESULT SET SIGUIENTE
+        /// </summary>
         private void nextResultSet()
         {
             if (ds.Tables.Count > current_ds+1)
@@ -628,6 +699,10 @@ namespace SQLCrypt
         }
 
 
+
+        /// <summary>
+        /// previousResultSet    IR AL RESULTSET PREVIO
+        /// </summary>
         private void previousResultSet()
         {
             if (current_ds > 0)
@@ -648,13 +723,31 @@ namespace SQLCrypt
             dataGridView.Refresh();
         }
 
+
+        /// <summary>
+        /// grabarJSONToolStripMenuItem_Click    Menú grabar a JSON
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void grabarJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveCurrentToJson();
             System.GC.Collect();
         }
 
+
+        /// <summary>
+        /// btBuscar_Click      BUTTON FIND VALUE IN TH GRID
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btBuscar_Click(object sender, EventArgs e)
+        {
+            BuscarEnGrilla();
+        }
+
+
+        private void BuscarEnGrilla()
         {
             if (txtSearch.Text == string.Empty)
             {
@@ -662,6 +755,8 @@ namespace SQLCrypt
                 return;
             }
 
+            Cursor.Current = Cursors.WaitCursor;
+            
             int selRow = 0;
             int selCol = 0;
             bool found = false;
@@ -669,8 +764,8 @@ namespace SQLCrypt
             {
                 selRow = dataGridView.SelectedCells[0].RowIndex;
 
-                if (dataGridView.SelectedCells[0].ColumnIndex +1 < dataGridView.Columns.Count)
-                    selCol = dataGridView.SelectedCells[0].ColumnIndex+1;
+                if (dataGridView.SelectedCells[0].ColumnIndex + 1 < dataGridView.Columns.Count)
+                    selCol = dataGridView.SelectedCells[0].ColumnIndex + 1;
                 else
                     selRow++;
 
@@ -680,20 +775,29 @@ namespace SQLCrypt
                 dataGridView.Rows[selRow].Cells[selCol].Selected = true;
             }
 
+            dataGridView.MultiSelect = false;
+
             for (int row = selRow; row < dataGridView.Rows.Count; row++)
             {
                 for (int col = selCol; col < dataGridView.Columns.Count; col++)
                 {
-                    if (dataGridView.Rows[row].Cells[col].Value.ToString().ToLower().Contains(txtSearch.Text.ToLower()) )
+                    if (dataGridView.Rows[row].Cells[col].Value.ToString().ToLower().Contains(txtSearch.Text.ToLower()))
                     {
                         dataGridView.Rows[row].Cells[col].Selected = true;
                         found = true;
                         dataGridView.Select();
+                        dataGridView.MultiSelect = true;
+                        dataGridView.Rows[row].Cells[col].Selected = true;
+                        Cursor.Current = Cursors.Default;
                         return;
                     }
                 }
                 selCol = 0;
             }
+
+            dataGridView.MultiSelect = true;
+
+            Cursor.Current = Cursors.Default;
 
             if (!found)
             {
@@ -701,6 +805,7 @@ namespace SQLCrypt
                 dataGridView.Select();
             }
         }
+
 
         private void autoSizeColumnsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -710,12 +815,20 @@ namespace SQLCrypt
             dataGridView.Refresh();
         }
 
+
         private void manualSizeColumnsToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dataGridView.Refresh();
         }
+
+
+        private void findToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BuscarEnGrilla();
+        }
+
     }
 
 }

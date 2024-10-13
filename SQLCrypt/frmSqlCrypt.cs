@@ -842,30 +842,32 @@ to Search Objects by their content";
         {
             txtSql.Text = "";
 
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.InitialDirectory = cfg.WorkingDirectory;
-            ofd.Filter = "Sql Files (*.sql;*.sqc)|*.sql;*.sqc|Text Files (*.txt)|*.txt|Config Files (*.cfg)|*.cfg|Any File (*.*)|*.*";
-            ofd.FilterIndex = 1;
-            ofd.FileName = CurrentFile;
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.InitialDirectory = cfg.WorkingDirectory;
+                ofd.Filter = "Sql Files (*.sql;*.sqc)|*.sql;*.sqc|Text Files (*.txt)|*.txt|Config Files (*.cfg)|*.cfg|Any File (*.*)|*.*";
+                ofd.FilterIndex = 1;
+                ofd.FileName = CurrentFile;
 
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                OpenFileInEditor(ofd.FileName);
-                CurrentFile = ofd.FileName;
-                cfg.AddOpenedFile(CurrentFile);
-                BuildMenuItems();
-                cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
-                this.Text = $"SQLCrypt - {CurrentFile}";
-                tssLaPath.Text = cfg.WorkingDirectory;
-            }
-            else
-            {
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    OpenFileInEditor(ofd.FileName);
+                    CurrentFile = ofd.FileName;
+                    cfg.AddOpenedFile(CurrentFile);
+                    BuildMenuItems();
+                    cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
+                    this.Text = $"SQLCrypt - {CurrentFile}";
+                    tssLaPath.Text = cfg.WorkingDirectory;
+                }
+                else
+                {
+                    txtSql.SetSavePoint();
+                    return;
+                }
+                tssLaStat.Text = "Archivo Abierto...";
                 txtSql.SetSavePoint();
-                return;
+                txtSql.EmptyUndoBuffer();
             }
-            tssLaStat.Text = "Archivo Abierto...";
-            txtSql.SetSavePoint();
-            txtSql.EmptyUndoBuffer();
         }
 
 
@@ -935,7 +937,6 @@ to Search Objects by their content";
             }
 
             hSql.ConnectionString = frmC.ConnectionString;
-
 
             hSql.ErrorClear();
             hSql.CloseDBConn();
@@ -1179,27 +1180,29 @@ to Search Objects by their content";
 
             if (CurrentFile == "" || bSaveAs)
             {
-                SaveFileDialog sfd = new SaveFileDialog();
-                sfd.InitialDirectory = cfg.WorkingDirectory;
-                sfd.Filter = "Sql Crypt Files (*.sqc)|*.sqc";
-                sfd.Filter = "Sql Files (*.sql)|*.sql|Text Files (*.txt)|*.txt|Sql Crypt Files (*.sqc)|*.sqc";
-
-                if (sfd.ShowDialog() == DialogResult.OK)
+                using (SaveFileDialog sfd = new SaveFileDialog())
                 {
-                    if (sfd.FilterIndex == 1 || sfd.FilterIndex == 2)
-                        IsEncrypted = false;
-                    else
-                        IsEncrypted = true;
+                    sfd.InitialDirectory = cfg.WorkingDirectory;
+                    sfd.Filter = "Sql Crypt Files (*.sqc)|*.sqc";
+                    sfd.Filter = "Sql Files (*.sql)|*.sql|Text Files (*.txt)|*.txt|Sql Crypt Files (*.sqc)|*.sqc";
 
-                    CurrentFile = sfd.FileName;
-                    cfg.AddOpenedFile(CurrentFile);
-                    cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
-                    this.Text = $"SQLCrypt - {CurrentFile}";
-                    tssLaPath.Text = cfg.WorkingDirectory;
-                    this.Text = "SQLCrypt - " + CurrentFile;
+                    if (sfd.ShowDialog() == DialogResult.OK)
+                    {
+                        if (sfd.FilterIndex == 1 || sfd.FilterIndex == 2)
+                            IsEncrypted = false;
+                        else
+                            IsEncrypted = true;
+
+                        CurrentFile = sfd.FileName;
+                        cfg.AddOpenedFile(CurrentFile);
+                        cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
+                        this.Text = $"SQLCrypt - {CurrentFile}";
+                        tssLaPath.Text = cfg.WorkingDirectory;
+                        this.Text = "SQLCrypt - " + CurrentFile;
+                    }
+                    else
+                        return;
                 }
-                else
-                    return;
             }
 
             if (IsEncrypted)
@@ -1699,6 +1702,7 @@ to Search Objects by their content";
             {
                 MessageBox.Show("Set the text to search for in 'Find...'");
             }
+            
             Objetos.FindByText(((ObjectType)cbObjetos.SelectedItem).type, txBuscaEnLista.Text);
             if (Objetos.Count == 0)
             {
