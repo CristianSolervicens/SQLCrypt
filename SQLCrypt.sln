@@ -25,13 +25,13 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		BuildVersion_ConfigurationName = Any
-		BuildVersion_StartDate = 2009/1/1
-		BuildVersion_UpdateAssemblyVersion = True
-		BuildVersion_UpdateFileVersion = True
-		BuildVersion_BuildVersioningStyle = None.None.Increment.TimeStamp
-		BuildVersion_AssemblyInfoFilename = 
-		BuildVersion_UseGlobalSettings = True
 		SolutionGuid = {E6F8ACEB-5E15-4A48-8474-F181C5EC00C4}
+		BuildVersion_UseGlobalSettings = True
+		BuildVersion_AssemblyInfoFilename = 
+		BuildVersion_BuildVersioningStyle = None.None.Increment.TimeStamp
+		BuildVersion_UpdateFileVersion = True
+		BuildVersion_UpdateAssemblyVersion = True
+		BuildVersion_StartDate = 2009/1/1
+		BuildVersion_ConfigurationName = Any
 	EndGlobalSection
 EndGlobal

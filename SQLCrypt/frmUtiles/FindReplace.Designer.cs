@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FindReplace));
             this.tabControlFindReplace = new System.Windows.Forms.TabControl();
             this.tabPageFind = new System.Windows.Forms.TabPage();
             this.btSalir = new System.Windows.Forms.Button();
@@ -164,6 +165,7 @@
             this.textBoxFind.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxFind.Size = new System.Drawing.Size(367, 47);
             this.textBoxFind.TabIndex = 1;
+            this.textBoxFind.Enter += new System.EventHandler(this.textBoxFind_Enter);
             // 
             // labelFind
             // 
@@ -250,6 +252,7 @@
             this.textBoxReplace.Name = "textBoxReplace";
             this.textBoxReplace.Size = new System.Drawing.Size(367, 20);
             this.textBoxReplace.TabIndex = 9;
+            this.textBoxReplace.Enter += new System.EventHandler(this.textBoxReplace_Enter);
             // 
             // labelReplace
             // 
@@ -276,6 +279,7 @@
             this.textBoxFindRep.Name = "textBoxFindRep";
             this.textBoxFindRep.Size = new System.Drawing.Size(367, 20);
             this.textBoxFindRep.TabIndex = 8;
+            this.textBoxFindRep.Enter += new System.EventHandler(this.textBoxFindRep_Enter);
             // 
             // labelFindRep
             // 
@@ -295,9 +299,12 @@
             this.ClientSize = new System.Drawing.Size(449, 148);
             this.Controls.Add(this.tabControlFindReplace);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FindReplace";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Find and Replace";
+            this.TopMost = true;
+            this.Activated += new System.EventHandler(this.FindReplace_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FindReplace_FormClosing);
             this.Shown += new System.EventHandler(this.FindReplace_Shown);
             this.tabControlFindReplace.ResumeLayout(false);

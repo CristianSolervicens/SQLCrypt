@@ -667,7 +667,7 @@
             this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(3);
             this.splitC.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.splitC.Size = new System.Drawing.Size(1157, 569);
-            this.splitC.SplitterDistance = 284;
+            this.splitC.SplitterDistance = 283;
             this.splitC.TabIndex = 15;
             // 
             // laBuscarTablas
@@ -690,7 +690,7 @@
             this.txBuscaEnLista.ForeColor = System.Drawing.Color.Black;
             this.txBuscaEnLista.Location = new System.Drawing.Point(5, 298);
             this.txBuscaEnLista.Name = "txBuscaEnLista";
-            this.txBuscaEnLista.Size = new System.Drawing.Size(276, 20);
+            this.txBuscaEnLista.Size = new System.Drawing.Size(275, 20);
             this.txBuscaEnLista.TabIndex = 26;
             this.txBuscaEnLista.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txBuscaEnLista_KeyDown);
             // 
@@ -706,7 +706,7 @@
             this.panObjetos.Location = new System.Drawing.Point(0, 0);
             this.panObjetos.Margin = new System.Windows.Forms.Padding(2);
             this.panObjetos.Name = "panObjetos";
-            this.panObjetos.Size = new System.Drawing.Size(284, 322);
+            this.panObjetos.Size = new System.Drawing.Size(283, 322);
             this.panObjetos.TabIndex = 21;
             // 
             // btRefreshType
@@ -754,7 +754,7 @@
             this.lstObjetos.Name = "lstObjetos";
             this.lstObjetos.ScrollAlwaysVisible = true;
             this.lstObjetos.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstObjetos.Size = new System.Drawing.Size(284, 249);
+            this.lstObjetos.Size = new System.Drawing.Size(283, 249);
             this.lstObjetos.TabIndex = 12;
             this.lstObjetos.SelectedIndexChanged += new System.EventHandler(this.lstObjetos_SelectedIndexChanged);
             this.lstObjetos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstObjetos_KeyDown);
@@ -770,7 +770,7 @@
             this.panColumnas.Location = new System.Drawing.Point(0, 326);
             this.panColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.panColumnas.Name = "panColumnas";
-            this.panColumnas.Size = new System.Drawing.Size(284, 240);
+            this.panColumnas.Size = new System.Drawing.Size(283, 240);
             this.panColumnas.TabIndex = 0;
             // 
             // lsColumnas
@@ -793,7 +793,7 @@
             this.lsColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.lsColumnas.Name = "lsColumnas";
             this.lsColumnas.ShowGroups = false;
-            this.lsColumnas.Size = new System.Drawing.Size(284, 240);
+            this.lsColumnas.Size = new System.Drawing.Size(282, 240);
             this.lsColumnas.TabIndex = 33;
             this.lsColumnas.UseCompatibleStateImageBehavior = false;
             this.lsColumnas.View = System.Windows.Forms.View.Details;
@@ -830,8 +830,9 @@
             this.txtSql.LexerName = null;
             this.txtSql.Location = new System.Drawing.Point(3, 3);
             this.txtSql.Name = "txtSql";
-            this.txtSql.Size = new System.Drawing.Size(863, 563);
+            this.txtSql.Size = new System.Drawing.Size(864, 563);
             this.txtSql.TabIndex = 0;
+            this.txtSql.AutoCCompleted += new System.EventHandler<ScintillaNET.AutoCSelectionEventArgs>(this.txtSql_AutoCCompleted);
             this.txtSql.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.txtSql_SelectionChanged);
             this.txtSql.TextChanged += new System.EventHandler(this.txtSql_TextChanged);
             this.txtSql.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtSql_DragDrop);
@@ -918,7 +919,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(1173, 622);
+            this.MinimumSize = new System.Drawing.Size(1172, 621);
             this.Name = "FrmSqlCrypt";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Sql Crypt";

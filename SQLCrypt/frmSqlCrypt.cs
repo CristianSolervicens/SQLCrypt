@@ -1253,6 +1253,9 @@ to Search Objects by their content";
             }
 
             laTablas.Text = $"Objetos: {lstObjetos.Items.Count}";
+
+            scintillaC.SetAutoCommpleteKeywords(lstObjetosToStrng());
+            
         }
 
 
@@ -2444,5 +2447,30 @@ to Search Objects by their content";
             }
         }
 
+
+        public string lstObjetosToStrng()
+        {
+            List<string> lista = new List<string>();
+
+            foreach (var item in lstObjetos.Items)
+            {
+                lista.Add(item.ToString());
+            }
+            lista.Sort();
+            return String.Join(" ", lista.ToArray()).Trim();
+
+        }
+
+        private void txtSql_AutoCCompleted(object sender, AutoCSelectionEventArgs e)
+        {
+            if (!e.Text.Contains("."))
+                return;
+
+            txBuscaEnLista.Text = e.Text;
+            KeyEventArgs key = new KeyEventArgs(Keys.Enter);
+            txBuscaEnLista_KeyDown(sender, key);
+        }
+
     }
+
 }

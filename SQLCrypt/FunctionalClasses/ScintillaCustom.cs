@@ -49,8 +49,8 @@ namespace SQLCrypt.FunctionalClasses
         {
             string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             this.scintillaCtrl = scintillaCtrl;
-            LoadKeywords($"{path}\\{keywordFile}");
-            LoadKeywords2($"{path}\\{keyword2File}");
+            keyWords = LoadKeywords($"{path}\\{keywordFile}");
+            keyWords2 = LoadKeywords($"{path}\\{keyword2File}");
             CurrentEncoding = Encoding.UTF8;
         }
 
@@ -125,13 +125,23 @@ namespace SQLCrypt.FunctionalClasses
         }
 
 
+        public void SetAutoCommpleteKeywords(string my_keywords)
+        {
+            string saux = $"{keyWords.ToUpper()} {keyWords2.ToUpper()} {my_keywords}";
+            List<string> lista = saux.Replace(EOL, " ").Split(' ').ToList();
+            lista.Sort();
+            autoCompleteKeywords = String.Join(" ", lista.ToArray()).Trim();
+            AutoCompleteEnabled = true;
+        }
+
+
         /// <summary>
         /// Inicialización del Objeto
         /// </summary>
         public void InitSyntaxColoring()
         {
 
-            autoCompleteKeywords = keyWords.ToUpper();
+            autoCompleteKeywords = keyWords.ToUpper() + keyWords2.ToUpper();
             AutoCompleteEnabled = true;
 
             // Configure the default style
@@ -149,7 +159,7 @@ namespace SQLCrypt.FunctionalClasses
             scintillaCtrl.CaretWidth = 2;
 
             //TextArea.SetSelectionBackColor(true, IntToColor(0x000099));
-            scintillaCtrl.SetSelectionBackColor(true, IntToColor(0x004389));
+            scintillaCtrl.SelectionBackColor = IntToColor(0x004389);
             scintillaCtrl.StyleClearAll();
 
             //Resaltado de Parentesis (Braces)
@@ -224,31 +234,16 @@ namespace SQLCrypt.FunctionalClasses
         /// LoadKeywords
         /// </summary>
         /// <param name="keywordFile"></param>
-        public void LoadKeywords(string keywordFile)
+        public string LoadKeywords(string keywordFile)
         {
             if (File.Exists(keywordFile))
             {
                 List<string> lista = File.ReadAllText(keywordFile).Replace(EOL, " ").Split(' ').ToList();
                 lista.Sort();
-                keyWords = String.Join(" ", lista.ToArray()).Trim();
+                return String.Join(" ", lista.ToArray()).Trim();
             }
+            return "";
         }
-
-
-        /// <summary>
-        /// LoadKeywords2
-        /// </summary>
-        /// <param name="keyword2File"></param>
-        public void LoadKeywords2(string keyword2File)
-        {
-            if (File.Exists(keyword2File))
-            {
-                List<string> lista = File.ReadAllText(keyword2File).Replace(EOL, " ").Split(' ').ToList();
-                lista.Sort();
-                keyWords2 = String.Join(" ", lista.ToArray()).Trim();
-            }
-        }
-
 
 
         #region ================= KEYS  =======================

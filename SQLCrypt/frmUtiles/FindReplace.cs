@@ -98,6 +98,7 @@ namespace ScintillaFindReplaceControl
             SetFindSearchFlags();
             var text = textBoxFind.Text;
             FindPrevious(text, _findSearchFlags);
+            btSalir_Click(null, null);
         }
 
         /// <summary>
@@ -110,6 +111,7 @@ namespace ScintillaFindReplaceControl
             SetFindSearchFlags();
             var text = textBoxFind.Text;
             FindNext(text, _findSearchFlags);
+            btSalir_Click(null, null);
         }
 
         /// <summary>
@@ -267,6 +269,37 @@ namespace ScintillaFindReplaceControl
         {
             if (tabControlFindReplace.SelectedIndex == 0)
                 textBoxFind.Select();
+        }
+
+        private void textBoxFind_Enter(object sender, EventArgs e)
+        {
+            textBoxFind.SelectAll();
+        }
+
+        private void FindReplace_Activated(object sender, EventArgs e)
+        {
+            if (textBoxFind.Text != "" && textBoxFind.Focused)
+            {
+                textBoxFind_Enter(sender, e);
+            }
+            else if (textBoxFindRep.Text != "" && textBoxFindRep.Focused)
+            {
+                textBoxFindRep_Enter(sender, e);
+            }
+            else if (textBoxReplace.Text != "" && textBoxReplace.Focused)
+            {
+                textBoxReplace_Enter(sender, e);
+            }
+        }
+
+        private void textBoxFindRep_Enter(object sender, EventArgs e)
+        {
+            textBoxFindRep.SelectAll();
+        }
+
+        private void textBoxReplace_Enter(object sender, EventArgs e)
+        {
+            textBoxReplace.SelectAll();
         }
     }
 }
