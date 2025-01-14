@@ -100,18 +100,13 @@ namespace SQLCrypt
                 else
                     hSql.ExecuteSqlData(comando);
 
-
                 if (hSql.Data == null)
                 {
                     if (hSql.ErrorExiste)
                     {
-                        listErrores.Add(hSql.ErrorString);
                         hSql.ErrorClear();
                         return;
                     }
-
-                    if (hSql.Messages != "")
-                        listMensajes.Add(hSql.Messages);
 
                     string currentDb = hSql.GetCurrentDatabase();
                     if (currentDb != "")
@@ -124,12 +119,6 @@ namespace SQLCrypt
                     {
                         if (hSql.Data.FieldCount == 0)
                         {
-                            if (hSql.Messages != "")
-                            {
-                                listMensajes.Add(hSql.Messages);
-                                hSql.ErrorClear();
-                                hSql.ClearMessages();
-                            }
                             continue;
                         }
                     }
@@ -147,6 +136,11 @@ namespace SQLCrypt
                     }
                     catch { }
                 }
+
+                if (hSql.ErrorString != "")
+                    listErrores.Add(hSql.ErrorString);
+                if (hSql.Messages != "")
+                    listMensajes.Add(hSql.Messages);
             }
 
             if (QueryController.sql_spid != 0)
@@ -752,6 +746,7 @@ namespace SQLCrypt
             if (txtSearch.Text == string.Empty)
             {
                 MessageBox.Show("You mus set the search term...", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                txtSearch.Select();
                 return;
             }
 

@@ -66,6 +66,12 @@ namespace SQLCrypt
         ///
         private ScintillaCustom scintillaC;
 
+
+        /// <summary>
+        /// Main Form Constructor
+        /// </summary>
+        /// <param name="hSql"></param>
+        /// <param name="fileName"></param>
         public FrmSqlCrypt(MySql hSql, string fileName)
         {
             InitializeComponent();
@@ -144,6 +150,11 @@ to Search Objects by their content";
         }
 
 
+        /// <summary>
+        /// On Load Form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void frmSqlCrypt_Load(object sender, EventArgs e)
         {
             tssLaFile.Text = "";
@@ -401,7 +412,11 @@ to Search Objects by their content";
 
 
 
-
+        /// <summary>
+        /// Count the elements in the Database object, intended only for Tables and Views
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ObjectSelectCount(object sender, EventArgs e)
         {
             if (lstObjetos.SelectedIndex == -1)
@@ -422,6 +437,11 @@ to Search Objects by their content";
         }
 
 
+        /// <summary>
+        /// Scintilla, Cut
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txmCut(object sender, EventArgs e)
         {
             Clipboard.Clear();
@@ -432,6 +452,11 @@ to Search Objects by their content";
         }
 
 
+        /// <summary>
+        /// Scintilla, Copy
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txmCopy(object sender, EventArgs e)
         {
             Clipboard.Clear();
@@ -442,12 +467,22 @@ to Search Objects by their content";
         }
 
 
+        /// <summary>
+        /// Scintilla, Pase
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txmPaste(object sender, EventArgs e)
         {
             txtSql.Paste();  //Scintilla
         }
 
 
+        /// <summary>
+        /// Scintilla, Deselect All
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txmDeSelAll(object sender, EventArgs e)
         {
             txtSql.SelectionStart = txtSql.CurrentPosition;  //Scintilla
@@ -455,6 +490,11 @@ to Search Objects by their content";
         }
 
 
+        /// <summary>
+        /// Scintilla, Select All
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txmSelAll(object sender, EventArgs e)
         {
             txtSql.SelectAll();
@@ -479,7 +519,11 @@ to Search Objects by their content";
         }
 
 
-        //Menú AcercaDe...
+        /// <summary>
+        /// Abount Menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void acercaDeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AboutBox1 Abt = new AboutBox1();
@@ -487,7 +531,11 @@ to Search Objects by their content";
         }
 
 
-        //Menú Archivo-Salir
+        /// <summary>
+        /// File Menu Quit Application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void salirToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (AlCerrarElFormulario() == DialogResult.Yes)
@@ -1968,13 +2016,22 @@ to Search Objects by their content";
 
         }
 
-
+        /// <summary>
+        /// Find Next (F3)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void findNextToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!_findReplace.FindNext())
                 _findReplace.Show();
         }
 
+        /// <summary>
+        /// Find Previous (Shift + F3)
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void findPreviousToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (!_findReplace.FindPrevious())
@@ -2363,13 +2420,17 @@ to Search Objects by their content";
             int pos_ini = txtSql.SelectionStart;
             int len = 0;
 
-            while (txtSql.Text.Substring(pos_ini + len, 1) == " ")
-                len++;
+            try
+            {
+                while (txtSql.Text.Substring(pos_ini + len, 1) == " ")
+                    len++;
 
-            txtSql.SelectionEnd = pos_ini + len;
-            txtSql.ReplaceSelection("");
-            txtSql.SelectionStart = pos_ini;
-            txtSql.SelectionEnd = pos_ini;
+                txtSql.SelectionEnd = pos_ini + len;
+                txtSql.ReplaceSelection("");
+                txtSql.SelectionStart = pos_ini;
+                txtSql.SelectionEnd = pos_ini;
+            }
+            catch { }
             
         }
 
@@ -2447,7 +2508,11 @@ to Search Objects by their content";
             }
         }
 
-
+        
+        /// <summary>
+        /// Contenido de la Lista de Objetos a String sepadados por espacios.
+        /// </summary>
+        /// <returns></returns>
         public string lstObjetosToStrng()
         {
             List<string> lista = new List<string>();
@@ -2461,16 +2526,56 @@ to Search Objects by their content";
 
         }
 
+
+        /// <summary>
+        /// Auto Complete - When the user types a dot, it means we're typing a table name
+        /// then we need to show the columns of the table
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void txtSql_AutoCCompleted(object sender, AutoCSelectionEventArgs e)
         {
             if (!e.Text.Contains("."))
                 return;
 
             txBuscaEnLista.Text = e.Text;
-            KeyEventArgs key = new KeyEventArgs(Keys.Enter);
-            txBuscaEnLista_KeyDown(sender, key);
+            
+            // Exact Selection
+            EnBusqueda = true;
+            lstObjetos.SelectedIndices.Clear();
+            for (int x = 0; x < lstObjetos.Items.Count; ++x)
+            {
+                if (lstObjetos.Items[x].ToString() == txBuscaEnLista.Text)
+                {
+                    lstObjetos.SelectedIndices.Add(x);
+                    break;
+                }
+            }
+            EnBusqueda = false;
+
+            lsColumnas.Items.Clear();
+
+            if (lstObjetos.SelectedIndices.Count > 0)
+            {
+                lstObjetos.TopIndex = lstObjetos.SelectedIndices[0];
+                lstObjetos_SelectedIndexChanged(null, null);
+            }
+            else
+                lstObjetos.TopIndex = 0;
+
         }
 
+
+        /// <summary>
+        /// Delete to End of Line - Context Menu
+        /// It works in single selection or multiple selection modes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void deleteToEOLToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            scintillaC.CleanToEOL();
+        }
     }
 
 }

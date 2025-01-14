@@ -75,6 +75,7 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.formatSQLCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkSQLCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToEOLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.baseDeDatoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -336,6 +337,7 @@
             this.tABAEspaciosToolStripMenuItem,
             this.splitCommasToolStripMenuItem,
             this.removeMultiSpacesToolStripMenuItem,
+            this.deleteToEOLToolStripMenuItem,
             this.toolStripSeparator5,
             this.formatSQLCodeToolStripMenuItem,
             this.checkSQLCodeToolStripMenuItem});
@@ -508,6 +510,14 @@
             this.checkSQLCodeToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
             this.checkSQLCodeToolStripMenuItem.Text = "Check SQL Code";
             this.checkSQLCodeToolStripMenuItem.Click += new System.EventHandler(this.checkSQLCodeToolStripMenuItem_Click);
+            // 
+            // deleteToEOLToolStripMenuItem
+            // 
+            this.deleteToEOLToolStripMenuItem.Name = "deleteToEOLToolStripMenuItem";
+            this.deleteToEOLToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+            this.deleteToEOLToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
+            this.deleteToEOLToolStripMenuItem.Text = "Delete to EOL";
+            this.deleteToEOLToolStripMenuItem.Click += new System.EventHandler(this.deleteToEOLToolStripMenuItem_Click);
             // 
             // tabSizeToolStripMenuItem
             // 
@@ -1023,6 +1033,7 @@
         private System.Windows.Forms.ToolStripMenuItem removeMultiSpacesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lastOpenedFilesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem emptyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteToEOLToolStripMenuItem;
     }
 }
 

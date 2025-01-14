@@ -16,6 +16,8 @@ namespace SQLCrypt.FunctionalClasses
     using System.Windows.Forms;
     using System.Security.Policy;
     using System.Windows.Media.Media3D;
+    using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+    using System.Data.Odbc;
 
     namespace MySql
     {
@@ -33,7 +35,7 @@ namespace SQLCrypt.FunctionalClasses
             
             //Cadena de conexión a la Base de Datos.
             private String sConnectionStr;
-            private String sMensajes;
+            private StringBuilder sMensajes = new StringBuilder();
 
             //Constante usada como semilla para la encriptación
             private const string passKey = "AthELeIa";
@@ -49,7 +51,12 @@ namespace SQLCrypt.FunctionalClasses
 
             void conn_InfoMessage(object sender, SqlInfoMessageEventArgs e)
             {
-                sMensajes += e.Message;
+                foreach (SqlError err in e.Errors)
+                {
+                    if (sMensajes.Length != 0)
+                        sMensajes.Append("\r\n");
+                    sMensajes.Append( $"{err.Message}   (Lin: {err.LineNumber}) {err.Procedure}");
+                }
             }
 
             #region "PROPIEDADES"
@@ -62,13 +69,13 @@ namespace SQLCrypt.FunctionalClasses
 
             public string Messages
             {
-                get { return sMensajes; }
+                get { return sMensajes.ToString(); }
             }
 
 
             public void ClearMessages()
             {
-                sMensajes = "";
+                sMensajes.Clear();
             }
 
 
@@ -230,7 +237,7 @@ namespace SQLCrypt.FunctionalClasses
                 Data = null;
                 sConnectionStr = "";
                 sError = "";
-                sMensajes = "";
+                sMensajes.Clear();
                 sPathToCommands = "";
             }
 
@@ -325,7 +332,7 @@ namespace SQLCrypt.FunctionalClasses
             /// <returns></returns>
             public int ExecuteSql(String sComand)
             {
-                int rows_affected;
+                int rows_affected = 0;
 
                 DataClose();
                 ErrorClear();
@@ -342,13 +349,19 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (SqlException e)
                 {
-                    sError = $"Error: {e.Message}";
+                    sError += $"Error: {e.Message}";
                     Command = null;
                     return -1;
                 }
+                catch (System.Data.Odbc.OdbcException e)
+                {
+                    sError += $"Error: {e.Message}";
+                    Command = null;
+                    return 0;
+                }
                 catch (Exception e)
                 {
-                    sError = $"Error: {e.Message}";
+                    sError += $"Error: {e.Message}";
                     Command = null;
                     return -1;
                 }
@@ -374,20 +387,25 @@ namespace SQLCrypt.FunctionalClasses
                 Command.CommandText = sCommand;
                 Command.CommandType = System.Data.CommandType.Text;
                 Command.CommandTimeout = 0;
-                
+
                 try
                 {
                     Data = Command.ExecuteReader();
                 }
+                catch (SqlException e)
+                {
+                    sError += $"Error: {e.Message}";
+                    Command = null;
+                }
                 catch (System.Data.Odbc.OdbcException e)
                 {
-                    sError = $"Error: {e.Message}";
+                    sError += $"Error: {e.Message}";
                     Command = null;
                     return false;
                 }
                 catch (Exception exw)
                 {
-                    sError = $"Error: {exw.Message}";
+                    sError += $"Error: {exw.Message}";
                     Command.Dispose();
                     Command = null;
                     return false;
@@ -399,7 +417,9 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 catch (System.Data.Odbc.OdbcException e)
                 {
-                    sError = $"Error: {e.Message}";
+                    foreach (OdbcException err in e.Errors)
+                        sError += $"Error: {err.Message}";
+                    //sError += $"Error: {e.Message}";
                     Command.Dispose();
                     Command = null;
                     return false;
@@ -434,11 +454,11 @@ namespace SQLCrypt.FunctionalClasses
 
                 int ix = 0;
                 string ToFind = "Metadata: IndexId =";
-                ix = sMensajes.IndexOf(ToFind);
+                ix = sMensajes.ToString().IndexOf(ToFind);
                 if (ix != -1)
                 {
                     ix += ToFind.Length;
-                    string sAux = sMensajes.Substring(ix, 12).TrimStart();
+                    string sAux = sMensajes.ToString().Substring(ix, 12).TrimStart();
                     ix = sAux.IndexOf(" ") != -1 ? sAux.IndexOf(" ") : sAux.IndexOf("\n");
                     sAux = sAux.Substring(0, ix);
                     IndexId = Convert.ToInt32( sAux);
@@ -446,11 +466,11 @@ namespace SQLCrypt.FunctionalClasses
 
                 ix = 0;
                 ToFind = "Metadata: ObjectId =";
-                ix = sMensajes.IndexOf(ToFind);
+                ix = sMensajes.ToString().IndexOf(ToFind);
                 if (ix != -1)
                 {
                     ix += ToFind.Length;
-                    string sAux = sMensajes.Substring(ix, 12).TrimStart();
+                    string sAux = sMensajes.ToString().Substring(ix, 12).TrimStart();
                     ix = sAux.IndexOf(" ") != -1 ? sAux.IndexOf(" ") : sAux.IndexOf("\n");
                     sAux = sAux.Substring(0, ix);
                     Object_id = Convert.ToInt32(sAux);
@@ -1034,7 +1054,7 @@ namespace SQLCrypt.FunctionalClasses
                 ExecuteSql(sComando);
                 if (this.ErrorExiste || GetCurrentDatabase().ToLower() != Database.ToLower() )
                 {
-                    sError += (sError!= "")? $"\n{sMensajes}": sMensajes;
+                    sError += (sError!= "")? $"\n{sMensajes.ToString()}": sMensajes.ToString();
                     if (sError == "")
                         sError = $"No se ha podio acceder a la Base de Dato: [{Database}]";
                     return false;

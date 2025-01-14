@@ -14,6 +14,9 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 using Ude;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.ComponentModel.Design;
+using static ScintillaNET.Style;
+using System.Runtime.ExceptionServices;
 
 
 namespace SQLCrypt.FunctionalClasses
@@ -25,7 +28,6 @@ namespace SQLCrypt.FunctionalClasses
         private const int ERROR_INDICATOR = 8; // Indicator used For Error Syntax Marking
         private const string EOL = "\r\n";     // End Of Line CONSTANT
 
-        private bool scintilla_end_mode = false;
         private string autoCompleteKeywords = "";
         private bool omit_key = false;
         private int lastCaretPos = 0;
@@ -119,8 +121,10 @@ namespace SQLCrypt.FunctionalClasses
         {
             if (scintillaCtrl.Lines[line].Text.Contains(EOL))
                 return scintillaCtrl.Lines[line].EndPosition - EOL.Length;
+
             if (scintillaCtrl.Lines[line].Text.Contains("\n") || scintillaCtrl.Lines[line].Text.Contains("\r"))
                 return scintillaCtrl.Lines[line].EndPosition - 1;
+
             return scintillaCtrl.Lines[line].EndPosition;
         }
 
@@ -160,6 +164,7 @@ namespace SQLCrypt.FunctionalClasses
 
             //TextArea.SetSelectionBackColor(true, IntToColor(0x000099));
             scintillaCtrl.SelectionBackColor = IntToColor(0x004389);
+            scintillaCtrl.SelectionAdditionalBackColor = IntToColor(0x636363);
             scintillaCtrl.StyleClearAll();
 
             //Resaltado de Parentesis (Braces)
@@ -268,41 +273,32 @@ namespace SQLCrypt.FunctionalClasses
             }
 
             // Modo Fin de Linea para Bloques
-            if (scintillaCtrl.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
-            {
-                foreach (var sel in scintillaCtrl.Selections)
-                {
-                    omit_key = false;
-                    var l = scintillaCtrl.LineFromPosition(sel.Start);
-                    var end_pos = LineLastEditablePosition(l);
-
-                    sel.Start = end_pos;
-                    sel.End = end_pos;
-                    sel.Caret = end_pos;
-                }
-            }
-
-            // Modo Fin de Linea para Bloques
             if (scintillaCtrl.Selections.Count > 1 && e.KeyCode == Keys.End)
             {
-                omit_key = false;
-                scintilla_end_mode = true;
-                foreach (var sel in scintillaCtrl.Selections)
-                {
-                    var l = scintillaCtrl.LineFromPosition(sel.Start);
-                    var end_pos = LineLastEditablePosition(l);
-
-                    sel.Start = end_pos;
-                    sel.End = end_pos;
-                    sel.Caret = end_pos;
-                }
                 e.Handled = true;
+                this.MultiSelectGotoEOL();
+            }
+        }
+
+
+        public void MultiSelectGotoEOL()
+        {
+            List<SelectionItem> list = new List<SelectionItem>();
+            for (int i = 0; i < scintillaCtrl.Selections.Count; i++)
+            {
+                SelectionItem si = new SelectionItem();
+                si.line = scintillaCtrl.LineFromPosition(scintillaCtrl.Selections[i].Start);
+                si.start = LineLastEditablePosition(si.line);
+                si.end = si.start;
+                list.Add(si);
             }
 
-            // Salir de Modo Fin de Linea para Bloques
-            if (scintilla_end_mode && scintillaCtrl.Selections.Count <= 1)
+            scintillaCtrl.ClearSelections();
+            scintillaCtrl.SelectionStart = list[list.Count - 1].start;
+            scintillaCtrl.SelectionEnd = list[list.Count - 1].end;
+            for (int i = 0; i < list.Count; i++)
             {
-                scintilla_end_mode = false;
+                scintillaCtrl.AddSelection(list[i].start, list[i].start);
             }
         }
 
@@ -318,18 +314,6 @@ namespace SQLCrypt.FunctionalClasses
             {
                 e.Handled = true;
                 return;
-            }
-
-            if (scintillaCtrl.Selections.Count > 1 && e.KeyCode != Keys.End && scintilla_end_mode)
-            {
-                foreach (var sel in scintillaCtrl.Selections)
-                {
-                    var l = scintillaCtrl.LineFromPosition(sel.Start);
-                    var end_pos = scintillaCtrl.Lines[l].EndPosition - 2;
-                    sel.Start = end_pos;
-                    sel.End = end_pos;
-                    sel.Caret = end_pos;
-                }
             }
         }
 
@@ -656,9 +640,67 @@ namespace SQLCrypt.FunctionalClasses
         }
 
 
+        /// <summary>
+        /// For current Line, delete to EOL (End of Line)
+        /// </summary>
+        public void CleanToEOL()
+        {
+            if (scintillaCtrl.Selections.Count > 1)
+            {
+                CleanToEOL_MS();
+                return;
+            }
+
+            int currPos = scintillaCtrl.CurrentPosition;
+            try
+            {
+                scintillaCtrl.SelectionStart = scintillaCtrl.CurrentPosition;
+                scintillaCtrl.SelectionEnd = LineLastEditablePosition(scintillaCtrl.CurrentLine);
+
+                scintillaCtrl.ReplaceSelection("");
+            }
+            catch { }
+
+            scintillaCtrl.SelectionStart = currPos;
+            scintillaCtrl.SelectionEnd = currPos;
+        }
+
+
+        /// <summary>
+        /// CleanToEOL_MS  FOR Mutilple Selections
+        /// </summary>
+        public void CleanToEOL_MS()
+        {
+            List<SelectionItem> list = new List<SelectionItem>();
+            for(int i = 0; i < scintillaCtrl.Selections.Count; i++)
+            {   
+                SelectionItem si = new SelectionItem();
+                si.line = scintillaCtrl.LineFromPosition(scintillaCtrl.Selections[i].Start);
+                si.start = scintillaCtrl.GetColumn(scintillaCtrl.Selections[i].Start);
+                si.end = si.start;
+                list.Add(si);
+            }
+
+            scintillaCtrl.ClearSelections();
+            scintillaCtrl.SelectionEnd = 0;
+            scintillaCtrl.SelectionStart = 0;
+            foreach (var si in list)
+            {
+                scintillaCtrl.SelectionStart = scintillaCtrl.Lines[si.line].Position + si.start;
+                scintillaCtrl.SelectionEnd = LineLastEditablePosition(si.line);
+                scintillaCtrl.ReplaceSelection("");
+            }
+
+            foreach (var si in list)
+            {
+                int x = scintillaCtrl.Lines[si.line].Position + si.start;
+                scintillaCtrl.AddSelection(x, x);    
+            }
+
+        }
+
 
         // ===============================================================
-
 
 
         /// <summary>
@@ -789,7 +831,8 @@ namespace SQLCrypt.FunctionalClasses
         private void _CharAdded(object sender, CharAddedEventArgs e)
         {
 
-            if (!AutoCompleteEnabled || scintilla_end_mode || scintillaCtrl.Selections.Count > 1)
+            //if (!AutoCompleteEnabled || scintilla_end_mode || scintillaCtrl.Selections.Count > 1)
+            if (!AutoCompleteEnabled || scintillaCtrl.Selections.Count > 1)
                 return;
 
             // Find the word start
@@ -918,6 +961,7 @@ namespace SQLCrypt.FunctionalClasses
 
     public struct SelectionItem
     {
+        public int line;
         public int start;
         public int end;
     }
