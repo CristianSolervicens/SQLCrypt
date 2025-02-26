@@ -109,15 +109,18 @@ namespace SQLCrypt
             lsColumnas.ContextMenu = colm;
 
             ContextMenu txm = new ContextMenu();
+            txm.MenuItems.Add("Buscar Objeto", new EventHandler(FindSelectionInDBObject_Click));
+            txm.MenuItems.Add("-");
+            txm.MenuItems.Add("Execut All/Selection", new EventHandler(ejecutarComandoToolStripMenuItem_Click));
+            txm.MenuItems.Add("Show/Hide Objects Pannel", new EventHandler(verPanelDeObjetosToolStripMenuItem_Click));
+            txm.MenuItems.Add("-");
             txm.MenuItems.Add("Select All", new EventHandler(txmSelAll));
             txm.MenuItems.Add("Deselect All", new EventHandler(txmDeSelAll));
             txm.MenuItems.Add("-");
             txm.MenuItems.Add("Cut", new EventHandler(txmCut));
             txm.MenuItems.Add("Copy", new EventHandler(txmCopy));
             txm.MenuItems.Add("Paste", new EventHandler(txmPaste));
-            txm.MenuItems.Add("-");
-            txm.MenuItems.Add("Execut All/Selection", new EventHandler(ejecutarComandoToolStripMenuItem_Click));
-            txm.MenuItems.Add("Show/Hide Objects Pannel", new EventHandler(verPanelDeObjetosToolStripMenuItem_Click));
+            
             txtSql.ContextMenu = txm;
 
             _findReplace = new FindReplace();
@@ -2538,19 +2541,75 @@ to Search Objects by their content";
             if (!e.Text.Contains("."))
                 return;
 
-            txBuscaEnLista.Text = e.Text;
-            
+            BuscaExactaEnListaDeObjetos(e.Text);
+        }
+
+
+
+        private void FindSelectionInDBObject_Click(object sender, EventArgs e)
+        {
+
+            if (txtSql.Text.Trim().ToString() == "")
+            {
+                MessageBox.Show(this, "There is no SQL Code to execute", "Information", MessageBoxButtons.OK);
+                return;
+            }
+
+            if (hSql.ConnectionStatus == false)
+            {
+                MessageBox.Show(this, "You should be connected to a Database. ;)", "Attention", MessageBoxButtons.OK);
+                return;
+            }
+
+            if (txtSql.SelectedText == "")
+                return;
+
+            BuscaExactaEnListaDeObjetos(txtSql.SelectedText);
+
+        }
+
+
+
+        /// <summary>
+        /// Find exact element in the list of objects
+        /// </summary>
+        /// <param name="sTexto"></param>
+        private void BuscaExactaEnListaDeObjetos(string sTexto)
+        {
+            bool isDotedName = sTexto.Contains(".");
+            txBuscaEnLista.Text = sTexto.Trim();
+
+            sTexto = sTexto.Trim().ToLower();
+
             // Exact Selection
             EnBusqueda = true;
             lstObjetos.SelectedIndices.Clear();
-            for (int x = 0; x < lstObjetos.Items.Count; ++x)
+
+            if (isDotedName)
             {
-                if (lstObjetos.Items[x].ToString() == txBuscaEnLista.Text)
+                for (int x = 0; x < lstObjetos.Items.Count; ++x)
                 {
-                    lstObjetos.SelectedIndices.Add(x);
-                    break;
+                    
+                    if (lstObjetos.Items[x].ToString() == txBuscaEnLista.Text)
+                    {
+                        lstObjetos.SelectedIndices.Add(x);
+                        break;
+                    }
                 }
             }
+            else
+            {
+                for (int x = 0; x < lstObjetos.Items.Count; ++x)
+                {
+                    string[] elements = lstObjetos.Items[x].ToString().Split('.');
+                    if (elements[1].ToLower() == sTexto)
+                    {
+                        lstObjetos.SelectedIndices.Add(x);
+                        break;
+                    }
+                }
+            }
+
             EnBusqueda = false;
 
             lsColumnas.Items.Clear();
@@ -2562,7 +2621,6 @@ to Search Objects by their content";
             }
             else
                 lstObjetos.TopIndex = 0;
-
         }
 
 

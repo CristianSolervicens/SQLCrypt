@@ -104,6 +104,7 @@ namespace SQLCrypt
                 {
                     if (hSql.ErrorExiste)
                     {
+                        listErrores.Add(hSql.ErrorString);
                         hSql.ErrorClear();
                         return;
                     }
@@ -111,7 +112,6 @@ namespace SQLCrypt
                     string currentDb = hSql.GetCurrentDatabase();
                     if (currentDb != "")
                         QueryController.DataBase = currentDb;
-
                 }
                 else
                 {
@@ -119,6 +119,11 @@ namespace SQLCrypt
                     {
                         if (hSql.Data.FieldCount == 0)
                         {
+                            if (hSql.ErrorString != "")
+                                listErrores.Add(hSql.ErrorString);
+                            if (hSql.Messages != "")
+                                listMensajes.Add(hSql.Messages);
+
                             continue;
                         }
                     }
@@ -127,12 +132,20 @@ namespace SQLCrypt
                         MessageBox.Show("Non Administered SQL Error\n", "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-
+                    
                     try
                     {
                         LoadData();
+                        
                         if (QueryController.CancelQuery)
+                        {
+                            if (hSql.ErrorString != "")
+                                listErrores.Add(hSql.ErrorString);
+                            if (hSql.Messages != "")
+                                listMensajes.Add(hSql.Messages);
+
                             return;
+                        }
                     }
                     catch { }
                 }
