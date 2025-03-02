@@ -26,32 +26,41 @@ project.
 
 ### Description:
 From my developer and MS SQL Server DBA perspective I think SSMS is a fantastic tool, but many times I need
-more "developer features" and also some day to day admin features (and also a lightweight tool), I usualy
-need to find a Stored procedure or function by their content, sometimes by a table name, or a function inside...
+more "developer features" and also some day to day admin features (and also a lightweight tool).
 
-Sometimes I need to run a script to realize what's going on inside the DB Server (to find open transactions,
-queries in execution, etc. and NOW!!)... Yes with this app I can easily catalog my most used queries and
-execute them with a shortcut from the app.
+**Find: Procedures, Functions, Triggers by their Content, Tables or Views by their Columns**
 
-This app is here to help me!!!
+Sometimes I need to analize the impact of some change in the DB, and those features are really nice to have!
 
-It's simple and lighteight, and has what I need (and I don't have in SSMS), I can save in a folder my Life
-Savers scripts... who's connected?, how is the PLE?, running queries?, blocking queries?, and if I need,
-find procedures by content or name, functions, views, triggers (I hate them) and with parameters!!.
+**What's going on with my Database!**
 
-["Excel"](https://www.epplussoftware.com/) (with EPPLUS) very often I need to send the result of a query,
-with this app I can save the resultsets as Excel or json, and I can extract usefull information
-with a small python app or in a jupiter notebook _(I've used json output to analize SQL Server Audits,
-to review and analize 4 month of audits, even with excel is not an easy task!!!)_.
+Why the DB is running so slow?, I can easily catalog my Life Savers scripts... who's connected?, how is the PLE?,
+queries in execution ordered by time, cpu, reads?, blocking queries? I can run those queries with a shortcut within
+the app.
 
-And now, with Scintilla Control this app also becomes a good SQL editor, it includes ***code snippets***,
-copy table names and column names (when more than one column it includes then separated with comas) to the editor,
-parenthesis matching, auto close parenthesis and other stuff.
 
-With TransactSql.ScriptDom the app checks SQL Syntax before executing or "On Demand", also it can format
-SQL Code.
+**Outputo to ["Excel"](https://www.epplussoftware.com/) (with EPPLUS) and JSON.**
 
-You Can Edit the extended properties in an Object oriented basis (by example Table and all their columns in one
+Very often I need to send the result of a query, with this app I can save the resultsets as Excel or json,
+With **JSON** is easy to analize data with python app or Jupiter Notebook _(I've used json output to analize
+SQL Server Audits, to review and analize 4 month of audits, even with excel is not an easy task!!!)_.
+
+
+**Good SQL Editor**
+
+Now, with **Scintilla Control** this app is also **a good SQL editor**, that includes ***code snippets*** 
+(you can add yours), copy table names and column names (when more than one column it includes them separated
+with comas) to the editor, parenthesis matching, column editing, auto close parenthesis and other stuff.
+
+**Syntax Checking and SQL Formatting**
+
+With TransactSql.ScriptDom the app checks SQL Syntax before executing or "On Demand", and it also re-format
+SQL Code (the all file or just the selected text).
+
+
+**Data Dictionary and Other stuff**
+
+You Can Edit the extended properties in an Database Objects oriented way (by example Table and all their columns in one
 screen), and with my other app, ["DataBaseDictionary.Net"](https://github.com/CristianSolervicens/DataBaseDictionary.Net)
 using the Extended Properties you entered, you can create the "Data Dictionary" in HTML format. 
 
