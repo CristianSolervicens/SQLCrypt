@@ -17,8 +17,9 @@ Best way is to install the program in a personal folder due to config files, sni
 
 ### **Comments:** 
 
-I started this project many years ago with Vb 6.0 with C dll's, then I ported it to C# with Rich Text
-as the Editor, the past year I add to it the Scintilla Control, and I fall in love again with the project !!!.
+I started this project many years ago with Vb 6.0 and some dll's written in "C", then I ported it to C# with
+Rich Text as the Editor, the past year I add to it the Scintilla Control, and I fall in love again with the
+project !!!.
 
 [Scintilla.NET](https://github.com/desjarlais/Scintilla.NET) from jacobslusser and now "Desjarlais", a great
 project.
