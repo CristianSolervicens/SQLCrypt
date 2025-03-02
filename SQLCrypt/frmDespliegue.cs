@@ -76,7 +76,7 @@ namespace SQLCrypt
             hSql = new MySql();
             hSql.ConnectionString = connectionString;
             hSql.ConnectToDB();
-            hSql.SetDatabase(Database);
+            hSql.UseDatabase(Database);
 
             QueryController.hSqlQuery = hSql;
             int spid = hSql.GetCurrent_SPID();

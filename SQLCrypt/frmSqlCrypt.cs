@@ -763,7 +763,7 @@ to Search Objects by their content";
             if (QueryController.DataBase != "")
             {
                 if (hSql.ConnectionStatus )
-                    hSql.SetDatabase(QueryController.DataBase);
+                    hSql.UseDatabase(QueryController.DataBase);
                 QueryController.DataBase = "";
             }
             threadQuery = null;
@@ -1057,7 +1057,7 @@ to Search Objects by their content";
             if (databasesToolStripMenuItem.SelectedIndex == -1)
                 return;
 
-            if (!hSql.SetDatabase(databasesToolStripMenuItem.Text))
+            if (!hSql.UseDatabase(databasesToolStripMenuItem.Text))
             {
                 MessageBox.Show(hSql.ErrorString, $"Error Opening Database{EOL}{hSql.ErrorString}");
                 hSql.ErrorClear();

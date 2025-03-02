@@ -115,6 +115,7 @@
     <Compile Include="FunctionalClasses\Config.cs" />
     <Compile Include="FunctionalClasses\DataTableHelper.cs" />
     <Compile Include="FunctionalClasses\EncodingDetector.cs" />
+    <Compile Include="FunctionalClasses\IndexParser.cs" />
     <Compile Include="FunctionalClasses\QueryController.cs" />
     <Compile Include="FunctionalClasses\ScintillaCustom.cs" />
     <Compile Include="FunctionalClasses\SQLCheck.cs" />
@@ -291,7 +292,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_StartDate="2009/1/1" BuildVersion_UseGlobalSettings="True" />
+      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_StartDate="2009/1/1" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="..\packages\Scintilla5.NET.5.6.4\build\scintilla5.net.targets" Condition="Exists('..\packages\Scintilla5.NET.5.6.4\build\scintilla5.net.targets')" />

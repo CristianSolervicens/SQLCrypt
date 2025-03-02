@@ -109,15 +109,17 @@
             this.lsExistingIndexes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.lsExistingIndexes.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
             this.lsExistingIndexes.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lsExistingIndexes.FormattingEnabled = true;
             this.lsExistingIndexes.HorizontalScrollbar = true;
-            this.lsExistingIndexes.ItemHeight = 15;
-            this.lsExistingIndexes.Location = new System.Drawing.Point(9, 35);
+            this.lsExistingIndexes.ItemHeight = 18;
+            this.lsExistingIndexes.Location = new System.Drawing.Point(9, 36);
             this.lsExistingIndexes.Name = "lsExistingIndexes";
             this.lsExistingIndexes.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lsExistingIndexes.Size = new System.Drawing.Size(973, 319);
+            this.lsExistingIndexes.Size = new System.Drawing.Size(973, 292);
             this.lsExistingIndexes.TabIndex = 6;
+            this.lsExistingIndexes.SelectedIndexChanged += new System.EventHandler(this.lsExistingIndexes_SelectedIndexChanged);
             // 
             // label1
             // 
