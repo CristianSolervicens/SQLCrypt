@@ -13,6 +13,7 @@ using static ScintillaNET.Style;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
+using System.Text;
 
 
 namespace SQLCrypt
@@ -835,6 +836,47 @@ namespace SQLCrypt
         private void findToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BuscarEnGrilla();
+        }
+
+
+        private void toClipboardWithHeadersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CopyToClipboardWithHeaders();
+        }
+
+
+        private void CopyToClipboardWithHeaders()
+        {
+            if (dataGridView.Rows.Count == 0)
+            {
+                MessageBox.Show("No data to copy", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            var newline = System.Environment.NewLine;
+            var tab = "\t";
+            var clipboard_string = new StringBuilder();
+
+            // Add column headers
+            for (int i = 0; i < dataGridView.Columns.Count; i++)
+            {
+                clipboard_string.Append(dataGridView.Columns[i].HeaderText + "\t");
+            }
+            clipboard_string.Append(Environment.NewLine);
+
+            foreach (DataGridViewRow row in dataGridView.Rows)
+            {
+                for (int i = 0; i < row.Cells.Count; i++)
+                {
+                    if (i == (row.Cells.Count - 1))
+                        clipboard_string.Append(row.Cells[i].Value + newline);
+                    else
+                        clipboard_string.Append(row.Cells[i].Value + tab);
+                }
+            }
+
+            Clipboard.SetText(clipboard_string.ToString());
+            MessageBox.Show("Data copied to clipboard", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
     }

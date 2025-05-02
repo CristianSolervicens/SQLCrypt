@@ -25,6 +25,7 @@ using System.Threading;
 using qTimer = System.Timers.Timer;
 using System.Timers;
 using System.Diagnostics.Eventing.Reader;
+using System.Runtime.InteropServices;
 
 
 //TODO: Buscar Errores de Sintáxis en el Documento Actual o Selección ??
@@ -34,6 +35,7 @@ namespace SQLCrypt
 {
     public partial class FrmSqlCrypt : Form
     {
+
         private const string EOL = "\r\n";
 
         Thread threadQuery = null;
@@ -65,7 +67,7 @@ namespace SQLCrypt
         /// Clase para Encapsular el manejo de Scintilla
         ///
         private ScintillaCustom scintillaC;
-
+        
 
         /// <summary>
         /// Main Form Constructor
@@ -169,7 +171,6 @@ to Search Objects by their content";
         /// <summary>
         /// SCINTILLA REGION
         /// </summary>
-
         #region Scintilla
 
 
@@ -1143,37 +1144,23 @@ to Search Objects by their content";
                 }
             }
 
-            if (chkToText.Checked)
-            {
-                frmDespliegueTxt frm = new frmDespliegueTxt(hSql);
-                frm.Top = this.Top;
-                frm.Left = this.Left;
-                frm.Width = this.Width;
-                frm.Height = this.Height;
+            hSql.ExecuteSqlData(sSqlCommand);
 
-                frm.Show(this);
-                frm.ExecuteSQLStatement(sSqlCommand, TextLimit);
-            }
-            else
-            {
-                hSql.ExecuteSqlData(sSqlCommand);
+            if (hSql.Data == null)
+                if (hSql.ErrorExiste)
+                {
+                    MessageBox.Show(this, $"SQL Error{EOL}{hSql.ErrorString}", "Attention", MessageBoxButtons.OK);
+                    hSql.ErrorClear();
+                    return;
+                }
 
-                if (hSql.Data == null)
-                    if (hSql.ErrorExiste)
-                    {
-                        MessageBox.Show(this, $"SQL Error{EOL}{hSql.ErrorString}", "Attention", MessageBoxButtons.OK);
-                        hSql.ErrorClear();
-                        return;
-                    }
+            frmDespliegue Despliegue = new frmDespliegue(hSql);
+            Despliegue.Top = this.Top;
+            Despliegue.Left = this.Left;
+            Despliegue.Width = this.Width;
+            Despliegue.Height = this.Height;
 
-                frmDespliegue Despliegue = new frmDespliegue(hSql);
-                Despliegue.Top = this.Top;
-                Despliegue.Left = this.Left;
-                Despliegue.Width = this.Width;
-                Despliegue.Height = this.Height;
-
-                Despliegue.Show();
-            }
+            Despliegue.Show();
 
             databasesToolStripMenuItem_SelectedIndexChanged(null, null);
         }
@@ -1271,16 +1258,6 @@ to Search Objects by their content";
 
         }
 
-
-        /// <summary>
-        /// Salida a Texto o Grilla (Deprecado)
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void salidaATextoGrillaToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            chkToText.Checked =  chkToText.Checked ? false : true ;
-        }
 
 
         /// <summary>
@@ -1976,6 +1953,8 @@ to Search Objects by their content";
         private void btConnectToBd_Click(object sender, EventArgs e)
         {
             ConnectToDatabase(sender, e);
+            if (splitC.Panel1Collapsed && hSql.ConnectionStatus)
+                verPanelDeObjetosToolStripMenuItem_Click(sender, e);
         }
 
 
@@ -2256,7 +2235,7 @@ to Search Objects by their content";
             scintillaC.complete_snippet();
         }
 
-  
+
         /// <summary>
         /// Pegado de Objetos en el Editor
         /// </summary>
@@ -2267,8 +2246,12 @@ to Search Objects by their content";
             if (e.KeyCode != Keys.Enter)
                 return;
             if (lstObjetos.SelectedIndex != -1)
+            {
                 txtSql.ReplaceSelection(lstObjetos.Items[lstObjetos.SelectedIndex].ToString());
+            }
+
             txtSql.Select();
+            txtSql.Focus();
         }
 
 
@@ -2294,7 +2277,9 @@ to Search Objects by their content";
                     Elementos += (Elementos != "" ? $"{EOL}{fill}," : "") + $"{lsColumnas.Items[x].Text}";
             }
             txtSql.ReplaceSelection(Elementos);
+            
             txtSql.Select();
+            txtSql.Focus();
         }
 
 
@@ -2633,6 +2618,26 @@ to Search Objects by their content";
         private void deleteToEOLToolStripMenuItem_Click(object sender, EventArgs e)
         {
             scintillaC.CleanToEOL();
+        }
+
+        private void splitterColumns_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            if (splitterColumns.Top < 150)
+                splitterColumns.SplitPosition = 150;
+
+            panColumnas.Top = splitterColumns.Top + 8;
+            panColumnas.Height = this.Height - splitterColumns.Top - 107;
+
+        }
+
+
+        private void FrmSqlCrypt_Resize(object sender, EventArgs e)
+        {
+            if (splitC.Panel1Collapsed)
+                return;
+
+            splitterColumns.SplitPosition = (int)(this.Height / 2.2) - 60;
+
         }
     }
 

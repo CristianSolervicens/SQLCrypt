@@ -158,7 +158,10 @@ namespace SQLCrypt
             hSql.ExecuteSqlData("sp_help N'" + TableName + "'");
 
             if (hSql.ErrorExiste)
+            {
+                MessageBox.Show("Please check the Database Connection", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
+            }
 
             int resultSet = 0;
 

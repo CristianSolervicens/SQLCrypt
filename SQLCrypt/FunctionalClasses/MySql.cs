@@ -416,6 +416,11 @@ namespace SQLCrypt.FunctionalClasses
                 {
                     bool b = Data.HasRows;
                 }
+                catch (System.InvalidOperationException e1)
+                {
+                    sError += $"Error: {e1.Message}";
+                    return false;
+                }
                 catch (System.Data.Odbc.OdbcException e)
                 {
                     foreach (OdbcException err in e.Errors)
@@ -423,6 +428,11 @@ namespace SQLCrypt.FunctionalClasses
                     //sError += $"Error: {e.Message}";
                     Command.Dispose();
                     Command = null;
+                    return false;
+                }
+                catch (Exception ex2)
+                {
+                    sError += $"Error: {ex2.Message}";
                     return false;
                 }
 

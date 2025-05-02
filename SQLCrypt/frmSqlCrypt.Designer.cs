@@ -48,7 +48,6 @@
             this.lastOpenedFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.emptyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.salidaATextoGrillaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cerrarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,17 +71,16 @@
             this.tABAEspaciosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitCommasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeMultiSpacesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteToEOLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.formatSQLCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkSQLCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteToEOLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.baseDeDatoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databasesToolStripMenuItem = new System.Windows.Forms.ToolStripComboBox();
             this.ayudToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.acercaDeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.chkToText = new System.Windows.Forms.CheckBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
             this.tssLaFile = new System.Windows.Forms.ToolStripStatusLabel();
@@ -90,13 +88,14 @@
             this.tssLaPos = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssLaStat = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitC = new System.Windows.Forms.SplitContainer();
-            this.laBuscarTablas = new System.Windows.Forms.Label();
-            this.txBuscaEnLista = new System.Windows.Forms.TextBox();
+            this.splitterColumns = new System.Windows.Forms.Splitter();
             this.panObjetos = new System.Windows.Forms.Panel();
             this.btRefreshType = new System.Windows.Forms.Button();
             this.cbObjetos = new System.Windows.Forms.ComboBox();
             this.laTablas = new System.Windows.Forms.Label();
             this.lstObjetos = new System.Windows.Forms.ListBox();
+            this.laBuscarTablas = new System.Windows.Forms.Label();
+            this.txBuscaEnLista = new System.Windows.Forms.TextBox();
             this.panColumnas = new System.Windows.Forms.Panel();
             this.lsColumnas = new System.Windows.Forms.ListView();
             this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -134,8 +133,8 @@
             this.ayudToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 1);
-            this.menuStrip1.Size = new System.Drawing.Size(1157, 25);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(4, 1, 0, 5);
+            this.menuStrip1.Size = new System.Drawing.Size(1158, 29);
             this.menuStrip1.TabIndex = 2;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -158,7 +157,6 @@
             this.grabarComoToolStripMenuItem,
             this.lastOpenedFilesToolStripMenuItem,
             this.toolStripSeparator2,
-            this.salidaATextoGrillaToolStripMenuItem,
             this.cerrarToolStripMenuItem,
             this.salirToolStripMenuItem});
             this.archivoToolStripMenuItem.Name = "archivoToolStripMenuItem";
@@ -289,14 +287,6 @@
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(254, 6);
-            // 
-            // salidaATextoGrillaToolStripMenuItem
-            // 
-            this.salidaATextoGrillaToolStripMenuItem.Name = "salidaATextoGrillaToolStripMenuItem";
-            this.salidaATextoGrillaToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
-            this.salidaATextoGrillaToolStripMenuItem.Size = new System.Drawing.Size(257, 22);
-            this.salidaATextoGrillaToolStripMenuItem.Text = "Output To Text or Grid";
-            this.salidaATextoGrillaToolStripMenuItem.Click += new System.EventHandler(this.salidaATextoGrillaToolStripMenuItem_Click);
             // 
             // cerrarToolStripMenuItem
             // 
@@ -488,6 +478,14 @@
             this.removeMultiSpacesToolStripMenuItem.Text = "Remove multi spaces";
             this.removeMultiSpacesToolStripMenuItem.Click += new System.EventHandler(this.removeMultiSpacesToolStripMenuItem_Click);
             // 
+            // deleteToEOLToolStripMenuItem
+            // 
+            this.deleteToEOLToolStripMenuItem.Name = "deleteToEOLToolStripMenuItem";
+            this.deleteToEOLToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+            this.deleteToEOLToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
+            this.deleteToEOLToolStripMenuItem.Text = "Delete to EOL";
+            this.deleteToEOLToolStripMenuItem.Click += new System.EventHandler(this.deleteToEOLToolStripMenuItem_Click);
+            // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
@@ -510,14 +508,6 @@
             this.checkSQLCodeToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
             this.checkSQLCodeToolStripMenuItem.Text = "Check SQL Code";
             this.checkSQLCodeToolStripMenuItem.Click += new System.EventHandler(this.checkSQLCodeToolStripMenuItem_Click);
-            // 
-            // deleteToEOLToolStripMenuItem
-            // 
-            this.deleteToEOLToolStripMenuItem.Name = "deleteToEOLToolStripMenuItem";
-            this.deleteToEOLToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this.deleteToEOLToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
-            this.deleteToEOLToolStripMenuItem.Text = "Delete to EOL";
-            this.deleteToEOLToolStripMenuItem.Click += new System.EventHandler(this.deleteToEOLToolStripMenuItem_Click);
             // 
             // tabSizeToolStripMenuItem
             // 
@@ -565,22 +555,6 @@
             this.acercaDeToolStripMenuItem.Text = "About...";
             this.acercaDeToolStripMenuItem.Click += new System.EventHandler(this.acercaDeToolStripMenuItem_Click);
             // 
-            // chkToText
-            // 
-            this.chkToText.AutoSize = true;
-            this.chkToText.BackColor = System.Drawing.SystemColors.Control;
-            this.chkToText.FlatAppearance.BorderSize = 2;
-            this.chkToText.FlatAppearance.CheckedBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            this.chkToText.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkToText.ForeColor = System.Drawing.Color.Black;
-            this.chkToText.Location = new System.Drawing.Point(1047, 7);
-            this.chkToText.Name = "chkToText";
-            this.chkToText.Size = new System.Drawing.Size(79, 17);
-            this.chkToText.TabIndex = 8;
-            this.chkToText.Text = "Out to Text";
-            this.chkToText.UseVisualStyleBackColor = false;
-            this.chkToText.Visible = false;
-            // 
             // statusStrip1
             // 
             this.statusStrip1.BackColor = System.Drawing.SystemColors.Control;
@@ -591,9 +565,9 @@
             this.tssLaPath,
             this.tssLaPos,
             this.tssLaStat});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 594);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 620);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1157, 31);
+            this.statusStrip1.Size = new System.Drawing.Size(1158, 31);
             this.statusStrip1.TabIndex = 14;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -656,14 +630,14 @@
             // splitC
             // 
             this.splitC.BackColor = System.Drawing.SystemColors.Control;
+            this.splitC.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.splitC.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitC.Location = new System.Drawing.Point(0, 25);
+            this.splitC.Location = new System.Drawing.Point(0, 29);
             this.splitC.Name = "splitC";
             // 
             // splitC.Panel1
             // 
-            this.splitC.Panel1.Controls.Add(this.laBuscarTablas);
-            this.splitC.Panel1.Controls.Add(this.txBuscaEnLista);
+            this.splitC.Panel1.Controls.Add(this.splitterColumns);
             this.splitC.Panel1.Controls.Add(this.panObjetos);
             this.splitC.Panel1.Controls.Add(this.panColumnas);
             this.splitC.Panel1.Margin = new System.Windows.Forms.Padding(1);
@@ -676,33 +650,20 @@
             this.splitC.Panel2.Controls.Add(this.txtSql);
             this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(3);
             this.splitC.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.splitC.Size = new System.Drawing.Size(1157, 569);
-            this.splitC.SplitterDistance = 283;
+            this.splitC.Size = new System.Drawing.Size(1158, 591);
+            this.splitC.SplitterDistance = 253;
             this.splitC.TabIndex = 15;
             // 
-            // laBuscarTablas
+            // splitterColumns
             // 
-            this.laBuscarTablas.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.laBuscarTablas.AutoSize = true;
-            this.laBuscarTablas.BackColor = System.Drawing.SystemColors.Control;
-            this.laBuscarTablas.Location = new System.Drawing.Point(8, 283);
-            this.laBuscarTablas.Name = "laBuscarTablas";
-            this.laBuscarTablas.Size = new System.Drawing.Size(75, 13);
-            this.laBuscarTablas.TabIndex = 28;
-            this.laBuscarTablas.Text = "Search Object";
-            // 
-            // txBuscaEnLista
-            // 
-            this.txBuscaEnLista.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txBuscaEnLista.BackColor = System.Drawing.SystemColors.Control;
-            this.txBuscaEnLista.ForeColor = System.Drawing.Color.Black;
-            this.txBuscaEnLista.Location = new System.Drawing.Point(5, 298);
-            this.txBuscaEnLista.Name = "txBuscaEnLista";
-            this.txBuscaEnLista.Size = new System.Drawing.Size(275, 20);
-            this.txBuscaEnLista.TabIndex = 26;
-            this.txBuscaEnLista.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txBuscaEnLista_KeyDown);
+            this.splitterColumns.BackColor = System.Drawing.Color.Gray;
+            this.splitterColumns.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitterColumns.Location = new System.Drawing.Point(0, 351);
+            this.splitterColumns.Name = "splitterColumns";
+            this.splitterColumns.Size = new System.Drawing.Size(251, 3);
+            this.splitterColumns.TabIndex = 29;
+            this.splitterColumns.TabStop = false;
+            this.splitterColumns.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterColumns_SplitterMoved);
             // 
             // panObjetos
             // 
@@ -712,17 +673,20 @@
             this.panObjetos.Controls.Add(this.cbObjetos);
             this.panObjetos.Controls.Add(this.laTablas);
             this.panObjetos.Controls.Add(this.lstObjetos);
+            this.panObjetos.Controls.Add(this.laBuscarTablas);
+            this.panObjetos.Controls.Add(this.txBuscaEnLista);
             this.panObjetos.Dock = System.Windows.Forms.DockStyle.Top;
             this.panObjetos.Location = new System.Drawing.Point(0, 0);
             this.panObjetos.Margin = new System.Windows.Forms.Padding(2);
             this.panObjetos.Name = "panObjetos";
-            this.panObjetos.Size = new System.Drawing.Size(283, 322);
+            this.panObjetos.Size = new System.Drawing.Size(251, 351);
             this.panObjetos.TabIndex = 21;
             // 
             // btRefreshType
             // 
+            this.btRefreshType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btRefreshType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btRefreshType.Location = new System.Drawing.Point(195, 253);
+            this.btRefreshType.Location = new System.Drawing.Point(195, 281);
             this.btRefreshType.Name = "btRefreshType";
             this.btRefreshType.Size = new System.Drawing.Size(55, 22);
             this.btRefreshType.TabIndex = 28;
@@ -733,10 +697,12 @@
             // 
             // cbObjetos
             // 
+            this.cbObjetos.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.cbObjetos.BackColor = System.Drawing.SystemColors.Control;
             this.cbObjetos.ForeColor = System.Drawing.Color.Black;
             this.cbObjetos.FormattingEnabled = true;
-            this.cbObjetos.Location = new System.Drawing.Point(5, 253);
+            this.cbObjetos.Location = new System.Drawing.Point(5, 281);
             this.cbObjetos.Margin = new System.Windows.Forms.Padding(2);
             this.cbObjetos.Name = "cbObjetos";
             this.cbObjetos.Size = new System.Drawing.Size(183, 21);
@@ -745,8 +711,9 @@
             // 
             // laTablas
             // 
+            this.laTablas.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.laTablas.AutoSize = true;
-            this.laTablas.Location = new System.Drawing.Point(130, 279);
+            this.laTablas.Location = new System.Drawing.Point(130, 308);
             this.laTablas.Name = "laTablas";
             this.laTablas.Size = new System.Drawing.Size(47, 13);
             this.laTablas.TabIndex = 27;
@@ -754,9 +721,11 @@
             // 
             // lstObjetos
             // 
+            this.lstObjetos.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lstObjetos.BackColor = System.Drawing.SystemColors.ControlLight;
             this.lstObjetos.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lstObjetos.Dock = System.Windows.Forms.DockStyle.Top;
             this.lstObjetos.ForeColor = System.Drawing.Color.Black;
             this.lstObjetos.FormattingEnabled = true;
             this.lstObjetos.HorizontalScrollbar = true;
@@ -764,11 +733,35 @@
             this.lstObjetos.Name = "lstObjetos";
             this.lstObjetos.ScrollAlwaysVisible = true;
             this.lstObjetos.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstObjetos.Size = new System.Drawing.Size(283, 249);
+            this.lstObjetos.Size = new System.Drawing.Size(251, 275);
             this.lstObjetos.TabIndex = 12;
             this.lstObjetos.SelectedIndexChanged += new System.EventHandler(this.lstObjetos_SelectedIndexChanged);
             this.lstObjetos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstObjetos_KeyDown);
             this.lstObjetos.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lstObjetos_MouseDown);
+            // 
+            // laBuscarTablas
+            // 
+            this.laBuscarTablas.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.laBuscarTablas.AutoSize = true;
+            this.laBuscarTablas.BackColor = System.Drawing.SystemColors.Control;
+            this.laBuscarTablas.Location = new System.Drawing.Point(8, 307);
+            this.laBuscarTablas.Name = "laBuscarTablas";
+            this.laBuscarTablas.Size = new System.Drawing.Size(75, 13);
+            this.laBuscarTablas.TabIndex = 28;
+            this.laBuscarTablas.Text = "Search Object";
+            // 
+            // txBuscaEnLista
+            // 
+            this.txBuscaEnLista.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txBuscaEnLista.BackColor = System.Drawing.SystemColors.Control;
+            this.txBuscaEnLista.ForeColor = System.Drawing.Color.Black;
+            this.txBuscaEnLista.Location = new System.Drawing.Point(5, 325);
+            this.txBuscaEnLista.Name = "txBuscaEnLista";
+            this.txBuscaEnLista.Size = new System.Drawing.Size(243, 20);
+            this.txBuscaEnLista.TabIndex = 26;
+            this.txBuscaEnLista.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txBuscaEnLista_KeyDown);
             // 
             // panColumnas
             // 
@@ -777,17 +770,14 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panColumnas.BackColor = System.Drawing.SystemColors.Control;
             this.panColumnas.Controls.Add(this.lsColumnas);
-            this.panColumnas.Location = new System.Drawing.Point(0, 326);
+            this.panColumnas.Location = new System.Drawing.Point(0, 359);
             this.panColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.panColumnas.Name = "panColumnas";
-            this.panColumnas.Size = new System.Drawing.Size(283, 240);
+            this.panColumnas.Size = new System.Drawing.Size(251, 227);
             this.panColumnas.TabIndex = 0;
             // 
             // lsColumnas
             // 
-            this.lsColumnas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.lsColumnas.BackColor = System.Drawing.SystemColors.ControlLight;
             this.lsColumnas.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colName,
@@ -795,6 +785,7 @@
             this.colNullable,
             this.colIsIdentity,
             this.colIsPK});
+            this.lsColumnas.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lsColumnas.ForeColor = System.Drawing.Color.Black;
             this.lsColumnas.GridLines = true;
             this.lsColumnas.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -803,7 +794,7 @@
             this.lsColumnas.Margin = new System.Windows.Forms.Padding(2);
             this.lsColumnas.Name = "lsColumnas";
             this.lsColumnas.ShowGroups = false;
-            this.lsColumnas.Size = new System.Drawing.Size(282, 240);
+            this.lsColumnas.Size = new System.Drawing.Size(251, 227);
             this.lsColumnas.TabIndex = 33;
             this.lsColumnas.UseCompatibleStateImageBehavior = false;
             this.lsColumnas.View = System.Windows.Forms.View.Details;
@@ -840,7 +831,7 @@
             this.txtSql.LexerName = null;
             this.txtSql.Location = new System.Drawing.Point(3, 3);
             this.txtSql.Name = "txtSql";
-            this.txtSql.Size = new System.Drawing.Size(864, 563);
+            this.txtSql.Size = new System.Drawing.Size(893, 583);
             this.txtSql.TabIndex = 0;
             this.txtSql.AutoCCompleted += new System.EventHandler<ScintillaNET.AutoCSelectionEventArgs>(this.txtSql_AutoCCompleted);
             this.txtSql.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.txtSql_SelectionChanged);
@@ -884,7 +875,7 @@
             this.btCancell.BackColor = System.Drawing.SystemColors.Control;
             this.btCancell.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btCancell.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btCancell.Location = new System.Drawing.Point(790, 4);
+            this.btCancell.Location = new System.Drawing.Point(791, 4);
             this.btCancell.Name = "btCancell";
             this.btCancell.Size = new System.Drawing.Size(103, 22);
             this.btCancell.TabIndex = 30;
@@ -895,7 +886,7 @@
             // pgBarQuery
             // 
             this.pgBarQuery.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pgBarQuery.Location = new System.Drawing.Point(900, 4);
+            this.pgBarQuery.Location = new System.Drawing.Point(901, 4);
             this.pgBarQuery.Name = "pgBarQuery";
             this.pgBarQuery.Size = new System.Drawing.Size(189, 21);
             this.pgBarQuery.TabIndex = 31;
@@ -905,7 +896,7 @@
             this.laDataLoadStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.laDataLoadStatus.AutoSize = true;
             this.laDataLoadStatus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(6)))), ((int)(((byte)(176)))), ((int)(((byte)(37)))));
-            this.laDataLoadStatus.Location = new System.Drawing.Point(945, 8);
+            this.laDataLoadStatus.Location = new System.Drawing.Point(946, 8);
             this.laDataLoadStatus.Name = "laDataLoadStatus";
             this.laDataLoadStatus.Size = new System.Drawing.Size(35, 13);
             this.laDataLoadStatus.TabIndex = 32;
@@ -916,7 +907,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::SQLCrypt.Properties.Settings.Default.AppBackColor;
-            this.ClientSize = new System.Drawing.Size(1157, 625);
+            this.ClientSize = new System.Drawing.Size(1158, 651);
             this.Controls.Add(this.laDataLoadStatus);
             this.Controls.Add(this.pgBarQuery);
             this.Controls.Add(this.btCancell);
@@ -924,7 +915,6 @@
             this.Controls.Add(this.btConnectToBd);
             this.Controls.Add(this.splitC);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.chkToText);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
@@ -935,12 +925,12 @@
             this.Text = "Sql Crypt";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmSqlCrypt_FormClosing);
             this.Load += new System.EventHandler(this.frmSqlCrypt_Load);
+            this.Resize += new System.EventHandler(this.FrmSqlCrypt_Resize);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.splitC.Panel1.ResumeLayout(false);
-            this.splitC.Panel1.PerformLayout();
             this.splitC.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).EndInit();
             this.splitC.ResumeLayout(false);
@@ -965,7 +955,6 @@
       private System.Windows.Forms.ToolStripMenuItem abrirToolStripMenuItem;
       private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
       private System.Windows.Forms.ToolStripComboBox databasesToolStripMenuItem;
-      private System.Windows.Forms.CheckBox chkToText;
       private System.Windows.Forms.ToolStripMenuItem encriptarClavesToolStripMenuItem;
       private System.Windows.Forms.ToolStripMenuItem comandosInmediatosToolStripMenuItem1;
       private System.Windows.Forms.StatusStrip statusStrip1;
@@ -975,7 +964,6 @@
       private System.Windows.Forms.ToolStripSplitButton toolStripSplitButton1;
       private System.Windows.Forms.ToolStripStatusLabel tssLaStat;
       private System.Windows.Forms.ToolStripMenuItem ejecutarTodasLasBasesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem salidaATextoGrillaToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitC;
         private System.Windows.Forms.ToolStripMenuItem verPanelDeObjetosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem buscaPaginaSQLToolStripMenuItem;
@@ -1034,6 +1022,7 @@
         private System.Windows.Forms.ToolStripMenuItem lastOpenedFilesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem emptyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteToEOLToolStripMenuItem;
+        private System.Windows.Forms.Splitter splitterColumns;
     }
 }
 

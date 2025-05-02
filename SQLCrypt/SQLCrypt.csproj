@@ -73,8 +73,8 @@
       <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
-    <Reference Include="Scintilla.NET, Version=5.6.4.0, Culture=neutral, PublicKeyToken=0221e70ba618311e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Scintilla5.NET.5.6.4\lib\net462\Scintilla.NET.dll</HintPath>
+    <Reference Include="Scintilla.NET, Version=6.0.1.0, Culture=neutral, PublicKeyToken=0221e70ba618311e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Scintilla5.NET.6.0.1\lib\net462\Scintilla.NET.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -147,12 +147,6 @@
     <Compile Include="frmUtiles\frmDataEdit.Designer.cs">
       <DependentUpon>frmDataEdit.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmDespliegueTxt.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="frmDespliegueTxt.Designer.cs">
-      <DependentUpon>frmDespliegueTxt.cs</DependentUpon>
-    </Compile>
     <Compile Include="frmUtiles\frmExtendedProperties.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -211,9 +205,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmUtiles\frmDataEdit.resx">
       <DependentUpon>frmDataEdit.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="frmDespliegueTxt.resx">
-      <DependentUpon>frmDespliegueTxt.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmUtiles\frmExtendedProperties.resx">
       <DependentUpon>frmExtendedProperties.cs</DependentUpon>
@@ -292,15 +283,15 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_StartDate="2009/1/1" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" />
+      <UserProperties BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_StartDate="2009/1/1" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
-  <Import Project="..\packages\Scintilla5.NET.5.6.4\build\scintilla5.net.targets" Condition="Exists('..\packages\Scintilla5.NET.5.6.4\build\scintilla5.net.targets')" />
+  <Import Project="..\packages\Scintilla5.NET.6.0.1\build\scintilla5.net.targets" Condition="Exists('..\packages\Scintilla5.NET.6.0.1\build\scintilla5.net.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Scintilla5.NET.5.6.4\build\scintilla5.net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Scintilla5.NET.5.6.4\build\scintilla5.net.targets'))" />
+    <Error Condition="!Exists('..\packages\Scintilla5.NET.6.0.1\build\scintilla5.net.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Scintilla5.NET.6.0.1\build\scintilla5.net.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
