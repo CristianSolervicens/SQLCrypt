@@ -17,6 +17,7 @@ using System.Security.Cryptography;
 using System.ComponentModel.Design;
 using static ScintillaNET.Style;
 using System.Runtime.ExceptionServices;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 
 
 namespace SQLCrypt.FunctionalClasses
@@ -41,6 +42,13 @@ namespace SQLCrypt.FunctionalClasses
 
         public string CurrentFile { get; internal set; }
         public Encoding CurrentEncoding { get; internal set; }
+
+        public enum CaseStyle: ushort
+        {
+            None = 0,
+            Upper = 1,
+            Lower = 2
+        }
 
 
         /// <summary>
@@ -700,6 +708,68 @@ namespace SQLCrypt.FunctionalClasses
         }
 
 
+        public void KeywordsToCase(CaseStyle caseStyle= CaseStyle.Upper)
+        {
+            string saux = $"{keyWords.ToUpper()} {keyWords2.ToUpper()}";
+            List<string> lista = saux.Replace(EOL, " ").Split(' ').ToList();
+            lista.Sort();
+            foreach (string s in lista)
+            {
+                if (caseStyle == CaseStyle.Upper)
+                    ReplaceAll(s, s.ToUpper());
+                else if (caseStyle == CaseStyle.Lower)
+                    ReplaceAll(s, s.ToLower());
+                else
+                    ReplaceAll(s, s);
+            }
+            MessageBox.Show($"Changes Done.", "Keywords 2 Uppercase", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+
+        private void ReplaceAll(string findText, string replaceText)
+        {
+            var pos = 0;
+            scintillaCtrl.CurrentPosition = pos;
+            scintillaCtrl.SelectionStart = pos;
+            scintillaCtrl.SelectionEnd = pos;
+            // Iterate until text is no longer found
+            while (pos >= 0)
+            {
+                pos = ReplaceNext(findText, replaceText);
+            }
+        }
+
+
+        private int ReplaceNext(string findText, string replaceText)
+        {
+            // Find the text and, if found, replace the selection
+            var _replaceSearchFlags = SearchFlags.WholeWord;
+            var pos = FindNext(findText, _replaceSearchFlags);
+            if (pos >= 0)
+                scintillaCtrl.ReplaceSelection(replaceText);
+            return pos;
+        }
+
+
+        public int FindNext(string text, SearchFlags searchFlags)
+        {
+            scintillaCtrl.SearchFlags = searchFlags;
+            scintillaCtrl.TargetStart = Math.Max(scintillaCtrl.CurrentPosition, scintillaCtrl.AnchorPosition);
+            scintillaCtrl.TargetEnd = scintillaCtrl.TextLength;
+
+            var pos = scintillaCtrl.SearchInTarget(text);
+
+            if (pos == -1)
+            {
+                SystemSounds.Beep.Play();
+            }
+
+            if (pos >= 0)
+                scintillaCtrl.SetSel(scintillaCtrl.TargetStart, scintillaCtrl.TargetEnd);
+
+            return pos;
+        }
+
         // ===============================================================
 
 
@@ -958,6 +1028,7 @@ namespace SQLCrypt.FunctionalClasses
         // this.txtSql.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtSql_DragEnter);
 
     }
+
 
     public struct SelectionItem
     {

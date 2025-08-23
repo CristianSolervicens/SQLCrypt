@@ -2394,7 +2394,7 @@ to Search Objects by their content";
             else
             {
                 scintillaC.HighlightErrorClean();
-                MessageBox.Show("Sintaxis is OK", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Sintax is OK", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -2530,7 +2530,11 @@ to Search Objects by their content";
         }
 
 
-
+        /// <summary>
+        /// FindSelectionInDBObject_Click
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FindSelectionInDBObject_Click(object sender, EventArgs e)
         {
 
@@ -2620,6 +2624,12 @@ to Search Objects by their content";
             scintillaC.CleanToEOL();
         }
 
+
+        /// <summary>
+        /// splitterColumns_SplitterMoved
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void splitterColumns_SplitterMoved(object sender, SplitterEventArgs e)
         {
             if (splitterColumns.Top < 150)
@@ -2631,6 +2641,11 @@ to Search Objects by their content";
         }
 
 
+        /// <summary>
+        /// FrmSqlCrypt_Resize
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrmSqlCrypt_Resize(object sender, EventArgs e)
         {
             if (splitC.Panel1Collapsed)
@@ -2639,6 +2654,12 @@ to Search Objects by their content";
             splitterColumns.SplitPosition = (int)(this.Height / 2.2) - 60;
 
         }
+
+        private void keywordToUppercaseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            scintillaC.KeywordsToCase();
+        }
+
     }
 
 }
