@@ -18,6 +18,7 @@ using System.ComponentModel.Design;
 using static ScintillaNET.Style;
 using System.Runtime.ExceptionServices;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
+using SQLCrypt.frmUtiles;
 
 
 namespace SQLCrypt.FunctionalClasses
@@ -708,6 +709,102 @@ namespace SQLCrypt.FunctionalClasses
         }
 
 
+        public void GotoLineNumber()
+        {
+            frmLineNumber frmln = new frmLineNumber();
+            frmln.ShowDialog();
+            int lineNumber = frmln.LineNumber;
+
+            if (lineNumber < 1)
+                return;
+
+            if (lineNumber > scintillaCtrl.Lines.Count)
+                lineNumber = scintillaCtrl.Lines.Count;
+
+            int pos = scintillaCtrl.Lines[lineNumber - 1].Position;
+
+            scintillaCtrl.GotoPosition(pos);
+        }
+
+
+        public void KeywordsToCaseInSelection(CaseStyle caseStyle = CaseStyle.Upper)
+        {
+            if (scintillaCtrl.Selections.Count != 1)
+                return;
+            if (scintillaCtrl.SelectedText.Length == 0)
+                return;
+
+            int pos_ini = scintillaCtrl.SelectionStart;
+            int pos_fin = scintillaCtrl.SelectionEnd;
+
+            string saux = $"{keyWords.ToUpper()} {keyWords2.ToUpper()}";
+            List<string> lista = saux.Replace(EOL, " ").Split(' ').ToList();
+            lista.Sort();
+            foreach (string s in lista)
+            {
+                scintillaCtrl.SelectionStart = pos_ini;
+                scintillaCtrl.SelectionEnd = pos_fin;
+
+                if (caseStyle == CaseStyle.Upper)
+                    WholeWordReplaceInSelection(s, s.ToUpper());
+                else if (caseStyle == CaseStyle.Lower)
+                    WholeWordReplaceInSelection(s, s.ToLower());
+                else
+                    WholeWordReplaceInSelection(s, s);
+            }
+            SystemSounds.Beep.Play();
+            scintillaCtrl.SelectionStart = pos_ini;
+            scintillaCtrl.SelectionEnd = pos_fin;
+        }
+
+
+
+        public void WholeWordReplaceInSelection(string findText, string replaceText)
+        {
+            if (scintillaCtrl.Selections.Count > 1)
+                return;
+            if (scintillaCtrl.SelectedText.Length == 0)
+                return;
+            
+            int initialLine = CurrentMinLine;
+            int endLine = CurrentMaxLine;
+            int start_pos = scintillaCtrl.SelectionStart;
+            int end_pos = scintillaCtrl.SelectionEnd;
+            for (int i = initialLine; i <= endLine; i++)
+            {
+                int pos_ini = scintillaCtrl.SelectionStart;
+                int pos_fin = scintillaCtrl.SelectionEnd;
+                var pos = 0;
+                scintillaCtrl.CurrentPosition = pos_ini;
+                scintillaCtrl.SelectionStart = pos_ini;
+                scintillaCtrl.SelectionEnd = pos_ini;
+
+                var _replaceSearchFlags = SearchFlags.WholeWord;
+                scintillaCtrl.SearchFlags = _replaceSearchFlags;
+
+                // Iterate until text is no longer found
+                while (pos >= 0)
+                {
+                    scintillaCtrl.TargetStart = scintillaCtrl.CurrentPosition;
+                    scintillaCtrl.TargetEnd = pos_fin;
+                    
+                    pos = scintillaCtrl.SearchInTarget(findText);
+                    if (pos >= 0)
+                    {
+                        scintillaCtrl.SelectionStart = pos;
+                        scintillaCtrl.SelectionEnd = pos + findText.Length;
+                        scintillaCtrl.ReplaceSelection(replaceText);
+                        pos_fin += replaceText.Length - findText.Length;
+                    }
+                }
+                end_pos = pos_fin;
+            }
+            scintillaCtrl.SelectionStart = start_pos;
+            scintillaCtrl.SelectionEnd = end_pos;
+            
+        }
+
+
         public void KeywordsToCase(CaseStyle caseStyle= CaseStyle.Upper)
         {
             string saux = $"{keyWords.ToUpper()} {keyWords2.ToUpper()}";
@@ -722,7 +819,7 @@ namespace SQLCrypt.FunctionalClasses
                 else
                     ReplaceAll(s, s);
             }
-            MessageBox.Show($"Changes Done.", "Keywords 2 Uppercase", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            SystemSounds.Beep.Play();
         }
 
 

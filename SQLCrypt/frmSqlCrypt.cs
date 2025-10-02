@@ -122,7 +122,19 @@ namespace SQLCrypt
             txm.MenuItems.Add("Cut", new EventHandler(txmCut));
             txm.MenuItems.Add("Copy", new EventHandler(txmCopy));
             txm.MenuItems.Add("Paste", new EventHandler(txmPaste));
+            txm.MenuItems.Add("Goto Line", new EventHandler(gotoLineNumberToolStripMenuItem_Click));
+            txm.MenuItems.Add("-");
+            txm.MenuItems.Add("Comment Selection", new EventHandler(commentSelectionToolStripMenuItem_Click));
+            txm.MenuItems.Add("Uncomment Selection", new EventHandler(uncommentSelectionToolStripMenuItem_Click));
+            txm.MenuItems.Add("Keywords To Upper Case", new EventHandler(keywordToUppercaseToolStripMenuItem_Click));
+            txm.MenuItems.Add("Keywords To Upper Case (selection)", new EventHandler(keywordsToUppercaseselectionToolStripMenuItem_Click));
+            txm.MenuItems.Add("Trim Trailing Spaces", new EventHandler(eliminarEspaciosFinDeLíneaToolStripMenuItem_Click));
+            txm.MenuItems.Add("Tabs to Spaces", new EventHandler(tABAEspaciosToolStripMenuItem_Click));
+            txm.MenuItems.Add("-");
+            txm.MenuItems.Add("Show/Hide Line Numbers", new EventHandler(numerosDeLíneaToolStripMenuItem_Click));
+            txm.MenuItems.Add("Show/Hide Spaces", new EventHandler(mostrarEspaciosToolStripMenuItem_Click));
             
+
             txtSql.ContextMenu = txm;
 
             _findReplace = new FindReplace();
@@ -2660,6 +2672,15 @@ to Search Objects by their content";
             scintillaC.KeywordsToCase();
         }
 
+        private void keywordsToUppercaseselectionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            scintillaC.KeywordsToCaseInSelection();
+        }
+
+        private void gotoLineNumberToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            scintillaC.GotoLineNumber();
+        }
     }
 
 }

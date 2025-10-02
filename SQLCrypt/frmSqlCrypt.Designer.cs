@@ -72,9 +72,12 @@
             this.splitCommasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeMultiSpacesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToEOLToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.keywordToUppercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.keywordsToUppercaseselectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.formatSQLCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkSQLCodeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.gotoLineNumberToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabSizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripTextBox1 = new System.Windows.Forms.ToolStripTextBox();
             this.baseDeDatoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -109,7 +112,6 @@
             this.btCancell = new System.Windows.Forms.Button();
             this.pgBarQuery = new System.Windows.Forms.ProgressBar();
             this.laDataLoadStatus = new System.Windows.Forms.Label();
-            this.keywordToUppercaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitC)).BeginInit();
@@ -330,9 +332,11 @@
             this.removeMultiSpacesToolStripMenuItem,
             this.deleteToEOLToolStripMenuItem,
             this.keywordToUppercaseToolStripMenuItem,
+            this.keywordsToUppercaseselectionToolStripMenuItem,
             this.toolStripSeparator5,
             this.formatSQLCodeToolStripMenuItem,
-            this.checkSQLCodeToolStripMenuItem});
+            this.checkSQLCodeToolStripMenuItem,
+            this.gotoLineNumberToolStripMenuItem});
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 23);
             this.editToolStripMenuItem.Text = "&Edit";
@@ -488,6 +492,20 @@
             this.deleteToEOLToolStripMenuItem.Text = "Delete to EOL";
             this.deleteToEOLToolStripMenuItem.Click += new System.EventHandler(this.deleteToEOLToolStripMenuItem_Click);
             // 
+            // keywordToUppercaseToolStripMenuItem
+            // 
+            this.keywordToUppercaseToolStripMenuItem.Name = "keywordToUppercaseToolStripMenuItem";
+            this.keywordToUppercaseToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
+            this.keywordToUppercaseToolStripMenuItem.Text = "Keywords To Uppercase";
+            this.keywordToUppercaseToolStripMenuItem.Click += new System.EventHandler(this.keywordToUppercaseToolStripMenuItem_Click);
+            // 
+            // keywordsToUppercaseselectionToolStripMenuItem
+            // 
+            this.keywordsToUppercaseselectionToolStripMenuItem.Name = "keywordsToUppercaseselectionToolStripMenuItem";
+            this.keywordsToUppercaseselectionToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
+            this.keywordsToUppercaseselectionToolStripMenuItem.Text = "Keywords To Uppercase (selection)";
+            this.keywordsToUppercaseselectionToolStripMenuItem.Click += new System.EventHandler(this.keywordsToUppercaseselectionToolStripMenuItem_Click);
+            // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
@@ -510,6 +528,15 @@
             this.checkSQLCodeToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
             this.checkSQLCodeToolStripMenuItem.Text = "Check SQL Code";
             this.checkSQLCodeToolStripMenuItem.Click += new System.EventHandler(this.checkSQLCodeToolStripMenuItem_Click);
+            // 
+            // gotoLineNumberToolStripMenuItem
+            // 
+            this.gotoLineNumberToolStripMenuItem.Name = "gotoLineNumberToolStripMenuItem";
+            this.gotoLineNumberToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.G)));
+            this.gotoLineNumberToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
+            this.gotoLineNumberToolStripMenuItem.Text = "Goto Line Number";
+            this.gotoLineNumberToolStripMenuItem.Click += new System.EventHandler(this.gotoLineNumberToolStripMenuItem_Click);
             // 
             // tabSizeToolStripMenuItem
             // 
@@ -904,13 +931,6 @@
             this.laDataLoadStatus.TabIndex = 32;
             this.laDataLoadStatus.Text = "label1";
             // 
-            // keywordToUppercaseToolStripMenuItem
-            // 
-            this.keywordToUppercaseToolStripMenuItem.Name = "keywordToUppercaseToolStripMenuItem";
-            this.keywordToUppercaseToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
-            this.keywordToUppercaseToolStripMenuItem.Text = "Keywords To Uppercase";
-            this.keywordToUppercaseToolStripMenuItem.Click += new System.EventHandler(this.keywordToUppercaseToolStripMenuItem_Click);
-            // 
             // FrmSqlCrypt
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1033,6 +1053,8 @@
         private System.Windows.Forms.ToolStripMenuItem deleteToEOLToolStripMenuItem;
         private System.Windows.Forms.Splitter splitterColumns;
         private System.Windows.Forms.ToolStripMenuItem keywordToUppercaseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem keywordsToUppercaseselectionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem gotoLineNumberToolStripMenuItem;
     }
 }
 
