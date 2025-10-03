@@ -18,7 +18,7 @@ using System.Text;
 
 namespace SQLCrypt
 {
-    public partial class frmDespliegue:Form
+    public partial class frmDespliegue : Form
     {
 
         private bool withTread = false;
@@ -93,7 +93,7 @@ namespace SQLCrypt
 
             foreach (string comando in sComandos)
             {
-                if (QueryController.CancelQuery) 
+                if (QueryController.CancelQuery)
                     return;
 
                 if (DictParam != null)
@@ -133,11 +133,11 @@ namespace SQLCrypt
                         MessageBox.Show("Non Administered SQL Error\n", "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    
+
                     try
                     {
                         LoadData();
-                        
+
                         if (QueryController.CancelQuery)
                         {
                             if (hSql.ErrorString != "")
@@ -161,9 +161,9 @@ namespace SQLCrypt
                 QueryController.sql_spid = 0;
 
             laMessages.Text = "";
-            laMessages.Text = (listErrores.Count > 0 ? "Errors" : ""); 
-            laMessages.Text += (laMessages.Text != ""? "; ": "") + (listMensajes.Count > 0 ? "Messages" : "");
-            
+            laMessages.Text = (listErrores.Count > 0 ? "Errors" : "");
+            laMessages.Text += (laMessages.Text != "" ? "; " : "") + (listMensajes.Count > 0 ? "Messages" : "");
+
             //Mostrar Mensajes si hay
             if (listErrores.Count + listMensajes.Count > 0)
             {
@@ -248,9 +248,9 @@ namespace SQLCrypt
                 dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
                 dataGridView.RowHeadersVisible = false;
                 dataGridView.AutoSize = false;
-                
+
                 dataGridView.DataSource = ds.Tables[current_ds];
-                
+
                 dataGridView.RowHeadersVisible = true;
                 dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
                 dataGridView.RowHeadersWidth = ROW_HEADER_WIDTH;
@@ -313,7 +313,7 @@ namespace SQLCrypt
 
                         DataTable dt = new DataTable();
                         dt.Load(hSql.Data);
-                        
+
                         if (QueryController.CancelQuery && withTread)
                             return;
 
@@ -325,7 +325,7 @@ namespace SQLCrypt
                         MessageBox.Show($"Error\r\n{ex.Message}", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    
+
                     if (hSql.Data.IsClosed)
                         return;
                 }
@@ -363,137 +363,83 @@ namespace SQLCrypt
         /// <summary>
         /// Grabar el Contenido del la Tabla Actual a archivo JSON
         /// </summary>
-        private void saveCurrentToJson()
+        private void saveCurrentToJson(string fileName)
         {
-            // Selección del Archivo de Salida
-            using (SaveFileDialog saveForm = new SaveFileDialog())
-            {
-                saveForm.RestoreDirectory = true;
-                saveForm.Filter = "Json File|*.json";
-                saveForm.Title = "Save As Json File";
-                saveForm.ShowDialog();
 
-                if (saveForm.FileName == "")
-                {
-                    return;
-                }
+            ds.Tables[current_ds].SaveToFile(fileName);
+            Cursor.Current = Cursors.Default;
+            MessageBox.Show($"Archivo {fileName} grabado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                Cursor.Current = Cursors.WaitCursor;
-
-                if (File.Exists(saveForm.FileName))
-                {
-                    try
-                    {
-                        File.Delete(saveForm.FileName);
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Cannot delete existing File.\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        return;
-                    }
-                }
-
-                ds.Tables[current_ds].SaveToFile(saveForm.FileName);
-                Cursor.Current = Cursors.Default;
-                MessageBox.Show($"Archivo {saveForm.FileName} grabado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
         }
 
 
         //-------------------------------
         // Grabación de la Salida a Excel
         //-------------------------------
-        private void SaveToExcel()
+        private void SaveToExcel(string fileName)
         {
 
-            // Selección del Archivo de Salida
-            using (SaveFileDialog saveForm = new SaveFileDialog())
+            Cursor.Current = Cursors.WaitCursor;
+            FileInfo newFile = new FileInfo(fileName);
+
+            // Obtener Formato de Fecha desde el Sistema
+            string dateFormat = $"{CultureInfo.CurrentUICulture.DateTimeFormat.ShortDatePattern} HH:MM:SS";
+            //string dateFormat = "MM-dd-yyyy HH:MM:SS";
+
+            // Salida a Excel
+            var dt = ds.Tables[current_ds];
+            using (ExcelPackage pck = new ExcelPackage(newFile))
             {
-                saveForm.RestoreDirectory = true;
-                saveForm.Filter = "Excell File|*.xlsx";
-                saveForm.Title = "Save As Excell File";
-                saveForm.ShowDialog();
-
-                if (saveForm.FileName == "")
+                ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Report");
+                ws.Cells["A1"].LoadFromDataTable(dt, true);
+                for (int c = 0; c < dt.Columns.Count; c++)
                 {
-                    return;
-                }
-
-
-                if (File.Exists(saveForm.FileName))
-                {
-                    try
+                    if (dt.Columns[c].DataType == typeof(DateTime))
                     {
-                        File.Delete(saveForm.FileName);
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Cannot delete existing File.\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        return;
+                        ws.Column(c + 1).Style.Numberformat.Format = dateFormat;
                     }
                 }
 
-                Cursor.Current = Cursors.WaitCursor;
-                FileInfo newFile = new FileInfo(saveForm.FileName);
-
-                // Obtener Formato de Fecha desde el Sistema
-                string dateFormat = $"{CultureInfo.CurrentUICulture.DateTimeFormat.ShortDatePattern} HH:MM:SS";
-                //string dateFormat = "MM-dd-yyyy HH:MM:SS";
-
-                // Salida a Excel
-                var dt = ds.Tables[current_ds];
-                using (ExcelPackage pck = new ExcelPackage(newFile))
+                // Color de Fondo de las Filas de Dato
+                for (int i = 0; i < dt.Rows.Count; i++)
                 {
-                    ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Report");
-                    ws.Cells["A1"].LoadFromDataTable(dt, true);
-                    for (int c = 0; c < dt.Columns.Count; c++)
+                    var row = ws.Cells[i + 2, 1, i + 2, dt.Columns.Count];
+                    row.Style.Font.Color.SetColor(Color.Black);
+                    if (i % 2 != 0)
                     {
-                        if (dt.Columns[c].DataType == typeof(DateTime))
-                        {
-                            ws.Column(c + 1).Style.Numberformat.Format = dateFormat;
-                        }
+                        row.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                        row.Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
+
                     }
-
-                    // Color de Fondo de las Filas de Dato
-                    for (int i = 0; i < dt.Rows.Count; i++)
-                    {
-                        var row = ws.Cells[i + 2, 1, i + 2, dt.Columns.Count];
-                        row.Style.Font.Color.SetColor(Color.Black);
-                        if (i % 2 != 0)
-                        {
-                            row.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                            row.Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
-
-                        }
-                        ApplyBorders(row, Color.LightGray);
-                    }
-
-                    // Formateo de Header + Auto Filter, y Freeze de la primera Fila
-                    using (var range = ws.Cells[1, 1, 1, dt.Columns.Count])
-                    {
-                        range.Style.Fill.PatternType = ExcelFillStyle.Solid;
-                        range.Style.Fill.BackgroundColor.SetColor(Color.CornflowerBlue);
-                        range.Style.Font.Color.SetColor(Color.AliceBlue);
-                        range.Style.Font.Bold = true;
-                        ApplyBorders(range, Color.Black);
-                    }
-
-                    // Apply auto filter to the first row
-                    ws.Cells[1, 1, 1, dt.Columns.Count].AutoFilter = true;
-
-                    // Freeze the first row
-                    ws.View.FreezePanes(2, 1);
-
-                    ws.Cells.AutoFitColumns();
-
-                    pck.Save();
-                    pck.Dispose();
+                    ApplyBorders(row, Color.LightGray);
                 }
-                dt = null;
-                System.GC.Collect();
-                Cursor.Current = Cursors.Default;
-                MessageBox.Show($"Archivo [{newFile.Name}] grabado", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Formateo de Header + Auto Filter, y Freeze de la primera Fila
+                using (var range = ws.Cells[1, 1, 1, dt.Columns.Count])
+                {
+                    range.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                    range.Style.Fill.BackgroundColor.SetColor(Color.CornflowerBlue);
+                    range.Style.Font.Color.SetColor(Color.AliceBlue);
+                    range.Style.Font.Bold = true;
+                    ApplyBorders(range, Color.Black);
+                }
+
+                // Apply auto filter to the first row
+                ws.Cells[1, 1, 1, dt.Columns.Count].AutoFilter = true;
+
+                // Freeze the first row
+                ws.View.FreezePanes(2, 1);
+
+                ws.Cells.AutoFitColumns();
+
+                pck.Save();
+                pck.Dispose();
             }
+            dt = null;
+            System.GC.Collect();
+            Cursor.Current = Cursors.Default;
+            MessageBox.Show($"Archivo [{newFile.Name}] grabado", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
         }
 
 
@@ -550,9 +496,9 @@ namespace SQLCrypt
         {
             if (withTread)
             {
-                try{hSql.Data.Close();}catch { }
+                try { hSql.Data.Close(); } catch { }
                 hSql.Data = null;
-                try { hSql.CloseDBConn(); }catch { }
+                try { hSql.CloseDBConn(); } catch { }
                 QueryController.hSqlQuery = null;
                 QueryController.sql_spid = 0;
                 QueryController.CancelQuery = false;
@@ -579,7 +525,35 @@ namespace SQLCrypt
         /// <param name="e"></param>
         private void grabarExcellToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SaveToExcel();
+            using (SaveFileDialog saveForm = new SaveFileDialog())
+            {
+                saveForm.RestoreDirectory = true;
+                saveForm.Filter = "Excell File|*.xlsx";
+                saveForm.Title = "Save As Excell File";
+                saveForm.ShowDialog();
+
+                if (saveForm.FileName == "")
+                {
+                    return;
+                }
+
+
+                if (File.Exists(saveForm.FileName))
+                {
+                    try
+                    {
+                        File.Delete(saveForm.FileName);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Cannot delete existing File.\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
+                }
+
+                SaveToExcel(saveForm.FileName);
+            }
+
             System.GC.Collect();
         }
 
@@ -611,7 +585,7 @@ namespace SQLCrypt
             else
                 txtMessages.SendToBack();
 
-            if (listMensajes.Count + listErrores.Count > 0 )
+            if (listMensajes.Count + listErrores.Count > 0)
             {
                 string msg;
                 msg = "\r\n";
@@ -644,7 +618,7 @@ namespace SQLCrypt
         /// HideMessages
         /// </summary>
         private void HideMessages()
-        {   
+        {
             txtMessages.Visible = false;
             txtMessages.SendToBack();
         }
@@ -688,7 +662,7 @@ namespace SQLCrypt
         /// </summary>
         private void nextResultSet()
         {
-            if (ds.Tables.Count > current_ds+1)
+            if (ds.Tables.Count > current_ds + 1)
                 current_ds++;
 
             dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
@@ -696,7 +670,7 @@ namespace SQLCrypt
             dataGridView.AutoSize = false;
 
             dataGridView.DataSource = ds.Tables[current_ds];
-            toolStripTextBox1.Text = string.Format($"Rows: {dataGridView.Rows.Count}  Result Set {current_ds+1}/{ds.Tables.Count}");
+            toolStripTextBox1.Text = string.Format($"Rows: {dataGridView.Rows.Count}  Result Set {current_ds + 1}/{ds.Tables.Count}");
 
             dataGridView.RowHeadersVisible = true;
             dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
@@ -721,7 +695,7 @@ namespace SQLCrypt
             dataGridView.AutoSize = false;
 
             dataGridView.DataSource = ds.Tables[current_ds];
-            toolStripTextBox1.Text = string.Format($"Rows: {dataGridView.Rows.Count}  Result Set {current_ds+1}/{ds.Tables.Count}");
+            toolStripTextBox1.Text = string.Format($"Rows: {dataGridView.Rows.Count}  Result Set {current_ds + 1}/{ds.Tables.Count}");
 
             dataGridView.RowHeadersVisible = true;
             dataGridView.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.EnableResizing;
@@ -739,7 +713,36 @@ namespace SQLCrypt
         /// <param name="e"></param>
         private void grabarJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            saveCurrentToJson();
+            using (SaveFileDialog saveForm = new SaveFileDialog())
+            {
+                saveForm.RestoreDirectory = true;
+                saveForm.Filter = "Json File|*.json";
+                saveForm.Title = "Save As Json File";
+                saveForm.ShowDialog();
+
+                if (saveForm.FileName == "")
+                {
+                    return;
+                }
+
+                Cursor.Current = Cursors.WaitCursor;
+
+                if (File.Exists(saveForm.FileName))
+                {
+                    try
+                    {
+                        File.Delete(saveForm.FileName);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Cannot delete existing File.\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
+                }
+
+                saveCurrentToJson(saveForm.FileName);
+            }
+
             System.GC.Collect();
         }
 
@@ -765,7 +768,7 @@ namespace SQLCrypt
             }
 
             Cursor.Current = Cursors.WaitCursor;
-            
+
             int selRow = 0;
             int selCol = 0;
             bool found = false;
@@ -879,6 +882,154 @@ namespace SQLCrypt
             MessageBox.Show("Data copied to clipboard", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-    }
 
+
+        private void saveAllToExcelToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog saveForm = new SaveFileDialog())
+            {
+                saveForm.RestoreDirectory = true;
+                saveForm.Filter = "Excell File|*.xlsx";
+                saveForm.Title = "Save As Excell File";
+                saveForm.ShowDialog();
+
+                if (saveForm.FileName == "")
+                {
+                    return;
+                }
+
+
+                if (File.Exists(saveForm.FileName))
+                {
+                    try
+                    {
+                        File.Delete(saveForm.FileName);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Cannot delete existing File.\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
+                }
+
+                Cursor.Current = Cursors.WaitCursor;
+
+                saveAllToExcel(saveForm.FileName);
+            }
+
+            System.GC.Collect();
+        }
+
+        private void saveAllToJsonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            using (SaveFileDialog saveForm = new SaveFileDialog())
+            {
+                saveForm.RestoreDirectory = true;
+                saveForm.Filter = "Json File|*.json";
+                saveForm.Title = "Save As Json File";
+                saveForm.ShowDialog();
+
+                if (saveForm.FileName == "")
+                {
+                    return;
+                }
+
+                Cursor.Current = Cursors.WaitCursor;
+
+                saveAllToJson(saveForm.FileName);
+            }
+
+            System.GC.Collect();
+        }
+
+
+        private void saveAllToExcel(string fileName)
+        {
+            int current_of = current_ds;
+            string baseName = $"{Path.GetDirectoryName(fileName)}\\{Path.GetFileNameWithoutExtension(fileName)}";
+
+            for (int i = 0; i < ds.Tables.Count; i++)
+            {
+                string fileOnlyName = $"{baseName}_RS_{i + 1}.xlsx";
+                if (File.Exists(fileOnlyName))
+                {
+                    try
+                    {
+                        File.Delete(fileOnlyName);
+                    }
+                    catch
+                    {
+                        current_ds = current_of;
+                        MessageBox.Show($"Cannot delete existing File ({fileOnlyName}).\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
+                }
+
+                try
+                {
+                    current_ds = i;
+                    SaveToExcel(fileOnlyName);
+                }
+                catch (Exception ex)
+                {
+                    current_ds = current_of;
+                    MessageBox.Show($"Error saving file {fileOnlyName}\r\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+            }
+            current_ds = current_of;
+
+        }
+
+
+        private void saveAllToJson(string fileName)
+        {
+
+            int current_of = current_ds;
+            string baseName = $"{Path.GetDirectoryName(fileName)}\\{Path.GetFileNameWithoutExtension(fileName)}";
+
+            for (int i = 0; i < ds.Tables.Count; i++)
+            {
+                string fileOnlyName = $"{baseName}_RS_{i + 1}.json";
+                if (File.Exists(fileOnlyName))
+                {
+                    try
+                    {
+                        File.Delete(fileOnlyName);
+                    }
+                    catch
+                    {
+                        current_ds = current_of;
+                        MessageBox.Show($"Cannot delete existing File ({fileOnlyName}).\nVerify is not in use.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                    }
+                }
+
+                try
+                {
+                    current_ds = i;
+                    saveCurrentToJson(fileOnlyName);
+                }
+                catch (Exception ex)
+                {
+                    current_ds = current_of;
+                    MessageBox.Show($"Error saving file {fileOnlyName}\r\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+
+                }
+
+                current_ds = current_of;
+
+            }
+
+        }
+
+        private void txtSearch_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                BuscarEnGrilla();
+            }
+        }
+    }
 }
