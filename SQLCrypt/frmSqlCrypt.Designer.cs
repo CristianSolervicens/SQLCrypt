@@ -87,7 +87,6 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripSplitButton1 = new System.Windows.Forms.ToolStripSplitButton();
             this.tssLaFile = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tssLaPath = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssLaPos = new System.Windows.Forms.ToolStripStatusLabel();
             this.tssLaStat = new System.Windows.Forms.ToolStripStatusLabel();
             this.splitC = new System.Windows.Forms.SplitContainer();
@@ -591,7 +590,6 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSplitButton1,
             this.tssLaFile,
-            this.tssLaPath,
             this.tssLaPos,
             this.tssLaStat});
             this.statusStrip1.Location = new System.Drawing.Point(0, 620);
@@ -620,19 +618,8 @@
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
             | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
             this.tssLaFile.Name = "tssLaFile";
-            this.tssLaFile.Size = new System.Drawing.Size(350, 26);
+            this.tssLaFile.Size = new System.Drawing.Size(500, 26);
             this.tssLaFile.Text = "tssLaFile";
-            // 
-            // tssLaPath
-            // 
-            this.tssLaPath.AutoSize = false;
-            this.tssLaPath.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.tssLaPath.BorderSides = ((System.Windows.Forms.ToolStripStatusLabelBorderSides)((((System.Windows.Forms.ToolStripStatusLabelBorderSides.Left | System.Windows.Forms.ToolStripStatusLabelBorderSides.Top) 
-            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Right) 
-            | System.Windows.Forms.ToolStripStatusLabelBorderSides.Bottom)));
-            this.tssLaPath.Name = "tssLaPath";
-            this.tssLaPath.Size = new System.Drawing.Size(360, 26);
-            this.tssLaPath.Text = "tssLaPath";
             // 
             // tssLaPos
             // 
@@ -988,7 +975,6 @@
       private System.Windows.Forms.ToolStripMenuItem comandosInmediatosToolStripMenuItem1;
       private System.Windows.Forms.StatusStrip statusStrip1;
       private System.Windows.Forms.ToolStripStatusLabel tssLaFile;
-      private System.Windows.Forms.ToolStripStatusLabel tssLaPath;
       private System.Windows.Forms.ToolStripStatusLabel tssLaPos;
       private System.Windows.Forms.ToolStripSplitButton toolStripSplitButton1;
       private System.Windows.Forms.ToolStripStatusLabel tssLaStat;

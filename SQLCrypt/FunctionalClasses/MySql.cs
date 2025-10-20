@@ -200,33 +200,33 @@ namespace SQLCrypt.FunctionalClasses
 
                 //--------------------------
 
-                 string post;
+                string post;
 
-                 post = "";
+                post = "";
                 //server=(local);user id=ab;password= a!Pass113;initial catalog=AdventureWorks\n
                 sConnStr = "";
-                 if (ServerName == "")
+                if (ServerName == "")
                     sConnStr += "server=.";
-                 else
+                else
                     sConnStr += "server=" + ServerName;
 
-                 if (!(DatabaseName == "" || string.IsNullOrWhiteSpace(DatabaseName)))
+                if (!(DatabaseName == "" || string.IsNullOrWhiteSpace(DatabaseName)))
                     sConnStr += ";initial catalog=" + DatabaseName;
 
-                 if (!(string.IsNullOrEmpty(Username) || string.IsNullOrWhiteSpace(Username)))
+                if (!(string.IsNullOrEmpty(Username) || string.IsNullOrWhiteSpace(Username)))
                     sConnStr += ";user id=" + Username;
-                 else
-                     post = ";Trusted_Connection = true";
+                else
+                    post = ";Trusted_Connection = true";
 
-                 if (!(string.IsNullOrEmpty(Clave) || string.IsNullOrWhiteSpace(Clave)))
+                if (!(string.IsNullOrEmpty(Clave) || string.IsNullOrWhiteSpace(Clave)))
                     sConnStr += ";password=" + Clave;
 
-                 sConnStr = ";Application Name=" + Application.ProductName + post;
+                sConnStr = ";Application Name=" + Application.ProductName + post;
 
-                 if (Async)
-                     sConnStr += ";Asynchronous Processing=True";
+                if (Async)
+                    sConnStr += ";Asynchronous Processing=True";
 
-                 return sConnStr;
+                return sConnStr;
             }
 
 
@@ -1591,41 +1591,24 @@ namespace SQLCrypt.FunctionalClasses
             #endregion
 
 
-            public class strList : List<string>
+
+            public List<string> GetPlaceholders(string input)
             {
-                public bool ElementExists(string Elemento)
+                if (string.IsNullOrEmpty(input))
+                    return new List<string>();
+
+                // Regex: find #placeholderName#
+                var regex = new Regex(@"#([^\s\r\n#'""][^\r\n#'""]*[^\s\r\n#""'])#");
+                var matches = regex.Matches(input);
+
+                var placeholders = new HashSet<string>();
+
+                foreach (Match match in matches)
                 {
-                    foreach (string m in this)
-                    {
-                        if (string.Compare(m, Elemento, true) == 0)
-                        {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-            }
-
-            /// <summary>
-            /// GetParameters( string sComando)
-            /// </summary>
-            /// <param name="sComando"></param>
-            /// <returns></returns>
-            public strList GetParameters(string sComando)
-            {
-                strList lsParametros = new strList();
-
-                Match match = Regex.Match(sComando, @"#.*#", RegexOptions.IgnoreCase);
-
-                while (match.Success)
-                {
-                    if (!lsParametros.ElementExists(match.Value))
-                        lsParametros.Add(match.Value);
-
-                    match = match.NextMatch();
+                    placeholders.Add("#" + match.Groups[1].Value.Trim() + "#");
                 }
 
-                return lsParametros;
+                return new List<string>(placeholders);
             }
 
         }  //MSql

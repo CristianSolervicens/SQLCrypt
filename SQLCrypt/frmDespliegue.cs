@@ -365,11 +365,8 @@ namespace SQLCrypt
         /// </summary>
         private void saveCurrentToJson(string fileName)
         {
-
             ds.Tables[current_ds].SaveToFile(fileName);
             Cursor.Current = Cursors.Default;
-            MessageBox.Show($"Archivo {fileName} grabado", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
         }
 
 
@@ -438,7 +435,6 @@ namespace SQLCrypt
             dt = null;
             System.GC.Collect();
             Cursor.Current = Cursors.Default;
-            MessageBox.Show($"Archivo [{newFile.Name}] grabado", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
 
@@ -552,6 +548,7 @@ namespace SQLCrypt
                 }
 
                 SaveToExcel(saveForm.FileName);
+                MessageBox.Show($"Archivo [{saveForm.FileName}] grabado", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             System.GC.Collect();
@@ -741,6 +738,7 @@ namespace SQLCrypt
                 }
 
                 saveCurrentToJson(saveForm.FileName);
+                MessageBox.Show($"Archivo [{saveForm.FileName}] grabado", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
 
             System.GC.Collect();
@@ -947,6 +945,7 @@ namespace SQLCrypt
         {
             int current_of = current_ds;
             string baseName = $"{Path.GetDirectoryName(fileName)}\\{Path.GetFileNameWithoutExtension(fileName)}";
+            string saved_files = "";
 
             for (int i = 0; i < ds.Tables.Count; i++)
             {
@@ -969,6 +968,7 @@ namespace SQLCrypt
                 {
                     current_ds = i;
                     SaveToExcel(fileOnlyName);
+                    saved_files += $"{fileOnlyName}\r\n";
                 }
                 catch (Exception ex)
                 {
@@ -977,7 +977,9 @@ namespace SQLCrypt
                     return;
                 }
             }
+
             current_ds = current_of;
+            MessageBox.Show($"Archivos grabados: {saved_files}", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
 
@@ -987,6 +989,7 @@ namespace SQLCrypt
 
             int current_of = current_ds;
             string baseName = $"{Path.GetDirectoryName(fileName)}\\{Path.GetFileNameWithoutExtension(fileName)}";
+            string saved_files = "";
 
             for (int i = 0; i < ds.Tables.Count; i++)
             {
@@ -1009,6 +1012,7 @@ namespace SQLCrypt
                 {
                     current_ds = i;
                     saveCurrentToJson(fileOnlyName);
+                    saved_files += $"{fileOnlyName}\r\n";
                 }
                 catch (Exception ex)
                 {
@@ -1018,9 +1022,10 @@ namespace SQLCrypt
 
                 }
 
-                current_ds = current_of;
-
             }
+
+            current_ds = current_of;
+            MessageBox.Show($"Archivos grabados: {saved_files}", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         }
 

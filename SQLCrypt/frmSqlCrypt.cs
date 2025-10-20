@@ -8,27 +8,11 @@ using ScintillaNET;
 using ScintillaFindReplaceControl;
 using SQLCrypt.FunctionalClasses;
 using System.Text;
-using System.Text.RegularExpressions;
 using SQLCrypt.frmUtiles;
 using System.IO;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.RefAndLookup;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Information;
-using System.Media;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
-using System.Windows.Media.Media3D;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using static ScintillaNET.Style;
-using static SQLCrypt.Program;
 using System.Threading;
 using qTimer = System.Timers.Timer;
 using System.Timers;
-using System.Diagnostics.Eventing.Reader;
-using System.Runtime.InteropServices;
-
-
-//TODO: Buscar Errores de Sintáxis en el Documento Actual o Selección ??
 
 
 namespace SQLCrypt
@@ -36,7 +20,7 @@ namespace SQLCrypt
     public partial class FrmSqlCrypt : Form
     {
 
-        private const string EOL = "\r\n";
+        private const string NwLn = "\r\n";
 
         Thread threadQuery = null;
         private qTimer queryTimer = new qTimer();
@@ -93,7 +77,8 @@ namespace SQLCrypt
             laDataLoadStatus.Visible = false;
 
             laTablas.Text = "";
-            tssLaFile.Text = "";
+            
+            tssLaFile.Text = "";            
             tssLaPos.Text = string.Empty;
             tssLaStat.Text = string.Empty;
 
@@ -126,8 +111,9 @@ namespace SQLCrypt
             txm.MenuItems.Add("-");
             txm.MenuItems.Add("Comment Selection", new EventHandler(commentSelectionToolStripMenuItem_Click));
             txm.MenuItems.Add("Uncomment Selection", new EventHandler(uncommentSelectionToolStripMenuItem_Click));
-            txm.MenuItems.Add("Keywords To Upper Case", new EventHandler(keywordToUppercaseToolStripMenuItem_Click));
             txm.MenuItems.Add("Keywords To Upper Case (selection)", new EventHandler(keywordsToUppercaseselectionToolStripMenuItem_Click));
+            txm.MenuItems.Add("-");
+            txm.MenuItems.Add("Keywords To Upper Case", new EventHandler(keywordToUppercaseToolStripMenuItem_Click));
             txm.MenuItems.Add("Trim Trailing Spaces", new EventHandler(eliminarEspaciosFinDeLíneaToolStripMenuItem_Click));
             txm.MenuItems.Add("Tabs to Spaces", new EventHandler(tABAEspaciosToolStripMenuItem_Click));
             txm.MenuItems.Add("-");
@@ -175,7 +161,6 @@ to Search Objects by their content";
         private void frmSqlCrypt_Load(object sender, EventArgs e)
         {
             tssLaFile.Text = "";
-            tssLaPath.Text = "";
         }
 
 
@@ -249,9 +234,7 @@ to Search Objects by their content";
         private void txtSql_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.Text))
-            {
                 e.Effect = DragDropEffects.Copy;
-            }
         }
 
 
@@ -273,7 +256,7 @@ to Search Objects by their content";
                     var fill = new string(' ', space_num);
 
                     //Split
-                    string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(cadena, EOL);
+                    string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(cadena, NwLn);
                     for (int i = 0; i < snippet_spaced.Length; i++)
                     {
                         snippet_spaced[i] = $"{(i != 0 ? fill : "")}{snippet_spaced[i]}";
@@ -281,7 +264,7 @@ to Search Objects by their content";
 
                     cadena = "";
                     for (int i = 0; i < snippet_spaced.Length; i++)
-                        cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : EOL)}";
+                        cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : NwLn)}";
                 }
 
                 if (txtSql.SelectedText != "")
@@ -316,11 +299,11 @@ to Search Objects by their content";
                 IsEncrypted = false;
                 CurrentFile = files[0];
                 cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
-                tssLaPath.Text = cfg.WorkingDirectory;
-
+                
                 this.Text = $"SQLCrypt - {CurrentFile}";
                 scintillaC.LoadFile(CurrentFile);
                 cerrarToolStripMenuItem.Enabled = true;
+                //tssLaPath.Text = cfg.WorkingDirectory;
             }
 
             this.TopMost = true;
@@ -339,13 +322,9 @@ to Search Objects by their content";
         private void grabarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (CurrentFile == "")
-            {
                 SaveFileStd(true);
-            }
             else
-            {
                 SaveFileStd(false);
-            }
         }
 
 
@@ -378,15 +357,16 @@ to Search Objects by their content";
             {
                 CurrentFile = fileName;
                 IsEncrypted = false;
-                //txtSql.Text = System.IO.File.ReadAllText(CurrentFile);
                 scintillaC.LoadFile(CurrentFile);
                 this.Text = CurrentFile;
                 this.Text = $"SQLCrypt - {CurrentFile}";
                 grabarComoToolStripMenuItem.Enabled = true;
                 cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
+                //tssLaPath.Text = cfg.WorkingDirectory;
             }
 
             tssLaStat.Text = "Archivo Abierto...";
+
             txtSql.SetSavePoint();
             txtSql.EmptyUndoBuffer();
         }
@@ -407,7 +387,7 @@ to Search Objects by their content";
                 fill = "";
 
             //Split
-            string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(snippet, EOL);
+            string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(snippet, NwLn);
             for (int i = 1; i < snippet_spaced.Length; i++)
             {
                 snippet_spaced[i] = $"{(i != 0 ? fill : "")}{snippet_spaced[i]}";
@@ -415,12 +395,10 @@ to Search Objects by their content";
 
             var cadena = "";
             for (int i = 0; i < snippet_spaced.Length; i++)
-                cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : EOL)}";
+                cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : NwLn)}";
 
             txtSql.ReplaceSelection(cadena);
 
-            //if (snippet.Contains("<"))
-            //    MessageBox.Show("Presione [Ctrl][-] o [Ctrl][Tab] para completar el Snippet", "Atención");
         }
 
 
@@ -438,7 +416,7 @@ to Search Objects by their content";
             if (lstObjetos.SelectedIndex == -1)
                 return;
 
-            DBObject DBObj = new DBObject(hSql);
+            DBObject DBObj = new DBObject();
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
             if (DBObj.type != "U" && DBObj.type != "V" && DBObj.type != "S")
@@ -463,6 +441,7 @@ to Search Objects by their content";
             Clipboard.Clear();
             if (string.IsNullOrEmpty(txtSql.SelectedText))
                 return;
+
             Clipboard.SetText(txtSql.SelectedText);
             txtSql.SetSelection(0, 0);  //Scintilla
         }
@@ -530,7 +509,7 @@ to Search Objects by their content";
             txtSql.Text = hSql.DecryptFiletoString(CurrentFile);
 
             this.Text = $"SQLCrypt - {CurrentFile}";
-            tssLaPath.Text = cfg.WorkingDirectory;
+            
             cerrarToolStripMenuItem.Enabled = true;
         }
 
@@ -570,7 +549,7 @@ to Search Objects by their content";
         {
             if (txtSql.Modified)
             {
-                var res = MessageBox.Show($"The Document has been modified.{EOL}¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                var res = MessageBox.Show($"The Document has been modified.{NwLn}¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (res == DialogResult.Cancel)
                     return res;
 
@@ -606,12 +585,6 @@ to Search Objects by their content";
                 return;
             }
 
-            if (hSql.ConnectionStatus == false)
-            {
-                MessageBox.Show(this, "You should be connected to a Database. ;)", "Attention", MessageBoxButtons.OK);
-                return;
-            }
-
             // ========== REVISION DE SINTAXIS ==========
             var sqlcheck = new SQLCheck();
             List<SQLParseError> sqlErrors;
@@ -626,7 +599,7 @@ to Search Objects by their content";
             string sErrors = "";
             foreach (var error in sqlErrors)
             {
-                sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{EOL}";
+                sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{NwLn}";
                 scintillaC.HighlightError(error.line - 1, error.column);
             }
             if (sErrors != "")
@@ -635,6 +608,12 @@ to Search Objects by their content";
                 return;
             }
             // ========================================
+
+            if (hSql.ConnectionStatus == false)
+            {
+                MessageBox.Show(this, "You should be connected to a Database. ;)", "Attention", MessageBoxButtons.OK);
+                return;
+            }
 
             ExecuteSqlInNewThread();
 
@@ -663,7 +642,7 @@ to Search Objects by their content";
 
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Not connected :({EOL}{hSql.ErrorString}{EOL}{hSql.Messages}", "Oh No!!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show($"Not connected :({NwLn}{hSql.ErrorString}{NwLn}{hSql.Messages}", "Oh No!!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -680,10 +659,10 @@ to Search Objects by their content";
             else
                 sSqlCommand = txtSql.Text.ToString();
 
-            MySql.strList param = new MySql.strList();
+            var param = new List<string>();
             Dictionary<string, string> DictParam = null;
 
-            param = hSql.GetParameters(sSqlCommand);
+            param = hSql.GetPlaceholders(sSqlCommand);
 
             if (param.Count != 0)
             {
@@ -729,6 +708,7 @@ to Search Objects by their content";
                     Despliegue.Dispose();
                     System.GC.Collect();
                 });
+
                 threadQuery.SetApartmentState(ApartmentState.STA);
                 threadQuery.Priority = ThreadPriority.Highest;
                 threadQuery.Start();
@@ -828,34 +808,6 @@ to Search Objects by their content";
         }
 
 
-        /// <summary>
-        /// DEPRECADO, POR ELIMINAR !!!!
-        /// </summary>
-        private void ExecuteSQLCommand()
-        {
-
-            //if (chkToText.Checked)
-            //{
-            //    frmDespliegueTxt frm = new frmDespliegueTxt(sql);
-            //    frm.Text = $"Resultados : {databasesToolStripMenuItem.Text}";
-            //    frm.Show();
-
-            //    frm.Top = this.Top;
-            //    frm.Left = this.Left;
-
-            //    if (txtSql.SelectedText != "")
-            //        frm.ExecuteSQLStatement(txtSql.SelectedText.ToString(), TextLimit);
-            //    else
-            //        frm.ExecuteSQLStatement(txtSql.Text.ToString(), TextLimit);
-
-            //    LoadDatabaseList();
-
-            //    return;
-            //}
-
-        }
-
-
         
         /// <summary>
         /// Cierre del Documento en curso.
@@ -866,7 +818,7 @@ to Search Objects by their content";
         {
             if (txtSql.Modified)
             {
-                var res = MessageBox.Show($"The Document has been modified.{EOL}¿Do you want to Save befor close the file?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var res = MessageBox.Show($"The Document has been modified.{NwLn}¿Do you want to Save befor close the file?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (res == DialogResult.Yes)
                 {
                     if (CurrentFile == "")
@@ -880,7 +832,9 @@ to Search Objects by their content";
             IsEncrypted = false;
             txtSql.Text = "";
             this.Text = "SQLCrypt";
+            
             tssLaStat.Text = "File Closed...";
+            
             txtSql.SetSavePoint();
             txtSql.EmptyUndoBuffer();
         }
@@ -920,15 +874,17 @@ to Search Objects by their content";
                     cfg.AddOpenedFile(CurrentFile);
                     BuildMenuItems();
                     cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
-                    this.Text = $"SQLCrypt - {CurrentFile}";
-                    tssLaPath.Text = cfg.WorkingDirectory;
+                    this.Text = $"SQLCrypt - {CurrentFile}";                    
                 }
                 else
                 {
                     txtSql.SetSavePoint();
                     return;
                 }
+                
                 tssLaStat.Text = "Archivo Abierto...";
+                //tssLaPath.Text = cfg.WorkingDirectory;
+
                 txtSql.SetSavePoint();
                 txtSql.EmptyUndoBuffer();
             }
@@ -970,7 +926,6 @@ to Search Objects by their content";
         private string StringComplete(string sValue, int length)
         {
             int dif = length - sValue.Length;
-
             if (dif < 0) dif = sValue.Length;
 
             return sValue + new String(' ', dif);
@@ -984,7 +939,8 @@ to Search Objects by their content";
         /// <param name="e"></param>
         private void ConnectToDatabase(object sender, EventArgs e)
         {
-            if (hSql.ConnectionStatus)  hSql.CloseDBConn();
+            if (hSql.ConnectionStatus)
+                hSql.CloseDBConn();
 
             frmConexion frmC = new frmConexion();
             frmC.ShowDialog();
@@ -1017,8 +973,9 @@ to Search Objects by their content";
             LoadDatabaseList();
 
             this.Server = frmC.Servidor;
+            
             tssLaFile.Text = $"{frmC.Servidor}/{databasesToolStripMenuItem.Text}";
-
+            
             Objetos = new DbObjects(hSql);
             Table = new TableDef(hSql);
             Load_cbObjetos();
@@ -1072,14 +1029,14 @@ to Search Objects by their content";
 
             if (!hSql.UseDatabase(databasesToolStripMenuItem.Text))
             {
-                MessageBox.Show(hSql.ErrorString, $"Error Opening Database{EOL}{hSql.ErrorString}");
+                MessageBox.Show(hSql.ErrorString, $"Error Opening Database{NwLn}{hSql.ErrorString}");
                 hSql.ErrorClear();
                 databasesToolStripMenuItem.Text = hSql.GetCurrentDatabase();
                 return;
             }
 
             tssLaFile.Text = $"{this.Server} / {databasesToolStripMenuItem.Text}";
-
+            
             if (splitC.Panel1Collapsed == false)
                 cbObjetosSelect("U");
             
@@ -1124,11 +1081,11 @@ to Search Objects by their content";
 
             //-----------------
 
-            MySql.strList param = new MySql.strList();
+            var param = new List<string>();
             Dictionary<string, string> DictParam = null;
 
             string sSqlCommand = hSql.DecryptFiletoString(ArchivoComando);
-            param = hSql.GetParameters(sSqlCommand);
+            param = hSql.GetPlaceholders(sSqlCommand);
 
             if (param.Count != 0)
             {
@@ -1161,7 +1118,7 @@ to Search Objects by their content";
             if (hSql.Data == null)
                 if (hSql.ErrorExiste)
                 {
-                    MessageBox.Show(this, $"SQL Error{EOL}{hSql.ErrorString}", "Attention", MessageBoxButtons.OK);
+                    MessageBox.Show(this, $"SQL Error{NwLn}{hSql.ErrorString}", "Attention", MessageBoxButtons.OK);
                     hSql.ErrorClear();
                     return;
                 }
@@ -1247,7 +1204,8 @@ to Search Objects by their content";
                         cfg.AddOpenedFile(CurrentFile);
                         cfg.WorkingDirectory = System.IO.Path.GetDirectoryName(CurrentFile);
                         this.Text = $"SQLCrypt - {CurrentFile}";
-                        tssLaPath.Text = cfg.WorkingDirectory;
+                        //tssLaPath.Text = cfg.WorkingDirectory;
+
                         this.Text = "SQLCrypt - " + CurrentFile;
                     }
                     else
@@ -1256,18 +1214,14 @@ to Search Objects by their content";
             }
 
             if (IsEncrypted)
-            {
                 hSql.EncryptStringtoFile(txtSql.Text, CurrentFile);
-            }
             else
-            {
                 scintillaC.SaveFile(CurrentFile);
-            }
 
             txtSql.SetSavePoint();
             txtSql.EmptyUndoBuffer();
+            
             tssLaStat.Text = "Archivo Grabado...";
-
         }
 
 
@@ -1355,13 +1309,14 @@ to Search Objects by their content";
             cm.MenuItems.Add("Get More Info", new EventHandler(ObjGetMoreInfo));
             //cm.MenuItems.Add("Get CREATE TABLE", new EventHandler(ObjGetCreateTable));
             cm.MenuItems.Add("Get Text", new EventHandler(ObjGetText));
+            cm.MenuItems.Add("Get Create Table", new EventHandler(ObjGetCreate));
             cm.MenuItems.Add("Selected To Clipboard", new EventHandler(ObjSelectedToClipboard));
 
             string Type = ((ObjectType)cbObjetos.SelectedItem).type.Trim();
             if (Type == "U" || Type == "V" || Type == "S")
             {
                 cm.MenuItems.Add("Select COUNT(*) FROM ", new EventHandler(ObjectSelectCount));
-                cm.MenuItems.Add("Select TOP(100) * FROM ", new EventHandler(ObjectSelectStar));
+                cm.MenuItems.Add("Select TOP(1000) * FROM ", new EventHandler(ObjectSelectStar));
             }
             if (Type == "U")
             {
@@ -1403,17 +1358,13 @@ to Search Objects by their content";
         private void FindTableByColumnName(object sender, EventArgs e)
         {
             if (txBuscaEnLista.Text == "")
-            {
                 MessageBox.Show("What are you looking for? Set it in 'Find Procs.'");
-            }
 
             string Type = ((ObjectType)cbObjetos.SelectedItem).type.Trim();
             Objetos.FindByColumn(Type, txBuscaEnLista.Text);
             
             if (Objetos.Count == 0)
-            {
                 MessageBox.Show("No matchess found :(");
-            }
 
             Load_lstObjetos_ProcFiltered();
         }
@@ -1461,7 +1412,7 @@ to Search Objects by their content";
             string Elementos = "";
             foreach (var item in lstObjetos.SelectedItems)
             {
-                Elementos += (Elementos != "" ? EOL : "") + lstObjetos.GetItemText(item);
+                Elementos += (Elementos != "" ? NwLn : "") + lstObjetos.GetItemText(item);
             }
             
             if (Elementos != "")
@@ -1485,7 +1436,7 @@ to Search Objects by their content";
             for(int x = 0; x < lsColumnas.Items.Count; ++x)
             {
                 if (lsColumnas.Items[x].Selected)
-                    Elementos += (Elementos != "" ? EOL : "") + $"{lsColumnas.Items[x].Text} {lsColumnas.Items[x].SubItems[1].Text} {lsColumnas.Items[x].SubItems[2].Text}";
+                    Elementos += (Elementos != "" ? NwLn : "") + $"{lsColumnas.Items[x].Text} {lsColumnas.Items[x].SubItems[1].Text} {lsColumnas.Items[x].SubItems[2].Text}";
             }
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
@@ -1508,7 +1459,7 @@ to Search Objects by their content";
             for (int x = 0; x < lsColumnas.Items.Count; ++x)
             {
                 if (lsColumnas.Items[x].Selected)
-                    Elementos += (Elementos != "" ? EOL : "") + $"{lsColumnas.Items[x].Text}";
+                    Elementos += (Elementos != "" ? NwLn : "") + $"{lsColumnas.Items[x].Text}";
             }
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
@@ -1528,7 +1479,7 @@ to Search Objects by their content";
             if (lstObjetos.SelectedIndex == -1)
                 return;
 
-            DBObject DBObj = new DBObject(hSql);
+            DBObject DBObj = new DBObject();
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
             if (DBObj.type != "U" && DBObj.type != "V" && DBObj.type != "S")
@@ -1560,7 +1511,7 @@ to Search Objects by their content";
             if (lstObjetos.SelectedIndex == -1)
                 return;
 
-            DBObject DBObj = new DBObject(hSql);
+            DBObject DBObj = new DBObject();
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
             if (DBObj.type.Trim() != "U")
@@ -1584,7 +1535,7 @@ to Search Objects by their content";
             if (lstObjetos.SelectedIndex == -1)
                 return;
 
-            DBObject DBObj = new DBObject(hSql);
+            DBObject DBObj = new DBObject();
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
             if (DBObj.type.Trim() != "U")
@@ -1610,21 +1561,20 @@ to Search Objects by their content";
             if (lstObjetos.SelectedIndex == -1)
                 return;
 
-            DBObject DBObj = new DBObject(hSql);
-
+            DBObject DBObj = new DBObject();
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append($"{EOL}Schema    : {DBObj.schema_name}{EOL}");
-            sb.Append($"Nombre    : {DBObj.name}{EOL}");
-            sb.Append($"Id        : {DBObj.object_id}{EOL}");
-            sb.Append($"Type      : {DBObj.type}{EOL}")    ;
-            sb.Append($"Type Desc : {DBObj.type_desc}{EOL}")   ;
-            sb.Append($"Creado    : {DBObj.create_date}{EOL}");
-            sb.Append($"Modificado: {DBObj.modify_date}{EOL}");
-            sb.Append($"Schema Id : {DBObj.schema_id}{EOL}");
-            sb.Append($"Parrent Id: {DBObj.parent_object_id}{EOL}");
+            sb.Append($"{NwLn}Schema    : {DBObj.schema_name}{NwLn}");
+            sb.Append($"Nombre    : {DBObj.name}{NwLn}");
+            sb.Append($"Id        : {DBObj.object_id}{NwLn}");
+            sb.Append($"Type      : {DBObj.type}{NwLn}")    ;
+            sb.Append($"Type Desc : {DBObj.type_desc}{NwLn}")   ;
+            sb.Append($"Creado    : {DBObj.create_date}{NwLn}");
+            sb.Append($"Modificado: {DBObj.modify_date}{NwLn}");
+            sb.Append($"Schema Id : {DBObj.schema_id}{NwLn}");
+            sb.Append($"Parrent Id: {DBObj.parent_object_id}{NwLn}");
 
             Clipboard.Clear();
             Clipboard.SetText(sb.ToString());
@@ -1651,7 +1601,7 @@ to Search Objects by their content";
             if (lstObjetos.SelectedIndex == -1)
                 return;
 
-            DBObject DBObj = new DBObject(hSql);
+            DBObject DBObj = new DBObject();
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
             if (DBObj.type != "U" && DBObj.type != "V" && DBObj.type != "S")
@@ -1667,7 +1617,6 @@ to Search Objects by their content";
             
             foreach(ColumnDef t in Table.Columns)
             {
-
                 (string sColName, string sColDataType) = t.GetTranslated();
 
                 ListViewItem Item = new ListViewItem(sColName);
@@ -1677,6 +1626,7 @@ to Search Objects by their content";
                 Item.SubItems.Add(t.IsPrimaryKey? "X": "");
                 lsColumnas.Items.Add(Item);
             }
+
             lsColumnas.Columns[0].Width = -1;
             lsColumnas.Columns[1].Width = -1;
             lsColumnas.Columns[2].Width = -1;
@@ -1691,7 +1641,7 @@ to Search Objects by their content";
             if (lstObjetos.SelectedIndex == -1)
                 return;
 
-            DBObject DBObj = new DBObject(hSql);
+            DBObject DBObj = new DBObject();
             DBObj = (DBObject)lstObjetos.SelectedItem;
 
             if (DBObj.type == "P")
@@ -1701,7 +1651,6 @@ to Search Objects by their content";
             }
 
             string sSalida = string.Empty;
-
             sSalida = DBObj.ObjGetCreateTable();
 
             Clipboard.Clear();
@@ -1764,12 +1713,9 @@ to Search Objects by their content";
             MytoolTip.SetToolTip(lstObjetos, "");
 
             foreach (var n in Objetos)
-            {
                 lstObjetos.Items.Add(n);
-            }
 
             laTablas.Text = $"Objects: {lstObjetos.Items.Count}";
-
         }
 
 
@@ -1784,8 +1730,7 @@ to Search Objects by their content";
             if (lstObjetos.SelectedIndex == -1)
                 return;
 
-            //rchTxt.Text = string.Empty;
-            DBObject DBObj = new DBObject(hSql);
+            DBObject DBObj = new DBObject();
 
             string SqlObtenido = string.Empty;
             foreach (DBObject ob in lstObjetos.SelectedItems)
@@ -1800,6 +1745,24 @@ to Search Objects by their content";
             txtSql.SelectionEnd = 0;
             txtSql.InsertText(txtSql.CurrentPosition, SqlObtenido);
 
+        }
+
+        private void ObjGetCreate(object sender, EventArgs e)
+        {
+            int x = 0;
+            if (lstObjetos.SelectedIndex == -1)
+                return;
+            DBObject DBObj = new DBObject();
+            string SqlObtenido = string.Empty;
+            foreach (DBObject ob in lstObjetos.SelectedItems)
+            {
+                ++x;
+                DBObj = ob;
+                SqlObtenido += ob.GetCreateTable();
+            }
+            txtSql.SelectionStart = 0;
+            txtSql.SelectionEnd = 0;
+            txtSql.InsertText(txtSql.CurrentPosition, SqlObtenido);
         }
 
 
@@ -1847,7 +1810,7 @@ to Search Objects by their content";
                 string Elementos = "";
                 for (int i = 0; i < lstObjetos.SelectedItems.Count; ++i)
                 {
-                    Elementos += (Elementos != "" ? EOL : "") + lstObjetos.SelectedItems[i].ToString();
+                    Elementos += (Elementos != "" ? NwLn : "") + lstObjetos.SelectedItems[i].ToString();
                 }
                 if (Elementos != "")
                     txtSql.DoDragDrop(Elementos, DragDropEffects.Copy);
@@ -1877,7 +1840,7 @@ to Search Objects by their content";
                 for (int x = 0; x < lsColumnas.Items.Count; ++x)
                 {
                     if (lsColumnas.Items[x].Selected)
-                        Elementos += (Elementos != "" ? EOL : "") + $"{lsColumnas.Items[x].Text}";
+                        Elementos += (Elementos != "" ? NwLn : "") + $"{lsColumnas.Items[x].Text}";
                 }
                 if (Elementos != "")
                     txtSql.DoDragDrop(Elementos, DragDropEffects.Copy);
@@ -1891,13 +1854,11 @@ to Search Objects by their content";
         private void Load_cbObjetos()
         {
             cbObjetos.Items.Clear();
-
             ObjectTypes objt = new ObjectTypes();
 
             foreach (var n in objt)
-            {
                 cbObjetos.Items.Add(n);
-            }
+
         }
 
 
@@ -1967,6 +1928,8 @@ to Search Objects by their content";
             ConnectToDatabase(sender, e);
             if (splitC.Panel1Collapsed && hSql.ConnectionStatus)
                 verPanelDeObjetosToolStripMenuItem_Click(sender, e);
+
+            DBObject.hSql = hSql;
         }
 
 
@@ -2000,7 +1963,6 @@ to Search Objects by their content";
         /// <param name="e"></param>
         private void FrmSqlCrypt_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             //Guardo el último Estado de la App
             cfg.GetFormLocation(this);
             cfg.SaveToJson();
@@ -2099,7 +2061,7 @@ to Search Objects by their content";
 
                 if (hSql.ErrorExiste)
                 {
-                    MessageBox.Show($"Error connecting to Database ! {EOL} {hSql.ErrorString}", "Oh Nooooo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show($"Error connecting to Database !{NwLn} {hSql.ErrorString}", "Oh Nooooo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     hSql.ErrorClear();
                     return;
                 }
@@ -2107,12 +2069,16 @@ to Search Objects by their content";
                 LoadDatabaseList();
 
                 tssLaFile.Text = $"{hSql.GetServerName()}/{databasesToolStripMenuItem.Text}";
+                
                 Objetos = new DbObjects(hSql);
                 Table = new TableDef(hSql);
                 Load_cbObjetos();
             }
             if (hSql.ConnectionStatus)
+            {
+                DBObject.hSql = hSql;
                 MessageBox.Show("Re-Connected");
+            }
             else
                 MessageBox.Show("No Re-Connected");
         }
@@ -2257,10 +2223,9 @@ to Search Objects by their content";
         {
             if (e.KeyCode != Keys.Enter)
                 return;
+
             if (lstObjetos.SelectedIndex != -1)
-            {
                 txtSql.ReplaceSelection(lstObjetos.Items[lstObjetos.SelectedIndex].ToString());
-            }
 
             txtSql.Select();
             txtSql.Focus();
@@ -2286,7 +2251,7 @@ to Search Objects by their content";
             for (int x = 0; x < lsColumnas.Items.Count; ++x)
             {
                 if (lsColumnas.Items[x].Selected)
-                    Elementos += (Elementos != "" ? $"{EOL}{fill}," : "") + $"{lsColumnas.Items[x].Text}";
+                    Elementos += (Elementos != "" ? $"{NwLn}{fill}," : "") + $"{lsColumnas.Items[x].Text}";
             }
             txtSql.ReplaceSelection(Elementos);
             
@@ -2322,7 +2287,7 @@ to Search Objects by their content";
                 QueryController.CancelQuery = true;
                 if (hSql.ErrorExiste || hSql.Messages != "")
                 {
-                    MessageBox.Show($"SQL Connection with Error: {EOL}{hSql.ErrorString}{EOL}{EOL}{hSql.Messages}", "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"SQL Connection with Error: {NwLn}{hSql.ErrorString}{NwLn}{NwLn}{hSql.Messages}", "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else
@@ -2362,7 +2327,7 @@ to Search Objects by their content";
                 string sErrors = "";
                 foreach (var error in sqlErrors)
                 {
-                    sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{EOL}";
+                    sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{NwLn}";
                     scintillaC.HighlightError(error.line - 1, error.column);
                 }
                 MessageBox.Show(sErrors, "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -2398,7 +2363,7 @@ to Search Objects by their content";
             string sErrors = "";
             foreach (var error in sqlErrors)
             {
-                sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{EOL}";
+                sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{NwLn}";
                 scintillaC.HighlightError(error.line-1, error.column);
             }
             if (sErrors != "")
@@ -2499,13 +2464,9 @@ to Search Objects by their content";
                 return;
 
             if (File.Exists(fileName))
-            {
                 OpenFileInEditor(fileName);
-            }
             else
-            {
                 cfg.LastOpenedFiles.Remove(fileName);
-            }
         }
 
         
@@ -2518,9 +2479,8 @@ to Search Objects by their content";
             List<string> lista = new List<string>();
 
             foreach (var item in lstObjetos.Items)
-            {
                 lista.Add(item.ToString());
-            }
+
             lista.Sort();
             return String.Join(" ", lista.ToArray()).Trim();
 

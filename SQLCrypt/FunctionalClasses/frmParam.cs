@@ -13,7 +13,7 @@ namespace SQLCrypt
     {
         
         public Dictionary<string, string> OutParameters {get; set;}
-        public MySql.strList Parametros {get; set;}
+        public List<string> Parametros {get; set;}
 
 
 
@@ -41,7 +41,7 @@ namespace SQLCrypt
                 mLabel[x - 1].Height = 15;
                 mLabel[x - 1].Width = 110;
                 mLabel[x - 1].Visible = true;
-                mLabel[x - 1].Text = Parametros[x-1];
+                mLabel[x - 1].Text = Parametros[x-1].Replace("#", "").Replace("#", "");
                 mLabel[x - 1].BringToFront();
                 this.Controls.Add(mLabel[x - 1]);
 

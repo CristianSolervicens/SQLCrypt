@@ -22,8 +22,8 @@ namespace SQLCrypt.StructureClasses
             this.Add("TR", "SQL_TRIGGER");
             this.Add("V", "VIEW");
 
-            this.Add( "D" , "DEFAULT_CONSTRAINT");
-            this.Add( "F" , "FOREIGN_KEY_CONSTRAINT");
+            this.Add("D" , "DEFAULT_CONSTRAINT");
+            this.Add("F" , "FOREIGN_KEY_CONSTRAINT");
             this.Add("PK", "PRIMARY_KEY_CONSTRAINT");
             this.Add("UQ", "UNIQUE_CONSTRAINT");
             
@@ -31,9 +31,8 @@ namespace SQLCrypt.StructureClasses
 
             this.Add("S", "SYSTEM_TABLE");
             // this.Add( "IT", "INTERNAL_TABLE");
-            this.Add( "SQ", "SERVICE_QUEUE");
+            this.Add("SQ", "SERVICE_QUEUE");
             this.Add("SO", "SEQUENCE_OBJECT");
-            
         }
 
         private void Add( string type, string name)
