@@ -709,6 +709,85 @@ namespace SQLCrypt.FunctionalClasses
         }
 
 
+        /// <summary>
+        /// RemoveMultiSpaces
+        /// Wipe spaces from current position until next no-space character or EOL
+        /// for single or multiple selections (calls RemoveMultiSpacesMutipleSelection)
+        /// </summary>
+        public void RemoveMultiSpaces()
+        {
+            if (scintillaCtrl.Selections.Count > 1)
+            {
+                RemoveMultiSpacesMutipleSelection();
+                return;
+            }
+
+            int pos_ini = scintillaCtrl.SelectionStart;
+            int len = 0;
+
+            try
+            {
+                while (scintillaCtrl.Text.Substring(pos_ini + len, 1) == " ")
+                    len++;
+
+                scintillaCtrl.SelectionEnd = pos_ini + len;
+                scintillaCtrl.ReplaceSelection("");
+                scintillaCtrl.SelectionStart = pos_ini;
+                scintillaCtrl.SelectionEnd = pos_ini;
+            }
+            catch { }
+        }
+
+
+
+        /// <summary>
+        /// RemoveMultiSpacesMutipleSelection
+        /// Over multiple selections,
+        /// Wipe spaces from current position until next no-space character or EOL
+        /// </summary>
+        public void RemoveMultiSpacesMutipleSelection()
+        {
+            //Guardo las posiciones de las selecciones actuales 
+            List<SelectionItem> list = new List<SelectionItem>();
+            for (int i = 0; i < scintillaCtrl.Selections.Count; i++)
+            {
+                SelectionItem si = new SelectionItem();
+                si.line = scintillaCtrl.LineFromPosition(scintillaCtrl.Selections[i].Start);
+                si.start = scintillaCtrl.GetColumn(scintillaCtrl.Selections[i].Start);
+                si.end = si.start;
+                list.Add(si);
+            }
+
+            // Recorro las selecciones y elimino los espacios intermedios
+            scintillaCtrl.ClearSelections();
+            scintillaCtrl.SelectionEnd = 0;
+            scintillaCtrl.SelectionStart = 0;
+            foreach (var si in list)
+            {
+                scintillaCtrl.SelectionStart = scintillaCtrl.Lines[si.line].Position + si.start;
+                int pos_ini = scintillaCtrl.SelectionStart;
+                int len = 0;
+                try
+                {
+                    while (scintillaCtrl.Text.Substring(pos_ini + len, 1) == " ")
+                        len++;
+                    scintillaCtrl.SelectionEnd = pos_ini + len;
+                    scintillaCtrl.ReplaceSelection("");
+                }
+                catch { }
+            }
+
+
+            // Vuelvo a colocar las selecciones en su posición original
+            foreach (var si in list)
+            {
+                int x = scintillaCtrl.Lines[si.line].Position + si.start;
+                scintillaCtrl.AddSelection(x, x);
+            }
+
+        }
+
+
         public void GotoLineNumber()
         {
             frmLineNumber frmln = new frmLineNumber();
@@ -910,8 +989,12 @@ namespace SQLCrypt.FunctionalClasses
         /// </summary>
         public void HighlightErrorClean()
         {
-            scintillaCtrl.IndicatorCurrent = ERROR_INDICATOR;
-            scintillaCtrl.IndicatorClearRange(0, scintillaCtrl.TextLength);
+            try
+            {
+                scintillaCtrl.IndicatorCurrent = ERROR_INDICATOR;
+                scintillaCtrl.IndicatorClearRange(0, scintillaCtrl.TextLength);
+            }
+            catch { }
         }
 
 
@@ -939,14 +1022,27 @@ namespace SQLCrypt.FunctionalClasses
 
             int end_pos = 0;
             int start_pos = scintillaCtrl.Lines[_row + row].Position + col - 1;
+
+            try
+            {
+                for (int i = start_pos; i < scintillaCtrl.TextLength && scintillaCtrl.Text.Substring(i, 1) != " " && scintillaCtrl.Text.Substring(i, 2) != EOL && scintillaCtrl.Text.Substring(i, 1) != "\n"; i++)
+                    end_pos = i;
+            }
+            catch { }
             
-            for (int i = start_pos;
-                i < scintillaCtrl.TextLength && scintillaCtrl.Text.Substring(i, 1) != " " && scintillaCtrl.Text.Substring(i,2) != EOL && scintillaCtrl.Text.Substring(i, 1) != "\n"; i++)
-                end_pos = i;
-            
-            // Si no hubiera nada que marcar hacia adelante, marco 4 posiciones hacia atrás!
+            // Si no hubiera nada que marcar hacia adelante, marco posiciones hacia atrás!
             if (end_pos == start_pos )
-                start_pos -= 4;
+                start_pos -= 3;
+
+            if (start_pos < 0)
+                start_pos = 0;
+
+            if (end_pos == start_pos)
+                end_pos += 3;
+
+            if (end_pos > scintillaCtrl.TextLength)
+                end_pos = scintillaCtrl.TextLength;
+
 
             scintillaCtrl.IndicatorFillRange(start_pos, end_pos - start_pos + 1);
             scintillaCtrl.SelectionStart = start_pos;

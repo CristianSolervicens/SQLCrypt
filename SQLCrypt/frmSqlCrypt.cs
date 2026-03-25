@@ -20,7 +20,7 @@ namespace SQLCrypt
     public partial class FrmSqlCrypt : Form
     {
 
-        private const string NwLn = "\r\n";
+        private const string NwLine = "\r\n";
 
         Thread threadQuery = null;
         private qTimer queryTimer = new qTimer();
@@ -113,7 +113,6 @@ namespace SQLCrypt
             txm.MenuItems.Add("Uncomment Selection", new EventHandler(uncommentSelectionToolStripMenuItem_Click));
             txm.MenuItems.Add("Keywords To Upper Case (selection)", new EventHandler(keywordsToUppercaseselectionToolStripMenuItem_Click));
             txm.MenuItems.Add("-");
-            txm.MenuItems.Add("Keywords To Upper Case", new EventHandler(keywordToUppercaseToolStripMenuItem_Click));
             txm.MenuItems.Add("Trim Trailing Spaces", new EventHandler(eliminarEspaciosFinDeLíneaToolStripMenuItem_Click));
             txm.MenuItems.Add("Tabs to Spaces", new EventHandler(tABAEspaciosToolStripMenuItem_Click));
             txm.MenuItems.Add("-");
@@ -256,7 +255,7 @@ to Search Objects by their content";
                     var fill = new string(' ', space_num);
 
                     //Split
-                    string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(cadena, NwLn);
+                    string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(cadena, NwLine);
                     for (int i = 0; i < snippet_spaced.Length; i++)
                     {
                         snippet_spaced[i] = $"{(i != 0 ? fill : "")}{snippet_spaced[i]}";
@@ -264,7 +263,7 @@ to Search Objects by their content";
 
                     cadena = "";
                     for (int i = 0; i < snippet_spaced.Length; i++)
-                        cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : NwLn)}";
+                        cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : NwLine)}";
                 }
 
                 if (txtSql.SelectedText != "")
@@ -387,7 +386,7 @@ to Search Objects by their content";
                 fill = "";
 
             //Split
-            string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(snippet, NwLn);
+            string[] snippet_spaced = System.Text.RegularExpressions.Regex.Split(snippet, NwLine);
             for (int i = 1; i < snippet_spaced.Length; i++)
             {
                 snippet_spaced[i] = $"{(i != 0 ? fill : "")}{snippet_spaced[i]}";
@@ -395,7 +394,7 @@ to Search Objects by their content";
 
             var cadena = "";
             for (int i = 0; i < snippet_spaced.Length; i++)
-                cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : NwLn)}";
+                cadena += $"{snippet_spaced[i]}{(i == snippet_spaced.Length - 1 ? "" : NwLine)}";
 
             txtSql.ReplaceSelection(cadena);
 
@@ -549,7 +548,7 @@ to Search Objects by their content";
         {
             if (txtSql.Modified)
             {
-                var res = MessageBox.Show($"The Document has been modified.{NwLn}¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                var res = MessageBox.Show($"The Document has been modified.{NwLine}¿Do you want to Save befor Quit?", "Question", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (res == DialogResult.Cancel)
                     return res;
 
@@ -599,7 +598,7 @@ to Search Objects by their content";
             string sErrors = "";
             foreach (var error in sqlErrors)
             {
-                sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{NwLn}";
+                sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{NwLine}";
                 scintillaC.HighlightError(error.line - 1, error.column);
             }
             if (sErrors != "")
@@ -642,7 +641,7 @@ to Search Objects by their content";
 
             if (hSql.ErrorExiste)
             {
-                MessageBox.Show($"Not connected :({NwLn}{hSql.ErrorString}{NwLn}{hSql.Messages}", "Oh No!!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show($"Not connected :({NwLine}{hSql.ErrorString}{NwLine}{hSql.Messages}", "Oh No!!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -818,7 +817,7 @@ to Search Objects by their content";
         {
             if (txtSql.Modified)
             {
-                var res = MessageBox.Show($"The Document has been modified.{NwLn}¿Do you want to Save befor close the file?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                var res = MessageBox.Show($"The Document has been modified.{NwLine}¿Do you want to Save befor close the file?", "Question", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (res == DialogResult.Yes)
                 {
                     if (CurrentFile == "")
@@ -1029,7 +1028,7 @@ to Search Objects by their content";
 
             if (!hSql.UseDatabase(databasesToolStripMenuItem.Text))
             {
-                MessageBox.Show(hSql.ErrorString, $"Error Opening Database{NwLn}{hSql.ErrorString}");
+                MessageBox.Show(hSql.ErrorString, $"Error Opening Database{NwLine}{hSql.ErrorString}");
                 hSql.ErrorClear();
                 databasesToolStripMenuItem.Text = hSql.GetCurrentDatabase();
                 return;
@@ -1118,7 +1117,7 @@ to Search Objects by their content";
             if (hSql.Data == null)
                 if (hSql.ErrorExiste)
                 {
-                    MessageBox.Show(this, $"SQL Error{NwLn}{hSql.ErrorString}", "Attention", MessageBoxButtons.OK);
+                    MessageBox.Show(this, $"SQL Error{NwLine}{hSql.ErrorString}", "Attention", MessageBoxButtons.OK);
                     hSql.ErrorClear();
                     return;
                 }
@@ -1412,7 +1411,7 @@ to Search Objects by their content";
             string Elementos = "";
             foreach (var item in lstObjetos.SelectedItems)
             {
-                Elementos += (Elementos != "" ? NwLn : "") + lstObjetos.GetItemText(item);
+                Elementos += (Elementos != "" ? NwLine : "") + lstObjetos.GetItemText(item);
             }
             
             if (Elementos != "")
@@ -1436,7 +1435,7 @@ to Search Objects by their content";
             for(int x = 0; x < lsColumnas.Items.Count; ++x)
             {
                 if (lsColumnas.Items[x].Selected)
-                    Elementos += (Elementos != "" ? NwLn : "") + $"{lsColumnas.Items[x].Text} {lsColumnas.Items[x].SubItems[1].Text} {lsColumnas.Items[x].SubItems[2].Text}";
+                    Elementos += (Elementos != "" ? NwLine : "") + $"{lsColumnas.Items[x].Text} {lsColumnas.Items[x].SubItems[1].Text} {lsColumnas.Items[x].SubItems[2].Text}";
             }
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
@@ -1459,7 +1458,7 @@ to Search Objects by their content";
             for (int x = 0; x < lsColumnas.Items.Count; ++x)
             {
                 if (lsColumnas.Items[x].Selected)
-                    Elementos += (Elementos != "" ? NwLn : "") + $"{lsColumnas.Items[x].Text}";
+                    Elementos += (Elementos != "" ? NwLine : "") + $"{lsColumnas.Items[x].Text}";
             }
             if (Elementos != "")
                 Clipboard.SetText(Elementos);
@@ -1566,15 +1565,15 @@ to Search Objects by their content";
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append($"{NwLn}Schema    : {DBObj.schema_name}{NwLn}");
-            sb.Append($"Nombre    : {DBObj.name}{NwLn}");
-            sb.Append($"Id        : {DBObj.object_id}{NwLn}");
-            sb.Append($"Type      : {DBObj.type}{NwLn}")    ;
-            sb.Append($"Type Desc : {DBObj.type_desc}{NwLn}")   ;
-            sb.Append($"Creado    : {DBObj.create_date}{NwLn}");
-            sb.Append($"Modificado: {DBObj.modify_date}{NwLn}");
-            sb.Append($"Schema Id : {DBObj.schema_id}{NwLn}");
-            sb.Append($"Parrent Id: {DBObj.parent_object_id}{NwLn}");
+            sb.Append($"{NwLine}Schema    : {DBObj.schema_name}{NwLine}");
+            sb.Append($"Nombre    : {DBObj.name}{NwLine}");
+            sb.Append($"Id        : {DBObj.object_id}{NwLine}");
+            sb.Append($"Type      : {DBObj.type}{NwLine}")    ;
+            sb.Append($"Type Desc : {DBObj.type_desc}{NwLine}")   ;
+            sb.Append($"Creado    : {DBObj.create_date}{NwLine}");
+            sb.Append($"Modificado: {DBObj.modify_date}{NwLine}");
+            sb.Append($"Schema Id : {DBObj.schema_id}{NwLine}");
+            sb.Append($"Parrent Id: {DBObj.parent_object_id}{NwLine}");
 
             Clipboard.Clear();
             Clipboard.SetText(sb.ToString());
@@ -1810,7 +1809,7 @@ to Search Objects by their content";
                 string Elementos = "";
                 for (int i = 0; i < lstObjetos.SelectedItems.Count; ++i)
                 {
-                    Elementos += (Elementos != "" ? NwLn : "") + lstObjetos.SelectedItems[i].ToString();
+                    Elementos += (Elementos != "" ? NwLine : "") + lstObjetos.SelectedItems[i].ToString();
                 }
                 if (Elementos != "")
                     txtSql.DoDragDrop(Elementos, DragDropEffects.Copy);
@@ -1840,7 +1839,7 @@ to Search Objects by their content";
                 for (int x = 0; x < lsColumnas.Items.Count; ++x)
                 {
                     if (lsColumnas.Items[x].Selected)
-                        Elementos += (Elementos != "" ? NwLn : "") + $"{lsColumnas.Items[x].Text}";
+                        Elementos += (Elementos != "" ? NwLine : "") + $"{lsColumnas.Items[x].Text}";
                 }
                 if (Elementos != "")
                     txtSql.DoDragDrop(Elementos, DragDropEffects.Copy);
@@ -1972,6 +1971,7 @@ to Search Objects by their content";
 
         }
 
+
         /// <summary>
         /// Find Next (F3)
         /// </summary>
@@ -1982,6 +1982,7 @@ to Search Objects by their content";
             if (!_findReplace.FindNext())
                 _findReplace.Show();
         }
+
 
         /// <summary>
         /// Find Previous (Shift + F3)
@@ -2061,7 +2062,7 @@ to Search Objects by their content";
 
                 if (hSql.ErrorExiste)
                 {
-                    MessageBox.Show($"Error connecting to Database !{NwLn} {hSql.ErrorString}", "Oh Nooooo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show($"Error connecting to Database !{NwLine} {hSql.ErrorString}", "Oh Nooooo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     hSql.ErrorClear();
                     return;
                 }
@@ -2251,7 +2252,7 @@ to Search Objects by their content";
             for (int x = 0; x < lsColumnas.Items.Count; ++x)
             {
                 if (lsColumnas.Items[x].Selected)
-                    Elementos += (Elementos != "" ? $"{NwLn}{fill}," : "") + $"{lsColumnas.Items[x].Text}";
+                    Elementos += (Elementos != "" ? $"{NwLine}{fill}," : "") + $"{lsColumnas.Items[x].Text}";
             }
             txtSql.ReplaceSelection(Elementos);
             
@@ -2287,7 +2288,7 @@ to Search Objects by their content";
                 QueryController.CancelQuery = true;
                 if (hSql.ErrorExiste || hSql.Messages != "")
                 {
-                    MessageBox.Show($"SQL Connection with Error: {NwLn}{hSql.ErrorString}{NwLn}{NwLn}{hSql.Messages}", "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"SQL Connection with Error: {NwLine}{hSql.ErrorString}{NwLine}{NwLine}{hSql.Messages}", "SQL Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else
@@ -2327,7 +2328,7 @@ to Search Objects by their content";
                 string sErrors = "";
                 foreach (var error in sqlErrors)
                 {
-                    sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{NwLn}";
+                    sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{NwLine}";
                     scintillaC.HighlightError(error.line - 1, error.column);
                 }
                 MessageBox.Show(sErrors, "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -2363,7 +2364,7 @@ to Search Objects by their content";
             string sErrors = "";
             foreach (var error in sqlErrors)
             {
-                sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{NwLn}";
+                sErrors += $"Line: {error.line}  Col.: {error.column} {error.ErrorMessage}{NwLine}";
                 scintillaC.HighlightError(error.line-1, error.column);
             }
             if (sErrors != "")
@@ -2373,30 +2374,6 @@ to Search Objects by their content";
                 scintillaC.HighlightErrorClean();
                 MessageBox.Show("Sintax is OK", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-        }
-
-
-        /// <summary>
-        /// RemoveMultiSpaces
-        /// Wipe spaces until next no-space character or EOL
-        /// </summary>
-        private void RemoveMultiSpaces()
-        {
-            int pos_ini = txtSql.SelectionStart;
-            int len = 0;
-
-            try
-            {
-                while (txtSql.Text.Substring(pos_ini + len, 1) == " ")
-                    len++;
-
-                txtSql.SelectionEnd = pos_ini + len;
-                txtSql.ReplaceSelection("");
-                txtSql.SelectionStart = pos_ini;
-                txtSql.SelectionEnd = pos_ini;
-            }
-            catch { }
-            
         }
 
 
@@ -2420,7 +2397,7 @@ to Search Objects by their content";
         /// <param name="e"></param>
         private void removeMultiSpacesToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            RemoveMultiSpaces();
+            scintillaC.RemoveMultiSpaces();
         }
 
 

@@ -456,6 +456,7 @@
             // eliminarEspaciosFinDeLíneaToolStripMenuItem
             // 
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem.Name = "eliminarEspaciosFinDeLíneaToolStripMenuItem";
+            this.eliminarEspaciosFinDeLíneaToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem.Text = "Clean Trailing Spaces";
             this.eliminarEspaciosFinDeLíneaToolStripMenuItem.Click += new System.EventHandler(this.eliminarEspaciosFinDeLíneaToolStripMenuItem_Click);
@@ -463,6 +464,8 @@
             // tABAEspaciosToolStripMenuItem
             // 
             this.tABAEspaciosToolStripMenuItem.Name = "tABAEspaciosToolStripMenuItem";
+            this.tABAEspaciosToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.T)));
             this.tABAEspaciosToolStripMenuItem.Size = new System.Drawing.Size(269, 22);
             this.tABAEspaciosToolStripMenuItem.Text = "TAB to Spaces";
             this.tABAEspaciosToolStripMenuItem.Click += new System.EventHandler(this.tABAEspaciosToolStripMenuItem_Click);
@@ -664,10 +667,10 @@
             // 
             this.splitC.Panel2.BackColor = System.Drawing.SystemColors.Control;
             this.splitC.Panel2.Controls.Add(this.txtSql);
-            this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(3);
+            this.splitC.Panel2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.splitC.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.splitC.Size = new System.Drawing.Size(1158, 591);
-            this.splitC.SplitterDistance = 253;
+            this.splitC.SplitterDistance = 252;
             this.splitC.TabIndex = 15;
             // 
             // splitterColumns
@@ -676,7 +679,7 @@
             this.splitterColumns.Dock = System.Windows.Forms.DockStyle.Top;
             this.splitterColumns.Location = new System.Drawing.Point(0, 351);
             this.splitterColumns.Name = "splitterColumns";
-            this.splitterColumns.Size = new System.Drawing.Size(251, 3);
+            this.splitterColumns.Size = new System.Drawing.Size(250, 3);
             this.splitterColumns.TabIndex = 29;
             this.splitterColumns.TabStop = false;
             this.splitterColumns.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitterColumns_SplitterMoved);
@@ -693,16 +696,16 @@
             this.panObjetos.Controls.Add(this.txBuscaEnLista);
             this.panObjetos.Dock = System.Windows.Forms.DockStyle.Top;
             this.panObjetos.Location = new System.Drawing.Point(0, 0);
-            this.panObjetos.Margin = new System.Windows.Forms.Padding(2);
+            this.panObjetos.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panObjetos.Name = "panObjetos";
-            this.panObjetos.Size = new System.Drawing.Size(251, 351);
+            this.panObjetos.Size = new System.Drawing.Size(250, 351);
             this.panObjetos.TabIndex = 21;
             // 
             // btRefreshType
             // 
             this.btRefreshType.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btRefreshType.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btRefreshType.Location = new System.Drawing.Point(195, 281);
+            this.btRefreshType.Location = new System.Drawing.Point(194, 281);
             this.btRefreshType.Name = "btRefreshType";
             this.btRefreshType.Size = new System.Drawing.Size(55, 22);
             this.btRefreshType.TabIndex = 28;
@@ -719,9 +722,9 @@
             this.cbObjetos.ForeColor = System.Drawing.Color.Black;
             this.cbObjetos.FormattingEnabled = true;
             this.cbObjetos.Location = new System.Drawing.Point(5, 281);
-            this.cbObjetos.Margin = new System.Windows.Forms.Padding(2);
+            this.cbObjetos.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbObjetos.Name = "cbObjetos";
-            this.cbObjetos.Size = new System.Drawing.Size(183, 21);
+            this.cbObjetos.Size = new System.Drawing.Size(182, 21);
             this.cbObjetos.TabIndex = 13;
             this.cbObjetos.SelectedValueChanged += new System.EventHandler(this.cbObjetos_SelectedValueChanged);
             // 
@@ -749,7 +752,7 @@
             this.lstObjetos.Name = "lstObjetos";
             this.lstObjetos.ScrollAlwaysVisible = true;
             this.lstObjetos.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstObjetos.Size = new System.Drawing.Size(251, 275);
+            this.lstObjetos.Size = new System.Drawing.Size(250, 275);
             this.lstObjetos.TabIndex = 12;
             this.lstObjetos.SelectedIndexChanged += new System.EventHandler(this.lstObjetos_SelectedIndexChanged);
             this.lstObjetos.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstObjetos_KeyDown);
@@ -775,7 +778,7 @@
             this.txBuscaEnLista.ForeColor = System.Drawing.Color.Black;
             this.txBuscaEnLista.Location = new System.Drawing.Point(5, 325);
             this.txBuscaEnLista.Name = "txBuscaEnLista";
-            this.txBuscaEnLista.Size = new System.Drawing.Size(243, 20);
+            this.txBuscaEnLista.Size = new System.Drawing.Size(242, 20);
             this.txBuscaEnLista.TabIndex = 26;
             this.txBuscaEnLista.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txBuscaEnLista_KeyDown);
             // 
@@ -787,9 +790,9 @@
             this.panColumnas.BackColor = System.Drawing.SystemColors.Control;
             this.panColumnas.Controls.Add(this.lsColumnas);
             this.panColumnas.Location = new System.Drawing.Point(0, 359);
-            this.panColumnas.Margin = new System.Windows.Forms.Padding(2);
+            this.panColumnas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.panColumnas.Name = "panColumnas";
-            this.panColumnas.Size = new System.Drawing.Size(251, 227);
+            this.panColumnas.Size = new System.Drawing.Size(250, 226);
             this.panColumnas.TabIndex = 0;
             // 
             // lsColumnas
@@ -807,10 +810,10 @@
             this.lsColumnas.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.lsColumnas.HideSelection = false;
             this.lsColumnas.Location = new System.Drawing.Point(0, 0);
-            this.lsColumnas.Margin = new System.Windows.Forms.Padding(2);
+            this.lsColumnas.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.lsColumnas.Name = "lsColumnas";
             this.lsColumnas.ShowGroups = false;
-            this.lsColumnas.Size = new System.Drawing.Size(251, 227);
+            this.lsColumnas.Size = new System.Drawing.Size(250, 226);
             this.lsColumnas.TabIndex = 33;
             this.lsColumnas.UseCompatibleStateImageBehavior = false;
             this.lsColumnas.View = System.Windows.Forms.View.Details;
@@ -847,7 +850,7 @@
             this.txtSql.LexerName = null;
             this.txtSql.Location = new System.Drawing.Point(3, 3);
             this.txtSql.Name = "txtSql";
-            this.txtSql.Size = new System.Drawing.Size(893, 583);
+            this.txtSql.Size = new System.Drawing.Size(894, 583);
             this.txtSql.TabIndex = 0;
             this.txtSql.AutoCCompleted += new System.EventHandler<ScintillaNET.AutoCSelectionEventArgs>(this.txtSql_AutoCCompleted);
             this.txtSql.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.txtSql_SelectionChanged);
@@ -935,7 +938,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
-            this.MinimumSize = new System.Drawing.Size(1172, 621);
+            this.MinimumSize = new System.Drawing.Size(1172, 619);
             this.Name = "FrmSqlCrypt";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Sql Crypt";
