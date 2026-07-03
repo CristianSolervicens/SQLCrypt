@@ -112,7 +112,7 @@
             this.btCancelar.Image = ((System.Drawing.Image)(resources.GetObject("btCancelar.Image")));
             this.btCancelar.Location = new System.Drawing.Point(259, 164);
             this.btCancelar.Name = "btCancelar";
-            this.btCancelar.Size = new System.Drawing.Size(47, 35);
+            this.btCancelar.Size = new System.Drawing.Size(47, 39);
             this.btCancelar.TabIndex = 11;
             this.btCancelar.UseVisualStyleBackColor = true;
             this.btCancelar.Click += new System.EventHandler(this.btCancelar_Click);
@@ -122,7 +122,7 @@
             this.btAceptar.Image = ((System.Drawing.Image)(resources.GetObject("btAceptar.Image")));
             this.btAceptar.Location = new System.Drawing.Point(12, 164);
             this.btAceptar.Name = "btAceptar";
-            this.btAceptar.Size = new System.Drawing.Size(47, 35);
+            this.btAceptar.Size = new System.Drawing.Size(47, 39);
             this.btAceptar.TabIndex = 6;
             this.btAceptar.UseVisualStyleBackColor = true;
             this.btAceptar.Click += new System.EventHandler(this.btAceptar_Click);
@@ -132,7 +132,7 @@
             this.pbTest.Image = ((System.Drawing.Image)(resources.GetObject("pbTest.Image")));
             this.pbTest.Location = new System.Drawing.Point(160, 164);
             this.pbTest.Name = "pbTest";
-            this.pbTest.Size = new System.Drawing.Size(47, 35);
+            this.pbTest.Size = new System.Drawing.Size(47, 39);
             this.pbTest.TabIndex = 9;
             this.pbTest.UseVisualStyleBackColor = true;
             this.pbTest.Click += new System.EventHandler(this.pbTest_Click);
@@ -150,7 +150,7 @@
             this.btDelConexion.Image = ((System.Drawing.Image)(resources.GetObject("btDelConexion.Image")));
             this.btDelConexion.Location = new System.Drawing.Point(209, 164);
             this.btDelConexion.Name = "btDelConexion";
-            this.btDelConexion.Size = new System.Drawing.Size(47, 35);
+            this.btDelConexion.Size = new System.Drawing.Size(47, 39);
             this.btDelConexion.TabIndex = 10;
             this.btDelConexion.UseVisualStyleBackColor = true;
             this.btDelConexion.Click += new System.EventHandler(this.btDelConexion_Click);
@@ -169,7 +169,7 @@
             this.btUpdate.Image = ((System.Drawing.Image)(resources.GetObject("btUpdate.Image")));
             this.btUpdate.Location = new System.Drawing.Point(110, 164);
             this.btUpdate.Name = "btUpdate";
-            this.btUpdate.Size = new System.Drawing.Size(47, 35);
+            this.btUpdate.Size = new System.Drawing.Size(47, 39);
             this.btUpdate.TabIndex = 8;
             this.btUpdate.UseVisualStyleBackColor = true;
             this.btUpdate.Click += new System.EventHandler(this.btUpdate_Click);
@@ -189,7 +189,7 @@
             this.btNew.Image = ((System.Drawing.Image)(resources.GetObject("btNew.Image")));
             this.btNew.Location = new System.Drawing.Point(61, 164);
             this.btNew.Name = "btNew";
-            this.btNew.Size = new System.Drawing.Size(47, 35);
+            this.btNew.Size = new System.Drawing.Size(47, 40);
             this.btNew.TabIndex = 7;
             this.btNew.UseVisualStyleBackColor = true;
             this.btNew.Click += new System.EventHandler(this.btNew_Click);
