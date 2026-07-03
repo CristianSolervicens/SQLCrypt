@@ -15,7 +15,7 @@ namespace SQLCrypt
     public partial class frmConexion:Form
     {
         
-        private Conexiones2 conx;
+        private Conexiones conx;
         private int ConxIdx;
         public string ArchivoConexiones;
         private bool NewEntry = false;
@@ -58,8 +58,8 @@ namespace SQLCrypt
             ttip.SetToolTip(btNew, "New Connection (Wipes current info.)");
             ttip.SetToolTip(this, "Use Up & Dn arrows to select connections");
 
-            ArchivoConexiones = Path.GetDirectoryName(Application.ExecutablePath) + "\\Conexiones.xml";
-            this.conx = new Conexiones2();
+            ArchivoConexiones = Path.GetDirectoryName(Application.ExecutablePath) + "\\Conexiones.json";
+            this.conx = new Conexiones();
             this.ConxIdx = -1;
 
             if (File.Exists(ArchivoConexiones))

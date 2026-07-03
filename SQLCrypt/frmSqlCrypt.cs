@@ -777,7 +777,9 @@ to Search Objects by their content";
             {
                 laDataLoadStatus.Visible=false;
                 if (pgBarQuery.Value < pgBarQuery.Maximum)
-                    pgBarQuery.Value += 10;
+                {
+                    pgBarQuery.Value += 5;
+                }
                 else
                     pgBarQuery.Value = 0;
             }
@@ -882,7 +884,6 @@ to Search Objects by their content";
                 }
                 
                 tssLaStat.Text = "Archivo Abierto...";
-                //tssLaPath.Text = cfg.WorkingDirectory;
 
                 txtSql.SetSavePoint();
                 txtSql.EmptyUndoBuffer();

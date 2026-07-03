@@ -118,6 +118,7 @@
     <Compile Include="frmUtiles\frmSnippets.Designer.cs">
       <DependentUpon>frmSnippets.cs</DependentUpon>
     </Compile>
+    <Compile Include="FunctionalClasses\AppSettings.cs" />
     <Compile Include="FunctionalClasses\Config.cs" />
     <Compile Include="FunctionalClasses\DataTableHelper.cs" />
     <Compile Include="FunctionalClasses\EncodingDetector.cs" />
@@ -191,11 +192,12 @@
     </Compile>
     <Compile Include="FunctionalClasses\MySql.cs" />
     <Compile Include="FunctionalClasses\SearchManager.cs" />
-    <Compile Include="FunctionalClasses\myFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StructureClasses\DBObject.cs" />
     <Compile Include="StructureClasses\ObjectTypes.cs" />
+    <Compile Include="StructureClasses\PasswordEncryption.cs" />
+    <Compile Include="StructureClasses\SqlScripts.cs" />
     <EmbeddedResource Include="frmUtiles\AboutBox1.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AboutBox1.cs</DependentUpon>
@@ -292,7 +294,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UseGlobalSettings="True" BuildVersion_StartDate="2009/1/1" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" />
+      <UserProperties BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildVersioningStyle="None.DeltaBaseYear.DeltaBaseYearDayOfYear.DeltaBaseDate" BuildVersion_StartDate="2009/1/1" BuildVersion_UseGlobalSettings="True" />
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="..\packages\Scintilla5.NET.6.0.1\build\scintilla5.net.targets" Condition="Exists('..\packages\Scintilla5.NET.6.0.1\build\scintilla5.net.targets')" />

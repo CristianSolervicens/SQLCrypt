@@ -25,29 +25,30 @@ namespace SQLCrypt.FunctionalClasses
         /// <summary>
         /// Clase de Abstracción para acceder a Base de Datos
         /// </summary>
-        public class MySql
+        public class MySql : IDisposable
         {
 
             //Cadena que contiene el estado de error (si lo hubiera)
             private String sError = "";
-            
+
             //Objeto de conexión a la Base de Datos.
             public SqlConnection Conn = null;
-            
+
             //Cadena de conexión a la Base de Datos.
             private String sConnectionStr;
             private StringBuilder sMensajes = new StringBuilder();
 
             //Constante usada como semilla para la encriptación
             private const string passKey = "AthELeIa";
-            
+
             //Path hacia los Archivos de ComandosAlmacenados.
             public string sPathToCommands = "";
-            
+
             //ResultSet para las consultas con datos
             public SqlDataReader Data = null;
 
             private SqlCommand Command = null;
+            private bool disposed = false;
 
 
             void conn_InfoMessage(object sender, SqlInfoMessageEventArgs e)
@@ -80,39 +81,85 @@ namespace SQLCrypt.FunctionalClasses
             }
 
 
-            //ConnectionString
-            public string ConnectionString
-            {
+            /// <summary>
+            /// Cadena de conexión SQL Server
+            /// NOTA: Preferir usar SetConnectionString() que incluye validación
+            /// </summary>
+            public string ConnectionString 
+            { 
+                get => sConnectionStr;
                 set
                 {
                     sConnectionStr = value;
-
-                    //Si no es una cadena correctamente compuesta, la asignación levanta un error.
-                    try
+                    if (!string.IsNullOrEmpty(value))
                     {
-                        Conn = new SqlConnection(sConnectionStr);
-                        Conn.InfoMessage += new SqlInfoMessageEventHandler(conn_InfoMessage);
-                        Conn.FireInfoMessageEventOnUserErrors = true;
-                    }
-                    catch (SqlException e)
-                    {
-                        sError = "Error: " + e.Message;
+                        try
+                        {
+                            InitializeConnection();
+                        }
+                        catch (Exception ex)
+                        {
+                            sError = $"Error: {ex.Message}";
+                            System.Diagnostics.Debug.WriteLine($"Error in ConnectionString setter: {ex.Message}");
+                        }
                     }
                 }
-                get { return sConnectionStr; }
+            }
+
+            /// <summary>
+            /// Establece la cadena de conexión y prepara el objeto SqlConnection (Método preferido)
+            /// </summary>
+            /// <param name="connectionString">Cadena de conexión SQL Server</param>
+            /// <returns>True si la conexión se configuró correctamente, False si hubo error</returns>
+            public bool SetConnectionString(string connectionString)
+            {
+                if (string.IsNullOrWhiteSpace(connectionString))
+                {
+                    sError = "Error: Connection string cannot be null or empty";
+                    return false;
+                }
+
+                ErrorClear();
+
+                try
+                {
+                    // Validar que la cadena de conexión es válida
+                    var testConn = new SqlConnection(connectionString);
+                    testConn.Dispose();
+
+                    ConnectionString = connectionString;
+                    return true;
+                }
+                catch (SqlException e)
+                {
+                    sError = $"Error: {e.Message}";
+                    System.Diagnostics.Debug.WriteLine($"SQL Error setting connection string: {e.Message}");
+                    return false;
+                }
+                catch (Exception e)
+                {
+                    sError = $"Error: {e.Message}";
+                    System.Diagnostics.Debug.WriteLine($"Unexpected error setting connection string: {e.Message}");
+                    return false;
+                }
+            }
+
+            /// <summary>
+            /// Inicializa el objeto de conexión con la cadena configurada
+            /// </summary>
+            private void InitializeConnection()
+            {
+                Conn?.Dispose();
+                Conn = new SqlConnection(sConnectionStr);
+                Conn.InfoMessage += new SqlInfoMessageEventHandler(conn_InfoMessage);
+                Conn.FireInfoMessageEventOnUserErrors = true;
             }
 
 
             //Entrega el String con el último error
-            public string ErrorString
-            {
-                get { return sError; }
-            }
+            public string ErrorString => sError;
 
-            public bool ErrorExiste
-            {
-                get { return sError != "" ? true : false; }
-            }
+            public bool ErrorExiste => !string.IsNullOrEmpty(sError);
 
 
             /// <summary>
@@ -120,38 +167,16 @@ namespace SQLCrypt.FunctionalClasses
             /// </summary>
             public Boolean ConnectionStatus
             {
-                get { 
-                    if (Conn == null)
-                        return false;
-                    if (Conn.State == ConnectionState.Broken)
-                        return false;
-                    if (Conn.State == ConnectionState.Closed)
-                        return false;
-                    if (Conn.State == ConnectionState.Open)
-                        return true;
-                    
-                    return false;
+                get
+                {
+                    return Conn != null && Conn.State == ConnectionState.Open;
                 }
             }
 
 
 
             //DataExiste (Solo lectura)
-            public bool DataExiste
-            {
-                get
-                {
-                    if (Data != null)
-                    {
-                        if (!Data.IsClosed)
-                            return true;
-                        else
-                            return false;
-                    }
-                    else
-                        return false;
-                }
-            }
+            public bool DataExiste => Data != null && !Data.IsClosed;
 
             #endregion
 
@@ -168,66 +193,10 @@ namespace SQLCrypt.FunctionalClasses
                     try { Command.EndExecuteNonQuery(null); }
                     catch { }
                     Command.Cancel();
-                    // Command.Dispose();
-                    // Command = null;
+                    
                 }
             }
 
-
-            /// <summary>
-            /// Arma String de Conexión a Base de Datos
-            /// </summary>
-            /// <param name="ServerName"></param>
-            /// <param name="DatabaseName"></param>
-            /// <param name="Username"></param>
-            /// <param name="Clave"></param>
-            /// <returns></returns>
-            static public string SQLServerConnectionString(string ServerName, string DatabaseName, string Username, string Clave, bool Async)
-            {
-                string sConnStr = "";
-
-                if (ServerName == null)
-                    ServerName = "";
-
-                if (DatabaseName == null)
-                    DatabaseName = "";
-
-                if (Username == null)
-                    Username = "";
-
-                if (Clave == null)
-                    Clave = "";
-
-                //--------------------------
-
-                string post;
-
-                post = "";
-                //server=(local);user id=ab;password= a!Pass113;initial catalog=AdventureWorks\n
-                sConnStr = "";
-                if (ServerName == "")
-                    sConnStr += "server=.";
-                else
-                    sConnStr += "server=" + ServerName;
-
-                if (!(DatabaseName == "" || string.IsNullOrWhiteSpace(DatabaseName)))
-                    sConnStr += ";initial catalog=" + DatabaseName;
-
-                if (!(string.IsNullOrEmpty(Username) || string.IsNullOrWhiteSpace(Username)))
-                    sConnStr += ";user id=" + Username;
-                else
-                    post = ";Trusted_Connection = true";
-
-                if (!(string.IsNullOrEmpty(Clave) || string.IsNullOrWhiteSpace(Clave)))
-                    sConnStr += ";password=" + Clave;
-
-                sConnStr = ";Application Name=" + Application.ProductName + post;
-
-                if (Async)
-                    sConnStr += ";Asynchronous Processing=True";
-
-                return sConnStr;
-            }
 
 
             /// <summary>
@@ -259,8 +228,9 @@ namespace SQLCrypt.FunctionalClasses
             public int ConnectToDB()
             {
 
-                if (sConnectionStr == "")
+                if (string.IsNullOrEmpty(sConnectionStr))
                 {
+                    sError = "Connection string is empty";
                     return 0;
                 }
 
@@ -269,18 +239,18 @@ namespace SQLCrypt.FunctionalClasses
                 //Si no es una cadena correctamente compuesta, la asignación levanta un error.
                 try
                 {
-                    Conn = new SqlConnection(sConnectionStr);
-                    Conn.InfoMessage += new SqlInfoMessageEventHandler(conn_InfoMessage);
-                    Conn.FireInfoMessageEventOnUserErrors = true;
+                    InitializeConnection();
                 }
                 catch (System.Data.Odbc.OdbcException e)
                 {
                     sError = $"Error: {e.Message}";
+                    System.Diagnostics.Debug.WriteLine($"ODBC Error in ConnectToDB: {e.Message}");
                     return 0;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    sError = "Error desconocido o de formato del String de conexión.";
+                    sError = AppSettings.ErrorConnectionString;
+                    System.Diagnostics.Debug.WriteLine($"Error in ConnectToDB: {ex.Message}");
                     return 0;
                 }
 
@@ -292,11 +262,13 @@ namespace SQLCrypt.FunctionalClasses
                 catch (SqlException e)
                 {
                     sError = $"Error: {e.Message}";
+                    System.Diagnostics.Debug.WriteLine($"SQL Error opening connection: {e.Message}");
                     return 0;
                 }
-                catch
+                catch (Exception ex)
                 {
-                    sError = "Error desconocido o de formato del String de conexión.";
+                    sError = AppSettings.ErrorConnectionString;
+                    System.Diagnostics.Debug.WriteLine($"Error opening connection: {ex.Message}");
                     return 0;
                 }
 
@@ -580,62 +552,6 @@ namespace SQLCrypt.FunctionalClasses
 
             }
 
-
-
-            /// <summary>
-            /// Ejecuta una sentencia SQL que NO retorna columnas.
-            /// Retorna el número de filas afectadas.
-            /// </summary>
-            /// <param name="sComand"></param>
-            /// <returns></returns>
-            public int ExecStoredCmd(String sCommandFile, params String[] Params)
-            {
-                int raf;
-                string sComando = "";
-                ErrorClear();
-                ClearMessages();
-
-                sComando = DecryptFiletoString(sPathToCommands + sCommandFile);
-
-                if (sComando == "")
-                {
-                    sError = "Error: Comando vacío";
-                    return -1;
-                }
-
-                string sOldPar;
-                int y;
-
-                if (Params != null)
-                {
-                    for (int x = 0; x < Params.Length; ++x)
-                    {
-                        y = x + 1;
-                        sOldPar = $"#{y.ToString()}#";
-                        sComando = sComando.Replace(sOldPar, Params[x]);
-                    }
-                }
-
-                Command = Conn.CreateCommand();
-                Command.CommandText = sComando;
-                Command.CommandType = System.Data.CommandType.Text;
-                Command.CommandTimeout = 0;
-
-                try
-                {
-                    raf = Command.ExecuteNonQuery();
-                }
-                catch (SqlException e)
-                {
-                    sError = $"Error: {e.Message}";
-                    Command.Dispose();
-                    Command = null;
-                    return -1;
-                }
-
-                Command = null;
-                return raf;
-            }
 
 
             public bool ExecCmdDataWithParam(string sComando, Dictionary<string, string> Params)
@@ -1012,30 +928,6 @@ namespace SQLCrypt.FunctionalClasses
             #region "Funciones SQL Generales"
 
 
-            /// <summary>
-            /// Obtiene Fecha Hora del Servidor de Base de Datos
-            /// </summary>
-            /// <returns></returns>
-            public DateTime GetDateTime()
-            {
-                DateTime Ahora = System.DateTime.Now;
-
-                string comando = "SELECT getdate()";
-
-                ExecuteSqlData(comando);
-
-                if (Data != null)
-                {
-                    Data.Read();
-                    Ahora = Data.GetDateTime(0);
-                }
-
-                DataClose();
-                return Ahora;
-
-            }
-
-
             public int GetCurrent_SPID()
             {
                 int SPID = 0;
@@ -1316,232 +1208,8 @@ namespace SQLCrypt.FunctionalClasses
             }
 
 
-            /// <summary>
-            /// Lee campo String de Base de Datos a String (Reemplaza # por ')
-            /// </summary>
-            /// <param name="Valor"></param>
-            /// <returns></returns>
-            public static string DbStringToString(string Valor)
-            {
-                return Valor.Replace("#", "'");
-            }
 
 
-            /// <summary>
-            /// Escribe Un Campo BLOB desde un Archivo
-            /// </summary>
-            /// <param name="File"></param>
-            /// <param name="Tabla"></param>
-            /// <param name="FieldName"></param>
-            /// <param name="WhereConditions"></param>
-            /// <returns></returns>
-            public bool WriteBlob(string File, string Tabla, string FieldName, string WhereConditions)
-            {
-                if (!System.IO.File.Exists(File))
-                {
-                    this.sError = "Archivo de Imagen no Existe";
-                    return false;
-                }
-
-                try
-                {
-                    string ComandoSQL = $"UPDATE {Tabla} SET {FieldName} = ? WHERE {WhereConditions}";
-                    Command = new SqlCommand(ComandoSQL);
-                    SqlParameterCollection parameters = Command.Parameters;
-                    parameters.Add(FieldName, SqlDbType.Image);
-                    parameters[FieldName].Value = GetPhoto(File);
-                    Command.Connection = Conn;
-                    Command.ExecuteNonQuery();
-                }
-                catch (SqlException e)
-                {
-                    this.sError = $"Error grabando BLOB\n{e.ErrorCode}-{e.Message}";
-                    Command.Dispose();
-                    Command = null;
-                    return false;
-                }
-
-                Command.Dispose();
-                Command = null;
-                return true;
-            }
-
-
-            /// <summary>
-            /// Escribe campo BLOB desde byte[] Imagen
-            /// </summary>
-            /// <param name="Image"></param>
-            /// <param name="Tabla"></param>
-            /// <param name="FieldName"></param>
-            /// <param name="WhereConditions"></param>
-            /// <returns></returns>
-            public bool WriteBlob(byte[] Image, string Tabla, string FieldName, string WhereConditions)
-            {
-                try
-                {
-                    string ComandoSQL = $"UPDATE {Tabla} SET {FieldName} = ? WHERE {WhereConditions}";
-                    Command = new SqlCommand(ComandoSQL);
-                    SqlParameterCollection parameters = Command.Parameters;
-                    parameters.Add(FieldName, SqlDbType.Image);
-                    parameters[FieldName].Value = Image;
-                    Command.Connection = Conn;
-                    Command.ExecuteNonQuery();
-                }
-                catch (SqlException e)
-                {
-                    this.sError = $"Error grabando BLOB\n{e.ErrorCode}-{e.Message}";
-                    Command.Dispose();
-                    Command = null;
-                    return false;
-                }
-
-                Command.Dispose();
-                Command = null;
-                return true;
-            }
-
-
-            /// <summary>
-            /// Limpia una Imagen en BLOB
-            /// </summary>
-            /// <param name="Tabla"></param>
-            /// <param name="FieldName"></param>
-            /// <param name="WhereConditions"></param>
-            /// <returns></returns>
-            public bool WriteBlob(string Tabla, string FieldName, string WhereConditions)
-            {
-                try
-                {
-                    string ComandoSQL = $"UPDATE {Tabla} SET {FieldName} = NULL WHERE {WhereConditions}";
-                    Command = new SqlCommand(ComandoSQL);
-                    SqlParameterCollection parameters = Command.Parameters;
-                    Command.Connection = Conn;
-                    Command.ExecuteNonQuery();
-                }
-                catch (SqlException e)
-                {
-                    this.sError = $"Error grabando BLOB\n{e.ErrorCode}-{e.Message}";
-                    Command.Dispose();
-                    Command = null;
-                    return false;
-                }
-
-                Command.Dispose();
-                Command = null;
-                return true;
-            }
-
-
-            /// <summary>
-            /// Lee un Campo BLOB a un Archivo
-            /// </summary>
-            /// <param name="File"></param>
-            /// <param name="Tabla"></param>
-            /// <param name="FieldName"></param>
-            /// <param name="WhereConditions"></param>
-            /// <returns></returns>
-            public bool ReadBlob(string File, string Tabla, string FieldName, string WhereConditions)
-            {
-                string query = $"SELECT {FieldName} FROM {Tabla} WHERE {WhereConditions}";
-
-                // create ODBC command, execute the query and get the reader for it
-                Command = new SqlCommand(query);
-                Command.Connection = Conn;
-
-                try
-                {
-                    SqlDataReader reader = Command.ExecuteReader();
-
-                    // check whether there is at least one record
-                    if (reader.Read())
-                    {
-                        // matching record found, read first column as string instance
-                        if (reader.GetValue(0) == System.DBNull.Value)
-                        {
-                            reader.Close();
-                            reader.Dispose();
-                            Command.Dispose();
-                            Command = null;
-                            return true;
-                        }
-
-                        byte[] value = (byte[])reader.GetValue(0);
-                        if (SaveFile(File, value))
-                        {
-                            reader.Close();
-                            reader.Dispose();
-                            Command.Dispose();
-                            Command = null;
-                            return true;
-                        }
-                    }
-
-                    reader.Close();
-                    this.sError = $"Error grabando Archivo: \n{File}";
-                    Command.Dispose();
-                    Command = null;
-                    return false;
-                }
-                catch (SqlException e)
-                {
-                    this.sError = $"Error Leyendo BLOB\n{e.ErrorCode}-{e.Message}";
-                    Command.Dispose();
-                    Command = null;
-                    return false;
-                }
-            }
-
-
-            /// <summary>
-            /// Lee un Blob desde Base de Datos a byte[]
-            /// </summary>
-            /// <param name="Tabla"></param>
-            /// <param name="FieldName"></param>
-            /// <param name="WhereConditions"></param>
-            /// <returns></returns>
-            public byte[] ReadBlob(string Tabla, string FieldName, string WhereConditions)
-            {
-                string query = $"SELECT {FieldName} FROM {Tabla} WHERE {WhereConditions}";
-
-                // create ODBC command, execute the query and get the reader for it
-                Command = new SqlCommand(query);
-                Command.Connection = Conn;
-
-                try
-                {
-                    SqlDataReader reader = Command.ExecuteReader();
-
-                    // check whether there is at least one record
-                    if (reader.Read())
-                    {
-                        // matching record found, read first column as string instance
-                        byte[] value = (byte[])reader.GetValue(0);
-                        reader.Close();
-                        Command.Dispose();
-                        Command = null;
-                        return value;
-                    }
-                    reader.Close();
-                    Command.Dispose();
-                    Command = null;
-                    return null;
-                }
-                catch (SqlException e)
-                {
-                    this.sError = $"Error Leyendo BLOB\n{e.ErrorCode}-{e.Message}";
-                    Command.Dispose();
-                    Command = null;
-                    return null;
-                }
-            }
-
-
-            /// <summary>
-            /// Escribe Imagen desde byte[] a Archivo.
-            /// </summary>
-            /// <param name="File"></param>
-            /// <param name="ImageContent"></param>
-            /// <returns></returns>
             public bool SaveFile(string File, byte[] ImageContent)
             {
                 try
@@ -1610,6 +1278,79 @@ namespace SQLCrypt.FunctionalClasses
 
                 return new List<string>(placeholders);
             }
+
+            #region IDisposable Implementation
+
+            /// <summary>
+            /// Libera los recursos utilizados por MySql
+            /// </summary>
+            public void Dispose()
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            /// <summary>
+            /// Libera los recursos no administrados (conexiones, readers, commands)
+            /// </summary>
+            /// <param name="disposing">True si se llama desde Dispose(), false si desde el finalizador</param>
+            protected virtual void Dispose(bool disposing)
+            {
+                if (!disposed)
+                {
+                    if (disposing)
+                    {
+                        // Liberar recursos administrados
+                        try
+                        {
+                            DataClose();
+                            Data?.Dispose();
+                            Data = null;
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error disposing Data: {ex.Message}");
+                        }
+
+                        try
+                        {
+                            Command?.Dispose();
+                            Command = null;
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error disposing Command: {ex.Message}");
+                        }
+
+                        try
+                        {
+                            if (Conn != null)
+                            {
+                                if (Conn.State != ConnectionState.Closed)
+                                    Conn.Close();
+                                Conn.Dispose();
+                                Conn = null;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error disposing Connection: {ex.Message}");
+                        }
+                    }
+
+                    disposed = true;
+                }
+            }
+
+            /// <summary>
+            /// Finalizador - asegura que los recursos se liberen
+            /// </summary>
+            ~MySql()
+            {
+                Dispose(false);
+            }
+
+            #endregion
 
         }  //MSql
 

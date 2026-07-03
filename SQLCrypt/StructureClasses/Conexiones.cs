@@ -9,212 +9,190 @@ using System.Xml.Serialization;
 
 namespace SQLCrypt
 {
-
     /// <summary>
-    /// Conexiones a la Base de Datos
+    /// Conexión a Base de Datos con descripción
     /// </summary>
     [Serializable]
     public class Conexion
     {
+        private string _password;
+
+        public string Descripcion { get; set; }
         public string Server { get; set; }
         public string Database { get; set; }
         public string User { get; set; }
-        public string Password { get; set; }
+
+        /// <summary>
+        /// Password stored encrypted in JSON, but accessible as plain text in code
+        /// </summary>
+        [Newtonsoft.Json.JsonIgnore]
+        public string Password
+        {
+            get
+            {
+                // Decrypt when reading
+                return PasswordEncryption.Decrypt(_password);
+            }
+            set
+            {
+                // Encrypt when setting
+                _password = PasswordEncryption.Encrypt(value);
+            }
+        }
+
+        /// <summary>
+        /// Internal storage for encrypted password (used by JSON serializer)
+        /// </summary>
+        [Newtonsoft.Json.JsonProperty("Password")]
+        private string PasswordEncrypted
+        {
+            get { return _password; }
+            set { _password = value; }
+        }
+
+        /// <summary>
+        /// Gets the raw encrypted password value for checking
+        /// </summary>
+        public string GetPasswordEncrypted()
+        {
+            return _password;
+        }
 
         public Conexion()
         {
 
         }
 
-        public Conexion(string Server, string Database, string User, string Password)
-        {
-            this.Server = Server;
-            this.Database = Database;
-            this.User = User;
-            this.Password = Password;
-        }
-
-    }
-
-
-    /// <summary>
-    /// Lista de Conexiones :
-    /// </summary>
-    [Serializable]
-    public class Conexiones:List<Conexion>
-    {
-        public int Add(string Server, string Database, string User, string Password)
-        {
-            var obj = this.FirstOrDefault(a => a.Server == Server);
-            if (obj == null)
-            {
-                Conexion Obj = new Conexion(Server, Database, User, Password);
-                this.Add(Obj);
-                return this.Count - 1;
-            }
-            
-            return -1;
-            
-        }
-
-        public int findObjectInList( Conexion obj)
-        {
-            return this.FindIndex(a => a.Server == obj.Server);
-        }
-
-
-        public int LoadElementsFromFile(string MyFileName)
-        {
-            this.Clear();
-
-            using (FileStream myFileStream = new FileStream(MyFileName, FileMode.Open))
-            {
-                if (myFileStream.Length == 0)
-                {
-                    myFileStream.Close();
-                    return 0;
-                }
-
-                XmlSerializer mySerializer = new XmlSerializer(typeof(Conexiones));
-                this.AddRange((Conexiones)mySerializer.Deserialize(myFileStream));
-                myFileStream.Close();
-            }
-
-            return this.Count;
-
-        }
-
-
-        public int SaveElementstoFile(string MyFileName)
-        {
-
-            using (TextWriter writer = new StreamWriter(MyFileName))
-            {
-                XmlSerializer x = new XmlSerializer(typeof(Conexiones));
-                x.Serialize(writer, this);
-                writer.Close();
-            }
-
-            return this.Count;
-
-        }
-
-
-    }
-
-
-    //---------------------
-
-    /// <summary>
-    /// Conexiones a la Base de Datos
-    /// </summary>
-    [Serializable]
-    public class Conexion2
-    {
-        public string Descripcion { get; set; }
-        public string Server { get; set; }
-        public string Database { get; set; }
-        public string User { get; set; }
-        public string Password { get; set; }
-
-        public Conexion2()
-        {
-
-        }
-
-        public Conexion2(string Descripcion, string Server, string Database, string User, string Password)
+        public Conexion(string Descripcion, string Server, string Database, string User, string Password)
         {
             this.Descripcion = Descripcion;
             this.Server = Server;
             this.Database = Database;
             this.User = User;
-            this.Password = Password;
+            this.Password = Password; // Will be encrypted automatically
         }
-
     }
 
 
     /// <summary>
-    /// Lista de Conexiones2 :
+    /// Lista de Conexiones con soporte de descripción
     /// </summary>
     [Serializable]
-    public class Conexiones2:List<Conexion2>
+    public class Conexiones : List<Conexion>
     {
+        /// <summary>
+        /// Agrega una nueva conexión a la lista
+        /// </summary>
         public int Add(string Descripcion, string Server, string Database, string User, string Password)
         {
+            if (string.IsNullOrWhiteSpace(Descripcion))
+                throw new ArgumentException("Descripción no puede estar vacía", nameof(Descripcion));
 
             var obj = this.FirstOrDefault(a => a.Descripcion == Descripcion);
             if (obj != null)
             {
-                return -1;
+                return -1; // Ya existe
             }
-            Conexion2 Obj = new Conexion2(Descripcion, Server, Database, User, Password);
+
+            Conexion Obj = new Conexion(Descripcion, Server, Database, User, Password);
             this.Add(Obj);
             return this.Count - 1;
         }
 
-        public int findObjectInList(Conexion2 obj)
+        public int findObjectInList(Conexion obj)
         {
+            if (obj == null)
+                return -1;
             return this.FindIndex(a => a.Descripcion == obj.Descripcion);
         }
 
         public int findObjectIndexByName(string Description)
         {
+            if (string.IsNullOrWhiteSpace(Description))
+                return -1;
             return this.FindIndex(a => a.Descripcion == Description);
         }
 
 
+        /// <summary>
+        /// Carga conexiones desde archivo JSON
+        /// </summary>
         public int LoadElementsFromFile(string MyFileName)
         {
             this.Clear();
 
-            using (FileStream myFileStream = new FileStream(MyFileName, FileMode.Open))
+            if (!File.Exists(MyFileName))
+                return 0;
+
+            bool needsMigration = false;
+
+            try
             {
-                if (myFileStream.Length == 0)
+                string jsonContent = File.ReadAllText(MyFileName);
+
+                if (string.IsNullOrWhiteSpace(jsonContent))
                 {
-                    myFileStream.Close();
                     return 0;
                 }
 
-                try
+                var connections = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Conexion>>(jsonContent);
+                if (connections != null)
                 {
-                    XmlSerializer mySerializer = new XmlSerializer(typeof(Conexiones2));
-                    this.AddRange((Conexiones2)mySerializer.Deserialize(myFileStream));
-                    myFileStream.Close();
-                }
-                catch
-                {
-                    myFileStream.Close();
-                    Conexiones Paso = new Conexiones();
-                    int x = Paso.LoadElementsFromFile(MyFileName);
-
-                    foreach (var elem in Paso)
+                    // Check if any passwords need encryption
+                    foreach (var conn in connections)
                     {
-                        this.Add(elem.Server, elem.Server, elem.Database, elem.User, elem.Password);
+                        // Access the password property to trigger decryption/detection
+                        string pwd = conn.Password;
+
+                        // If password was plain text, accessing it doesn't encrypt it yet
+                        // We need to check if it needs migration
+                        if (!string.IsNullOrEmpty(pwd) && !PasswordEncryption.IsEncrypted(conn.GetPasswordEncrypted()))
+                        {
+                            needsMigration = true;
+                        }
                     }
+
+                    this.AddRange(connections);
                 }
+
+                System.Diagnostics.Debug.WriteLine($"Successfully loaded {this.Count} connection(s) from JSON.");
+
+                // Auto-save to encrypt plain text passwords
+                if (needsMigration)
+                {
+                    System.Diagnostics.Debug.WriteLine("Plain text passwords detected. Encrypting and saving...");
+                    this.SaveElementstoFile(MyFileName);
+                    System.Diagnostics.Debug.WriteLine("Passwords encrypted and saved.");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error loading connections: {ex.Message}");
+                if (ex.InnerException != null)
+                    System.Diagnostics.Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                return 0;
             }
 
             return this.Count;
-
         }
 
 
         public int SaveElementstoFile(string MyFileName)
         {
-
-            using (TextWriter writer = new StreamWriter(MyFileName))
+            try
             {
-                XmlSerializer x = new XmlSerializer(typeof(Conexiones2));
-                x.Serialize(writer, this);
-                writer.Close();
+                string jsonContent = Newtonsoft.Json.JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented);
+                File.WriteAllText(MyFileName, jsonContent);
+                System.Diagnostics.Debug.WriteLine($"Successfully saved {this.Count} connection(s) to JSON.");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error saving connections: {ex.Message}");
+                throw new IOException($"Unable to save connections to {MyFileName}", ex);
             }
 
             return this.Count;
-
         }
-
-
     }
-
 }
+
