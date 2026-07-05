@@ -983,6 +983,37 @@ namespace SQLCrypt.FunctionalClasses
             }
 
 
+            public bool AlterPassword(string login, string password)
+            {
+                string comando = $"ALTER LOGIN [{login}] WITH PASSWORD = '{password}'";
+                ExecuteSql(comando);
+                if (ErrorExiste)
+                {
+                    sError += (sError != "") ? $"\n{sMensajes.ToString()}" : sMensajes.ToString();
+                    this.ErrorClear();
+                    return false;
+                }
+                return true;
+            }
+
+
+            public bool LoginEnable(string Login, bool enable)
+            {
+                string comando = $"ALTER LOGIN [{Login}] {(enable ? "ENABLE" : "DISABLE")}";
+                ExecuteSql(comando);
+                if (ErrorExiste)
+                {
+                    sError += (sError != "") ? $"\n{sMensajes.ToString()}" : sMensajes.ToString();
+                    this.ErrorClear();
+                    return false;
+                }
+                return true;
+            }
+
+
+
+
+
             /// <summary>
             /// Indexes of a Table
             /// Mos relevant columns are:

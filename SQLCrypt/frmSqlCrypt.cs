@@ -2642,11 +2642,19 @@ to Search Objects by their content";
 
             foreach (ListViewItem item in lsColumnas.Items)
             {
-                if ( item.Text.ToLower().Contains(sColNamePart.ToLower()))
+                if (item.Text.ToLower().Contains(sColNamePart.ToLower()))
                 {
                     item.Selected = true;
+                    item.Focused = true;
                 }
             }
+
+            if (lsColumnas.SelectedItems.Count > 0)
+            {
+                lsColumnas.FocusedItem = lsColumnas.SelectedItems[0];
+            }
+            lsColumnas.Focus();
+
         }
 
     }

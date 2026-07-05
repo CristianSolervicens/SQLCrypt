@@ -29,21 +29,32 @@
         private void InitializeComponent()
         {
             this.txtColumnName = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtColumnName
             // 
-            this.txtColumnName.Location = new System.Drawing.Point(5, 6);
+            this.txtColumnName.Location = new System.Drawing.Point(5, 21);
             this.txtColumnName.Name = "txtColumnName";
             this.txtColumnName.Size = new System.Drawing.Size(191, 20);
             this.txtColumnName.TabIndex = 0;
             this.txtColumnName.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.txtColumnName_PreviewKeyDown);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(5, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(73, 13);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Column Name";
+            // 
             // frmFindColName
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(201, 31);
+            this.ClientSize = new System.Drawing.Size(201, 44);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.txtColumnName);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.KeyPreview = true;
@@ -60,5 +71,6 @@
         #endregion
 
         private System.Windows.Forms.TextBox txtColumnName;
+        private System.Windows.Forms.Label label1;
     }
 }
