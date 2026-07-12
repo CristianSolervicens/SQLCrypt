@@ -1313,9 +1313,10 @@ to Search Objects by their content";
             cm.MenuItems.Add("Get Text", new EventHandler(ObjGetText));
             cm.MenuItems.Add("Get Create Table", new EventHandler(ObjGetCreate));
             cm.MenuItems.Add("Selected To Clipboard", new EventHandler(ObjSelectedToClipboard));
+            cm.MenuItems.Add("Get Extended Properties", new EventHandler(ObjExtendedProperties));
 
             string Type = ((ObjectType)cbObjetos.SelectedItem).type.Trim();
-            if (Type == "U" || Type == "V" || Type == "S")
+            if (Type == "U" || Type == "V" || Type == "S" || Type == "SYSVIEWS")
             {
                 cm.MenuItems.Add("Select COUNT(*) FROM ", new EventHandler(ObjectSelectCount));
                 cm.MenuItems.Add("Select TOP(1000) * FROM ", new EventHandler(ObjectSelectStar));
@@ -1748,6 +1749,38 @@ to Search Objects by their content";
             txtSql.InsertText(txtSql.CurrentPosition, SqlObtenido);
 
         }
+
+
+        private void ObjExtendedProperties(object sender, EventArgs e)
+        {
+            int x = 0;
+            if (lstObjetos.SelectedIndex == -1)
+                return;
+            DBObject DBObj = new DBObject();
+            string salida = string.Empty;
+
+            foreach (DBObject ob in lstObjetos.SelectedItems)
+            {
+                ++x;
+                DBObj = ob;
+                salida += ob.GetExtendedProperties() + "\n\n";
+            }
+
+            
+            if (string.IsNullOrEmpty(salida.Replace("\n","")))
+                MessageBox.Show("No Extended Properties found for the selected object(s).", "Object Extended Properties", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            else
+            {
+                var res = MessageBox.Show(salida, "Extended Properties (Copy to Clipboard ?)", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                if (res == DialogResult.Yes)
+                {
+                    Clipboard.Clear();
+                    Clipboard.SetText(salida);
+                }
+            }
+
+        }
+
 
         private void ObjGetCreate(object sender, EventArgs e)
         {

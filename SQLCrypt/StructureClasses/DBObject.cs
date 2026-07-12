@@ -37,18 +37,36 @@ namespace SQLCrypt.StructureClasses
 
             this.ErrorString = string.Empty;
 
-            string sCommand = $@"select [name],
-                                       [object_id],
-	                                   SCHEMA_NAME(schema_id) as SchemaName,
-                                       [schema_id],
-	                                   [parent_object_id],
-                                       [type],
-                                       [type_desc],
-                                       [create_date],
-                                       [modify_date]
-                              from sys.objects
-                              WHERE type = {hSql.fValorASP(this._type)}
-                              ORDER BY SCHEMA_NAME(schema_id), [name]";
+            string sCommand = string.Empty;
+            if (type == "SYSVIEWS")
+            {
+                sCommand = $@"select [name],
+                                     [object_id],
+                                     SCHEMA_NAME(schema_id) as SchemaName,
+                                     [schema_id],
+                                     [parent_object_id],
+                                     [type],
+                                     [type_desc],
+                                     [create_date],
+                                     [modify_date]
+                            FROM sys.system_objects
+                            ORDER BY SCHEMA_NAME(schema_id), [name]";
+            }
+            else
+            {
+                sCommand = $@"select [name],
+                                    [object_id],
+	                                SCHEMA_NAME(schema_id) as SchemaName,
+                                    [schema_id],
+	                                [parent_object_id],
+                                    [type],
+                                    [type_desc],
+                                    [create_date],
+                                    [modify_date]
+                            from sys.objects
+                            WHERE type = {hSql.fValorASP(this._type)}
+                            ORDER BY SCHEMA_NAME(schema_id), [name]";
+            }
 
             hSql.ExecuteSqlData(sCommand);
 
@@ -78,6 +96,7 @@ namespace SQLCrypt.StructureClasses
             }
 
         }
+
 
 
         public void FindByColumn(string type, string Column)
@@ -304,6 +323,35 @@ namespace SQLCrypt.StructureClasses
             return $"No se ha podido obtener la data para {sObjName}{NwLine}";
         }
 
+
+        public string GetExtendedProperties()
+        {
+            string salida = string.Empty;
+            string sComando = $@"SELECT 
+                                --s.name AS [Schema Name],
+                                --t.name AS [Table Name],
+                                Columna = ISNULL(CAST(c.name AS VARCHAR) + ': ', CAST('Objecto: ' + t.name AS VARCHAR) + ': ') + ' ' +  CAST(ep.value AS VARCHAR)
+                            FROM sys.extended_properties ep
+                            INNER JOIN sys.tables t ON ep.major_id = t.object_id
+                            INNER JOIN sys.schemas s ON t.schema_id = s.schema_id
+                            LEFT JOIN sys.columns c ON ep.major_id = c.object_id AND ep.minor_id = c.column_id
+                            WHERE ep.class = 1
+                              AND s.name = '{this.schema_name}'
+                              AND t.name = '{this.name}';";
+            hSql.ExecuteSqlData(sComando);
+            if (hSql.ErrorExiste)
+            {
+                string sError = hSql.ErrorString;
+                hSql.ErrorClear();
+                return sError;
+            }
+            while (hSql.Data.Read())
+            {
+                salida += $"{hSql.Data.GetString(0)}\n";
+            }
+            return salida.Trim();
+
+        }
 
 
         public string GetData(bool limitedByTen)

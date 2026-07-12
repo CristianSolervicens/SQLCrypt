@@ -33,6 +33,7 @@ namespace SQLCrypt.StructureClasses
             // this.Add( "IT", "INTERNAL_TABLE");
             this.Add("SQ", "SERVICE_QUEUE");
             this.Add("SO", "SEQUENCE_OBJECT");
+            this.Add("SYSVIEWS", "SYSTEM_VIEWS");
         }
 
         private void Add( string type, string name)
