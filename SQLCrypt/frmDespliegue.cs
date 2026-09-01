@@ -485,7 +485,13 @@ namespace SQLCrypt
                 dataGridView = null;
             }
             catch { }
-            System.Windows.Clipboard.Flush();
+
+            try
+            {
+                if (System.Windows.Clipboard.ContainsText())
+                    System.Windows.Clipboard.Flush();
+            } catch { }
+
         }
 
 
