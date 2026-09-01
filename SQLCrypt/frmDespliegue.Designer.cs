@@ -40,9 +40,11 @@ namespace SQLCrypt
             this.archivoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.grabarJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grabarExcellToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.grabarJSONToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toClipboardWithHeadersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAllToExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveAllToJsonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.verMensajesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.siguienteResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,8 +60,7 @@ namespace SQLCrypt
             this.btBuscar = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.txtMessages = new System.Windows.Forms.TextBox();
-            this.saveAllToJsonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.saveAllToExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyMessagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -136,6 +137,7 @@ namespace SQLCrypt
             this.saveAllToJsonToolStripMenuItem,
             this.toolStripSeparator1,
             this.verMensajesToolStripMenuItem,
+            this.copyMessagesToolStripMenuItem,
             this.siguienteResultSetToolStripMenuItem,
             this.previoResultSetToolStripMenuItem,
             this.toolStripSeparator3,
@@ -159,6 +161,14 @@ namespace SQLCrypt
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(252, 6);
             // 
+            // grabarExcellToolStripMenuItem
+            // 
+            this.grabarExcellToolStripMenuItem.Name = "grabarExcellToolStripMenuItem";
+            this.grabarExcellToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.grabarExcellToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.grabarExcellToolStripMenuItem.Text = "Save Result as Excell";
+            this.grabarExcellToolStripMenuItem.Click += new System.EventHandler(this.grabarExcellToolStripMenuItem_Click);
+            // 
             // grabarJSONToolStripMenuItem
             // 
             this.grabarJSONToolStripMenuItem.Name = "grabarJSONToolStripMenuItem";
@@ -168,14 +178,6 @@ namespace SQLCrypt
             this.grabarJSONToolStripMenuItem.Text = "Save Result as JSON";
             this.grabarJSONToolStripMenuItem.Click += new System.EventHandler(this.grabarJSONToolStripMenuItem_Click);
             // 
-            // grabarExcellToolStripMenuItem
-            // 
-            this.grabarExcellToolStripMenuItem.Name = "grabarExcellToolStripMenuItem";
-            this.grabarExcellToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.grabarExcellToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
-            this.grabarExcellToolStripMenuItem.Text = "Save Result as Excell";
-            this.grabarExcellToolStripMenuItem.Click += new System.EventHandler(this.grabarExcellToolStripMenuItem_Click);
-            // 
             // toClipboardWithHeadersToolStripMenuItem
             // 
             this.toClipboardWithHeadersToolStripMenuItem.Name = "toClipboardWithHeadersToolStripMenuItem";
@@ -183,6 +185,20 @@ namespace SQLCrypt
             this.toClipboardWithHeadersToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
             this.toClipboardWithHeadersToolStripMenuItem.Text = "To Clipboard with Headers";
             this.toClipboardWithHeadersToolStripMenuItem.Click += new System.EventHandler(this.toClipboardWithHeadersToolStripMenuItem_Click);
+            // 
+            // saveAllToExcelToolStripMenuItem
+            // 
+            this.saveAllToExcelToolStripMenuItem.Name = "saveAllToExcelToolStripMenuItem";
+            this.saveAllToExcelToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.saveAllToExcelToolStripMenuItem.Text = "Save All to Excel";
+            this.saveAllToExcelToolStripMenuItem.Click += new System.EventHandler(this.saveAllToExcelToolStripMenuItem_Click);
+            // 
+            // saveAllToJsonToolStripMenuItem
+            // 
+            this.saveAllToJsonToolStripMenuItem.Name = "saveAllToJsonToolStripMenuItem";
+            this.saveAllToJsonToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.saveAllToJsonToolStripMenuItem.Text = "Save All to Json";
+            this.saveAllToJsonToolStripMenuItem.Click += new System.EventHandler(this.saveAllToJsonToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -308,19 +324,14 @@ namespace SQLCrypt
             this.txtMessages.Size = new System.Drawing.Size(767, 442);
             this.txtMessages.TabIndex = 21;
             // 
-            // saveAllToJsonToolStripMenuItem
+            // copyMessagesToolStripMenuItem
             // 
-            this.saveAllToJsonToolStripMenuItem.Name = "saveAllToJsonToolStripMenuItem";
-            this.saveAllToJsonToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
-            this.saveAllToJsonToolStripMenuItem.Text = "Save All to Json";
-            this.saveAllToJsonToolStripMenuItem.Click += new System.EventHandler(this.saveAllToJsonToolStripMenuItem_Click);
-            // 
-            // saveAllToExcelToolStripMenuItem
-            // 
-            this.saveAllToExcelToolStripMenuItem.Name = "saveAllToExcelToolStripMenuItem";
-            this.saveAllToExcelToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
-            this.saveAllToExcelToolStripMenuItem.Text = "Save All to Excel";
-            this.saveAllToExcelToolStripMenuItem.Click += new System.EventHandler(this.saveAllToExcelToolStripMenuItem_Click);
+            this.copyMessagesToolStripMenuItem.Name = "copyMessagesToolStripMenuItem";
+            this.copyMessagesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.M)));
+            this.copyMessagesToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.copyMessagesToolStripMenuItem.Text = "Copy Messages";
+            this.copyMessagesToolStripMenuItem.Click += new System.EventHandler(this.copyMessagesToolStripMenuItem_Click);
             // 
             // frmDespliegue
             // 
@@ -379,6 +390,7 @@ namespace SQLCrypt
         private ToolStripMenuItem toClipboardWithHeadersToolStripMenuItem;
         private ToolStripMenuItem saveAllToExcelToolStripMenuItem;
         private ToolStripMenuItem saveAllToJsonToolStripMenuItem;
+        private ToolStripMenuItem copyMessagesToolStripMenuItem;
     }
    
 }

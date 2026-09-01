@@ -376,6 +376,9 @@ namespace SQLCrypt
         private void SaveToExcel(string fileName)
         {
 
+            if (ds.Tables.Count == 0)
+                return;
+
             Cursor.Current = Cursors.WaitCursor;
             FileInfo newFile = new FileInfo(fileName);
 
@@ -482,6 +485,7 @@ namespace SQLCrypt
                 dataGridView = null;
             }
             catch { }
+            System.Windows.Clipboard.Flush();
         }
 
 
@@ -521,6 +525,9 @@ namespace SQLCrypt
         /// <param name="e"></param>
         private void grabarExcellToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (ds.Tables.Count == 0)
+                return;
+
             using (SaveFileDialog saveForm = new SaveFileDialog())
             {
                 saveForm.RestoreDirectory = true;
@@ -585,11 +592,11 @@ namespace SQLCrypt
             if (listMensajes.Count + listErrores.Count > 0)
             {
                 string msg;
-                msg = "\r\n";
+                msg = EOL;
                 foreach (var error in listErrores)
-                    msg += error + "\r\n\r\n";
+                    msg += error + $"{EOL}{EOL}";
                 foreach (var error in listMensajes)
-                    msg += error + "\r\n\r\n";
+                    msg += error + $"{EOL}{EOL}";
 
                 msg += SHORTCUT_MSG;
                 txtMessages.Text = msg;
@@ -659,6 +666,9 @@ namespace SQLCrypt
         /// </summary>
         private void nextResultSet()
         {
+            if (ds.Tables.Count == 0 )
+                return;
+
             if (ds.Tables.Count > current_ds + 1)
                 current_ds++;
 
@@ -684,6 +694,9 @@ namespace SQLCrypt
         /// </summary>
         private void previousResultSet()
         {
+            if (ds.Tables.Count == 0)
+                return;
+            
             if (current_ds > 0)
                 current_ds--;
 
@@ -710,6 +723,10 @@ namespace SQLCrypt
         /// <param name="e"></param>
         private void grabarJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
+            if (ds.Tables.Count == 0)
+                return;
+
             using (SaveFileDialog saveForm = new SaveFileDialog())
             {
                 saveForm.RestoreDirectory = true;
@@ -758,9 +775,15 @@ namespace SQLCrypt
 
         private void BuscarEnGrilla()
         {
+            if (ds.Tables.Count == 0)
+                return;
+
+            if (dataGridView.Rows.Count == 0)
+                return;
+
             if (txtSearch.Text == string.Empty)
             {
-                MessageBox.Show("You mus set the search term...", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("Please write the search term...", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 txtSearch.Select();
                 return;
             }
@@ -876,7 +899,8 @@ namespace SQLCrypt
                 }
             }
 
-            Clipboard.SetText(clipboard_string.ToString());
+            System.Windows.Clipboard.Clear();
+            System.Windows.Clipboard.SetText(clipboard_string.ToString());
             MessageBox.Show("Data copied to clipboard", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -1036,5 +1060,33 @@ namespace SQLCrypt
                 BuscarEnGrilla();
             }
         }
+
+
+        private void CopyMessagesToClipboard()
+        {
+            StringBuilder msg = new StringBuilder();
+            if (listMensajes.Count + listErrores.Count > 0)
+            {
+                msg.Append(EOL);
+                foreach (var error in listErrores)
+                    msg.Append( $"{EOL}{EOL}");
+                foreach (var error in listMensajes)
+                    msg.Append(error + $"{EOL}{EOL}");
+            }
+            else
+            {
+                msg.Append($"{EOL}There are no Errors or Messages{EOL}");
+            }
+
+            System.Windows.Clipboard.Clear();
+            System.Windows.Clipboard.SetText(msg.ToString());
+        }
+
+
+        private void copyMessagesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CopyMessagesToClipboard();
+        }
+
     }
 }
