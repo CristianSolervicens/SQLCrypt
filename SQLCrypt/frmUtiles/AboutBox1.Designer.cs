@@ -35,8 +35,8 @@
             this.labelCopyright = new System.Windows.Forms.Label();
             this.labelCompanyName = new System.Windows.Forms.Label();
             this.textBoxDescription = new System.Windows.Forms.TextBox();
-            this.okButton = new System.Windows.Forms.Button();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.okButton = new System.Windows.Forms.Button();
             this.tableLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.logoPictureBox)).BeginInit();
             this.SuspendLayout();
@@ -142,16 +142,6 @@
             this.textBoxDescription.TabStop = false;
             this.textBoxDescription.Text = "Descripción";
             // 
-            // okButton
-            // 
-            this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.okButton.Location = new System.Drawing.Point(51, 166);
-            this.okButton.Name = "okButton";
-            this.okButton.Size = new System.Drawing.Size(75, 24);
-            this.okButton.TabIndex = 24;
-            this.okButton.Text = "&Aceptar";
-            // 
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
@@ -163,6 +153,16 @@
             this.linkLabel1.Tag = "https://github.com/CristianSolervicens/SQLCrypt/wiki";
             this.linkLabel1.Text = "SQL-Crypt Wiki";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
+            // okButton
+            // 
+            this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.okButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.okButton.Location = new System.Drawing.Point(51, 166);
+            this.okButton.Name = "okButton";
+            this.okButton.Size = new System.Drawing.Size(75, 24);
+            this.okButton.TabIndex = 24;
+            this.okButton.Text = "&Aceptar";
             // 
             // AboutBox1
             // 

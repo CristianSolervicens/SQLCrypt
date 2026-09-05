@@ -150,6 +150,7 @@ to Search Objects by their content";
                 OpenFileInEditor(fileName);
 
             txtSql.Select();
+            Program.mainForm = this;
         }
 
 
@@ -161,6 +162,7 @@ to Search Objects by their content";
         private void frmSqlCrypt_Load(object sender, EventArgs e)
         {
             tssLaFile.Text = "";
+            lstObjetos.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
         }
 
 

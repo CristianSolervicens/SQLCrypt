@@ -47,6 +47,7 @@ namespace SQLCrypt
             this.saveAllToJsonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.verMensajesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyMessagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.siguienteResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.previoResultSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -60,7 +61,6 @@ namespace SQLCrypt
             this.btBuscar = new System.Windows.Forms.Button();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.txtMessages = new System.Windows.Forms.TextBox();
-            this.copyMessagesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -213,6 +213,15 @@ namespace SQLCrypt
             this.verMensajesToolStripMenuItem.Text = "Show Messages";
             this.verMensajesToolStripMenuItem.Click += new System.EventHandler(this.verMensajesToolStripMenuItem_Click);
             // 
+            // copyMessagesToolStripMenuItem
+            // 
+            this.copyMessagesToolStripMenuItem.Name = "copyMessagesToolStripMenuItem";
+            this.copyMessagesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
+            | System.Windows.Forms.Keys.M)));
+            this.copyMessagesToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
+            this.copyMessagesToolStripMenuItem.Text = "Copy Messages";
+            this.copyMessagesToolStripMenuItem.Click += new System.EventHandler(this.copyMessagesToolStripMenuItem_Click);
+            // 
             // siguienteResultSetToolStripMenuItem
             // 
             this.siguienteResultSetToolStripMenuItem.Name = "siguienteResultSetToolStripMenuItem";
@@ -291,7 +300,7 @@ namespace SQLCrypt
             // 
             this.btBuscar.BackColor = System.Drawing.SystemColors.Control;
             this.btBuscar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btBuscar.Location = new System.Drawing.Point(639, 3);
+            this.btBuscar.Location = new System.Drawing.Point(639, 1);
             this.btBuscar.Name = "btBuscar";
             this.btBuscar.Size = new System.Drawing.Size(61, 22);
             this.btBuscar.TabIndex = 19;
@@ -323,15 +332,6 @@ namespace SQLCrypt
             this.txtMessages.ReadOnly = true;
             this.txtMessages.Size = new System.Drawing.Size(767, 442);
             this.txtMessages.TabIndex = 21;
-            // 
-            // copyMessagesToolStripMenuItem
-            // 
-            this.copyMessagesToolStripMenuItem.Name = "copyMessagesToolStripMenuItem";
-            this.copyMessagesToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-            | System.Windows.Forms.Keys.M)));
-            this.copyMessagesToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
-            this.copyMessagesToolStripMenuItem.Text = "Copy Messages";
-            this.copyMessagesToolStripMenuItem.Click += new System.EventHandler(this.copyMessagesToolStripMenuItem_Click);
             // 
             // frmDespliegue
             // 

@@ -121,18 +121,17 @@
   <data name="btSalir.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wAAADsABataJCQAAAJNJREFUSEvtjlEOgCAMQzm6N1fqJs6BMJgmfPDiTOy61rCYkz0+mI2HpBzpYZ+d
-        VgH2LU8VecwBCezknqSnx4QqOAPiK2lSH0KH4VtqZHGgC/SQxUmphOQPwkGlwA/CfysoBesh2wAItxRg
-        +KSPUjhkrV36eWRFh5N0h7zs7cgA+swDhsNBvGj+Xa28B9fxYhZCOADRgsng1GSq5wAAAABJRU5ErkJg
-        gg==
+        vgAADr4B6kKxwAAAAIRJREFUSEvtk0EOwCAIBHl6f25Dq0mzLojYgwcn4YKyQ0wrctiSIlK0rlpvq+d7
+        p96LMxJElzDxtjPC5wQKCJ4AIp4PbmCYsXkeFGAtCxQmSb85wxGsg2/+q4AFY6VF1uascDYEC9c29lof
+        510wHL8Y4zwO+ZG6gHS4QgQdnnyGpeHDPtzRgsngs4cTwwAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="btOk.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wAAADsABataJCQAAAGRJREFUSEvtzkEOgDAIRFGO3ptrxziGUG0ikLQLXsOST6WUTRz3k9YnG8KN8cwD
-        /PXvOBdnGHbFuXgtGzzuisOwrITj8HUgJQ46grFhjDsONmYnFIfZgXCc3o6kxR8M6illDZETzt6Tj/Yu
-        j9wAAAAASUVORK5CYII=
+        vgAADr4B6kKxwAAAAGlJREFUSEvtkEEKwCAMBPN0f27Z0hXZiKAR7CEjubhkEjVLkn9Qv2OlahQH4kL5
+        yQHcelnenjuB4i05G9/mQb4tB65ZMpevyIETdPcuW5UD/SIVh+RAZVohOZgNCMvJaMgxeYPCvpLkFg/O
+        3pOPy5CdLwAAAABJRU5ErkJggg==
 </value>
   </data>
 </root>

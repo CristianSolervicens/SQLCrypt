@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Resources;
+using System.Windows.Media;
 
 // La información general sobre un ensamblado se controla mediante el siguiente 
 // conjunto de atributos. Cambie estos atributos para modificar la información
@@ -11,7 +12,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany( "Cristian Solervicéns" )]
 [assembly: AssemblyProduct("SQLCrypt")]
-[assembly: AssemblyCopyright("© Cristian Solervicéns 2024")]
+[assembly: AssemblyCopyright("© Cristian Solervicéns 2024 - 2026")]
 [assembly: AssemblyTrademark("Cristian Solervicéns Cornely")]
 [assembly: AssemblyCulture("")]
 

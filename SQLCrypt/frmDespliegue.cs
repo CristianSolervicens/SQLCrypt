@@ -260,7 +260,7 @@ namespace SQLCrypt
             }
             else
             {
-                MessageBox.Show("No results for your SQL Command", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Program.mainForm, "No results for your SQL Command", "Attention", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 if (listErrores.Count == 0 && listMensajes.Count == 0)
                 {
                     this.Close();
