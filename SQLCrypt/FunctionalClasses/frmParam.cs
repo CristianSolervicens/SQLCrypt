@@ -58,7 +58,7 @@ namespace SQLCrypt
                 this.Controls.Add(mTextBox[x - 1]);
             }
 
-            this.Height = mTextBox[x - 2].Top + 115;
+            this.Height = mTextBox[x - 2].Top + 135;
             panel.Top = mTextBox[x-2].Top  + 36;
 
             Application.DoEvents();

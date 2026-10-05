@@ -40,6 +40,7 @@ namespace SQLCrypt.frmUtiles
 
             this.hSql = hSql;
             laStatus.Text = "";
+            laColumnstore.Text = "";
             lsExistingIndexesContextMenu();
         }
 
@@ -59,6 +60,7 @@ namespace SQLCrypt.frmUtiles
 
             lsCurrentIndex.Items.Clear();
             lsExistingIndexes.Items.Clear();
+            laColumnstore.Text = "";
 
             if (String.IsNullOrEmpty(txtTableName.Text))
                 return;
@@ -169,6 +171,7 @@ namespace SQLCrypt.frmUtiles
         }
 
 
+
         private void LoadExistingIndexes(string tabla, List<string> columnas = null)
         {
             ttip.SetToolTip(lsExistingIndexes, "");
@@ -216,11 +219,21 @@ namespace SQLCrypt.frmUtiles
                 }
 
                 if (!string.IsNullOrEmpty( dr["index_name"].ToString()) )
-                    drop_indexes_statements.Add($"DROP INDEX {table_name}.{dr["index_name"].ToString()};");
+                    drop_indexes_statements.Add($"DROP INDEX {tabla}.{hSql.SurroundWithBrackets( dr["index_name"].ToString())};");
                 else
                     drop_indexes_statements.Add("--NOTHING TO DO");
             }
 
+            var ci = hSql.GetColumnstoreIndex(table_name);
+            if (ci != null)
+            {
+                foreach (DataRow dr in ci.Rows)
+                {
+                    lsExistingIndexes.Items.Add(new MyListBoxItem(Color.DarkBlue, $"CREATE {dr["IndexType"].ToString()} INDEX {dr["IndexName"].ToString()} ON {table_name}" ));
+                    laColumnstore.Text = $"Columnstore Index: {dr["IndexName"].ToString()}";
+                    drop_indexes_statements.Add($"DROP INDEX {tabla}.{hSql.SurroundWithBrackets(dr["IndexName"].ToString())};");
+                }
+            }
         }
 
 

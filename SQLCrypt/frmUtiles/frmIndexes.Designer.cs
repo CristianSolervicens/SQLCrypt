@@ -44,6 +44,7 @@
             this.btSalir = new System.Windows.Forms.Button();
             this.pnlHead = new System.Windows.Forms.Panel();
             this.pnlBottom = new System.Windows.Forms.Panel();
+            this.laColumnstore = new System.Windows.Forms.Label();
             this.pnlHead.SuspendLayout();
             this.pnlBottom.SuspendLayout();
             this.SuspendLayout();
@@ -56,7 +57,7 @@
             this.txtIndex.Location = new System.Drawing.Point(6, 36);
             this.txtIndex.Multiline = true;
             this.txtIndex.Name = "txtIndex";
-            this.txtIndex.Size = new System.Drawing.Size(976, 44);
+            this.txtIndex.Size = new System.Drawing.Size(1055, 44);
             this.txtIndex.TabIndex = 1;
             // 
             // btParse
@@ -101,7 +102,7 @@
             this.lsCurrentIndex.ItemHeight = 15;
             this.lsCurrentIndex.Location = new System.Drawing.Point(8, 103);
             this.lsCurrentIndex.Name = "lsCurrentIndex";
-            this.lsCurrentIndex.Size = new System.Drawing.Size(974, 109);
+            this.lsCurrentIndex.Size = new System.Drawing.Size(1053, 109);
             this.lsCurrentIndex.TabIndex = 5;
             // 
             // lsExistingIndexes
@@ -117,7 +118,7 @@
             this.lsExistingIndexes.Location = new System.Drawing.Point(9, 36);
             this.lsExistingIndexes.Name = "lsExistingIndexes";
             this.lsExistingIndexes.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lsExistingIndexes.Size = new System.Drawing.Size(973, 292);
+            this.lsExistingIndexes.Size = new System.Drawing.Size(1052, 292);
             this.lsExistingIndexes.TabIndex = 6;
             this.lsExistingIndexes.SelectedIndexChanged += new System.EventHandler(this.lsExistingIndexes_SelectedIndexChanged);
             // 
@@ -167,7 +168,7 @@
             // 
             // btGetIndexes
             // 
-            this.btGetIndexes.Location = new System.Drawing.Point(656, 8);
+            this.btGetIndexes.Location = new System.Drawing.Point(632, 8);
             this.btGetIndexes.Name = "btGetIndexes";
             this.btGetIndexes.Size = new System.Drawing.Size(115, 23);
             this.btGetIndexes.TabIndex = 12;
@@ -179,7 +180,7 @@
             // 
             this.btSalir.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btSalir.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btSalir.Location = new System.Drawing.Point(866, 8);
+            this.btSalir.Location = new System.Drawing.Point(945, 8);
             this.btSalir.Name = "btSalir";
             this.btSalir.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
             this.btSalir.Size = new System.Drawing.Size(115, 23);
@@ -200,7 +201,7 @@
             this.pnlHead.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHead.Location = new System.Drawing.Point(0, 0);
             this.pnlHead.Name = "pnlHead";
-            this.pnlHead.Size = new System.Drawing.Size(989, 217);
+            this.pnlHead.Size = new System.Drawing.Size(1068, 217);
             this.pnlHead.TabIndex = 14;
             // 
             // pnlBottom
@@ -208,6 +209,7 @@
             this.pnlBottom.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlBottom.Controls.Add(this.laColumnstore);
             this.pnlBottom.Controls.Add(this.btGetIndexes);
             this.pnlBottom.Controls.Add(this.txtTableName);
             this.pnlBottom.Controls.Add(this.label3);
@@ -216,15 +218,25 @@
             this.pnlBottom.Controls.Add(this.laStatus);
             this.pnlBottom.Location = new System.Drawing.Point(0, 218);
             this.pnlBottom.Name = "pnlBottom";
-            this.pnlBottom.Size = new System.Drawing.Size(989, 398);
+            this.pnlBottom.Size = new System.Drawing.Size(1068, 398);
             this.pnlBottom.TabIndex = 15;
+            // 
+            // laColumnstore
+            // 
+            this.laColumnstore.AutoSize = true;
+            this.laColumnstore.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.laColumnstore.Location = new System.Drawing.Point(763, 13);
+            this.laColumnstore.Name = "laColumnstore";
+            this.laColumnstore.Size = new System.Drawing.Size(35, 13);
+            this.laColumnstore.TabIndex = 13;
+            this.laColumnstore.Text = "label4";
             // 
             // frmIndexes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btSalir;
-            this.ClientSize = new System.Drawing.Size(989, 616);
+            this.ClientSize = new System.Drawing.Size(1068, 616);
             this.Controls.Add(this.pnlBottom);
             this.Controls.Add(this.pnlHead);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -255,5 +267,6 @@
         private System.Windows.Forms.Button btSalir;
         private System.Windows.Forms.Panel pnlHead;
         private System.Windows.Forms.Panel pnlBottom;
+        private System.Windows.Forms.Label laColumnstore;
     }
 }

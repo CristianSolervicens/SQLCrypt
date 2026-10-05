@@ -1012,6 +1012,34 @@ namespace SQLCrypt.FunctionalClasses
 
 
 
+            public DataTable GetColumnstoreIndex(string table_name)
+            {
+                string schema_name = "";
+                string object_name = "";
+                (schema_name, object_name) = SplitObjectName(table_name);
+
+                string comando = $@"
+                SELECT i.name AS IndexName,
+                       i.type_desc AS IndexType
+                FROM sys.indexes AS i
+                JOIN sys.tables AS t ON i.object_id = t.object_id
+                WHERE i.type IN (5, 6)  -- 5 = Clustered Columnstore, 6 = Nonclustered Columnstore
+                  AND object_schema_name(t.object_id) = '{schema_name}'
+                  AND t.name = '{object_name}'
+                ";
+                ExecuteSqlData(comando);
+                if (ErrorExiste)
+                {
+                    sError += (sError != "") ? $"\n{sMensajes.ToString()}" : sMensajes.ToString();
+                    this.ErrorClear();
+                    return null;
+                }
+
+                DataTable dt = new DataTable();
+                dt.Load(this.Data);
+                return dt;
+            }
+
 
 
             /// <summary>
@@ -1034,6 +1062,11 @@ namespace SQLCrypt.FunctionalClasses
             /// <returns></returns>
             public DataTable GetTableIndexes( string table_name)
             {
+
+                string schema_name = "";
+                string object_name = "";
+                (schema_name, object_name) = SplitObjectName(table_name);
+
                 string comando = $@"
                 SELECT 
                     database_name = DB_NAME(),
@@ -1181,7 +1214,8 @@ namespace SQLCrypt.FunctionalClasses
                     ORDER BY p.partition_number FOR XML PATH(''), TYPE).value('.', 'NVARCHAR(MAX)'),1,2,'')) AS page_compression_clause ( page_compression_partition_list )
                 WHERE 
                     si.type IN (0,1,2) /* heap, clustered, nonclustered */
-                    and sc.name + '.' + t.name = '{table_name}'
+                    and sc.name = '{schema_name}'
+                    And t.name = '{object_name}'
                 ORDER BY table_name, si.index_id
                     OPTION (RECOMPILE);
                 ";
@@ -1236,6 +1270,61 @@ namespace SQLCrypt.FunctionalClasses
                 }
                 DataClose();
                 return server_name;
+            }
+
+
+
+            public string NormalizeObjectName(string input)
+            {
+                if (string.IsNullOrEmpty(input))
+                    return input;
+                // Remove leading and trailing brackets
+                if (input.StartsWith("[") && input.EndsWith("]"))
+                {
+                    input = input.Substring(1, input.Length - 2);
+                }
+                // Split by dot to handle schema and object names
+                var parts = input.Split('.');
+                for (int i = 0; i < parts.Length; i++)
+                {
+                    parts[i] = SurroundWithBrackets(parts[i].Trim());
+                }
+                return string.Join(".", parts);
+            }
+
+
+            public string SurroundWithBrackets(string input)
+            {
+                if (string.IsNullOrEmpty(input))
+                    return input;
+                if (!input.StartsWith("["))
+                    input = "[" + input;
+                if (!input.EndsWith("]"))
+                    input = input + "]";
+                return input;
+            }
+
+
+
+            public (string Schema, string Object) SplitObjectName(string input)
+            {
+                if (string.IsNullOrEmpty(input))
+                    return (null, null);
+                string normalized = NormalizeObjectName(input);
+                var parts = normalized.Split('.');
+
+                if (parts.Length == 2)
+                {
+                    return (parts[0].Replace("[", "").Replace("]", ""), parts[1].Replace("[", "").Replace("]", ""));
+                }
+                else if (parts.Length == 1)
+                {
+                    return (null, parts[0].Replace("[", "").Replace("]", ""));
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid object name format.");
+                }
             }
 
 
